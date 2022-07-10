@@ -1,0 +1,95 @@
+openapi: 3.0.0
+servers: []
+info:
+  description: Manito API
+  version: "1.0"
+  title: Manito API
+  contact:
+    email: b.nagy.balint@gmail.com
+paths:
+  /version:
+    get:
+      summary: Return version information about the service
+      operationId: get_version
+      responses:
+        "200":
+          application/json:
+            schema:
+              $ref: "#/components/schemas/VersionInfo"
+  # /wallets:
+  #   get:
+  #     summary: Returns the list of wallets
+  #     operationId: get_wallets
+  #     parameters:
+  #       - in: query
+  #         name: detailed
+  #         description: Return detailed description or IDs only
+  #         required: false
+  #         schema:
+  #           type: boolean
+  #       - in: query
+  #         name: userIdIn
+  #         description: Filter by user ID list (comma-separated list of IDs)
+  #         required: false
+  #         schema:
+  #           type: string
+  #     responses:
+  #       "200":
+  #         description: List of wallets matching the criteria
+  #         content:
+  #           application/json:
+  #             schema:
+  #               type: array
+  #               items:
+  #                 anyOf:
+  #                   - $ref: "#/components/schemas/Wallet"
+  #                   - $ref: "#/components/schemas/WalletId"
+components:
+  schemas:
+    VersionInfo:
+      type: object
+      description: Version information about the service
+      properties:
+        version:
+          type: string
+          example: 1.2.34
+      required:
+        - version
+    DatabaseId:
+      type: integer
+      description: Database ID
+      example: 528491
+    WalletId:
+      allOf:
+        - $ref: "#/components/schemas/DatabaseId"
+        - description: ID of a wallet
+    UserId:
+      allOf:
+        - $ref: "#/components/schemas/DatabaseId"
+        - description: ID of a user
+    Wallet:
+      type: object
+      properties:
+        id:
+          allOf:
+            - $ref: "#/components/schemas/WalletId"
+            - description: ID of this wallet
+        name:
+          type: string
+          example: Example Wallet
+        userId:
+          allOf:
+            - $ref: "#/components/schemas/UserId"
+            - description: ID of the user who owns this wallet
+      required:
+        - id
+        - name
+        - userId
+    BasicError:
+      type: object
+      properties:
+        message:
+          description: Error message
+          type: string
+      required:
+        - message
