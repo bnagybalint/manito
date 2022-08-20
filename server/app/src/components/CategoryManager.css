@@ -1,0 +1,19 @@
+.category-table {
+}
+
+.category-row {
+}
+
+.category-icon {
+    border: 1px solid #EEEEEE;
+}
+
+.category-select,
+.category-name,
+.category-manip-edit,
+.category-manip-delete {
+    padding-left: 5px;
+    padding-right: 5px;
+    border: 1px solid #EEEEEE;
+}
+

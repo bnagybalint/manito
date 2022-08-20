@@ -1,0 +1,126 @@
+body {
+    padding: 0px;
+    margin: 0px;
+    font-size: 14px;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    color: #000000;
+    background-color: #DEE5E5;
+}
+
+p {
+    padding: 0px;
+    margin: 0px;
+    padding: 0px;
+}
+
+h1, h2, h3 {
+    margin: 0px;
+    padding-top: 0px;
+    padding-bottom: 12px;
+}
+
+ul, li {
+    margin: 0px
+}
+
+table {
+    /* border: 1px solid black; */
+    margin: 0px;
+    padding: 0px;
+    border-spacing: 0px;
+}
+
+td, tr {
+    /* border: 1px solid red; */
+    margin: 0px;
+    padding: 0px;
+}
+
+.block-title {
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: larger;
+    color: #4BA3C3;
+}
+
+.block {
+    background-color: #FFFFFF;
+    border: 1px solid #4BA3C3;
+    border-radius: 5px;
+    padding: 9px;
+    margin: 6px;
+}
+
+.button {
+    color: #eafcff;
+    background-color: #4BA3C3;
+    border: 0px solid #FFFFFF;
+    border-radius: 6px;
+    padding: 12px;
+    display: inline-flex;
+    align-items: center;
+    height: 28px;
+    text-transform: upp ercase;
+}
+
+.button:hover {
+    background-color: #8CC5DC;
+    color: #175676;
+}
+
+.greenbutton {
+    color: #eafcff;
+    background-color: #62C370;
+    border: 0px solid #FFFFFF;
+    border-radius: 6px;
+    padding: 6px;
+    /* display: inline-flex;
+    align-items: center; */
+    min-width: 28px;
+    min-height: 28px;
+    text-transform: uppercase;
+}
+
+.greenbutton:hover {
+    background-color: #A6DDAF;
+}
+
+.bluebutton {
+    color: #eafcff;
+    background-color: #4BA3C3;
+    border: 0px solid #FFFFFF;
+    border-radius: 6px;
+    padding: 6px;
+    /* display: inline-flex;
+    align-items: center; */
+    min-width: 28px;
+    min-height: 28px;
+    text-transform: uppercase;
+}
+
+.bluebutton:hover {
+    background-color: #8CC5DC;
+}
+
+.redbutton {
+    color: #eafcff;
+    background-color: #CC3363;
+    border: 0px solid #FFFFFF;
+    border-radius: 6px;
+    padding: 6px;
+    /* display: inline-flex;
+    align-items: center; */
+    min-width: 28px;
+    min-height: 28px;
+    text-transform: uppercase;
+}
+
+.redbutton:hover {
+    background-color: #DE7C9B;
+}
+
+.airy {
+    margin-top: 6px;
+    margin-bottom: 6px;
+    margin-right: 6px;
+}
