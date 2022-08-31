@@ -1,29 +1,25 @@
 import React from 'react';
-import { DataGrid } from '@mui/x-data-grid';
+import { DataGrid, GridValueGetterParams } from '@mui/x-data-grid';
 
-import Localization from '../util/Localization.js';
+import { Localization } from 'util/Localization';
+import { Transaction, Category } from 'entity';
 
-import './TransactionViewer.css'
+import './TransactionViewer.css';
 
-export default class TransactionViewer extends React.Component {
-    constructor(props) {
+
+type Props = {};
+
+type State = {
+    transactions: Transaction[],
+};
+
+export class TransactionViewer extends React.Component<Props, State> {
+    constructor(props: Props) {
         super(props);
         this.state = {
             transactions: [
-                {
-                    id: 1,
-                    time: new Date(),
-                    category: "Groceries",
-                    note: "SPAR bevasarlas",
-                    amount: -20345,
-                },
-                {
-                    id: 2,
-                    time: new Date(),
-                    category: "Income",
-                    note: "Fizetes",
-                    amount: 1000000,
-                },
+                new Transaction(1, new Date(), new Category(1000, new Date(), "Groceries", ""), "SPAR bevasarlas", -20345),
+                new Transaction(2, new Date(), new Category(1001, new Date(), "Income", ""), "Fizetes", 1000000),
             ]
         }
     }
@@ -35,13 +31,14 @@ export default class TransactionViewer extends React.Component {
                 field: 'time',
                 headerName: 'Time',
                 width: 200,
-                valueGetter: (params) => Localization.formatDateTime(params.row.time),
+                valueGetter: (params: GridValueGetterParams) => Localization.formatDateTime(params.row.time),
             },
             {
                 field: 'category',
                 headerName: 'Category',
                 sortable: false,
                 width: 100,
+                valueGetter: (params: GridValueGetterParams) => params.row.category.name,
             },
             {
                 field: 'note',
@@ -53,7 +50,7 @@ export default class TransactionViewer extends React.Component {
                 headerName: 'Amount',
                 type: 'number',
                 width: 150,
-                valueGetter: (params) => Localization.formatMoneyAmount(params.row.amount),
+                valueGetter: (params: GridValueGetterParams) => Localization.formatMoneyAmount(params.row.amount),
             },
         ];
 
