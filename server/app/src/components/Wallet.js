@@ -1,10 +1,11 @@
 import React from 'react';
+import Button from '@mui/material/Button';
 
 import TransactionViewer from './TransactionViewer.js';
 
 import './Wallet.css'
 
-class Wallet extends React.Component {
+export default class Wallet extends React.Component {
     constructor(props) {
         super(props);
     }
@@ -13,11 +14,9 @@ class Wallet extends React.Component {
         return (
             <div class="block wallet">
                 <h1 class="block-title">{this.props.walletName ?? "Unnamed wallet"}</h1>
-                <button class="button">+ Add transation</button>
+                <Button variant="contained">+ Add transation</Button>
                 <TransactionViewer />
             </div>
         );
     }
 }
-
-export default Wallet;

@@ -18,7 +18,7 @@ class CategoryEditorLine extends React.Component {
     }
 }
 
-class CategoryManager extends React.Component {
+export default class CategoryManager extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -47,5 +47,3 @@ class CategoryManager extends React.Component {
         );
     }
 }
-
-export default CategoryManager;
