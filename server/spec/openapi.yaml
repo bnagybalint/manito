@@ -15,11 +15,45 @@ paths:
       operationId: endpoint.get_version.get_version
       responses:
         "200":
-          description: ""
+          description: "Version information"
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/VersionInfo"
+  /users:
+    get:
+      summary: Return all users
+      operationId: endpoint.get_users.get_users
+      tags:
+        - user
+      responses:
+        "200":
+          description: "List of users"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+  /user/{id}:
+    get:
+      summary: Return detailed information about a user
+      operationId: endpoint.get_user.get_user
+      tags:
+        - user
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: "User details"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
   # /wallets:
   #   get:
   #     summary: Returns the list of wallets
@@ -71,6 +105,30 @@ components:
       allOf:
         - $ref: "#/components/schemas/DatabaseId"
         - description: ID of a user
+    User:
+      type: object
+      description: Information about a user
+      properties:
+        id:
+          allOf:
+            - $ref: "#/components/schemas/UserId"
+            - description: ID of the user.
+        name:
+          type: string
+          description: Name of the user.
+          example: Some Body
+        created_at:
+          type: string
+          description: Time when the user account was created.
+          format: datetime
+        deleted_at:
+          type: string
+          description: Time when the user account was deleted.
+          format: datetime
+      required:
+        - id
+        - name
+        - created_at
     Wallet:
       type: object
       properties:

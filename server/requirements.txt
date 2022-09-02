@@ -1,4 +1,7 @@
 connexion==2.14.1
-swagger-ui-bundle==0.0.9 # required for connexion to show OpenAPI UI
+swagger-ui-bundle==0.0.9 # required for Connexion to show OpenAPI UI
 Flask==2.1.2
+psycopg2-binary==2.9.3 # required by SQLAlchemy to serve PostgreSQL
 pytest==7.1.2
+ruamel.yaml==0.17.21
+sqlalchemy==1.4.40
