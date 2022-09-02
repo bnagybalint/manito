@@ -1,5 +1,7 @@
 openapi: 3.0.0
-servers: []
+servers: 
+  - url: /
+    description: Main server
 info:
   description: Manito API
   version: "1.0"
@@ -10,12 +12,14 @@ paths:
   /version:
     get:
       summary: Return version information about the service
-      operationId: get_version
+      operationId: endpoint.get_version.get_version
       responses:
         "200":
-          application/json:
-            schema:
-              $ref: "#/components/schemas/VersionInfo"
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VersionInfo"
   # /wallets:
   #   get:
   #     summary: Returns the list of wallets
