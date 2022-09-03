@@ -11,77 +11,108 @@ info:
 paths:
   /version:
     get:
-      summary: Return version information about the service
+      summary: Returns version information about the service
       operationId: endpoint.get_version.get_version
       responses:
         "200":
-          description: "Version information"
+          description: Version information
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/VersionInfo"
   /users:
     get:
-      summary: Return all users
+      summary: Lists all users
       operationId: endpoint.get_users.get_users
       tags:
         - user
       responses:
         "200":
-          description: "List of users"
+          description: List of users
           content:
             application/json:
               schema:
                 type: array
                 items:
                   $ref: "#/components/schemas/User"
-  /user/{id}:
+  /user/{user_id}:
     get:
-      summary: Return detailed information about a user
+      summary: Returns detailed information about a user
       operationId: endpoint.get_user.get_user
       tags:
         - user
       parameters:
-        - name: id
+        - name: user_id
           in: path
           required: true
           schema:
             type: integer
       responses:
         "200":
-          description: "User details"
+          description: User details
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/User"
-  # /wallets:
-  #   get:
-  #     summary: Returns the list of wallets
-  #     operationId: get_wallets
-  #     parameters:
-  #       - in: query
-  #         name: detailed
-  #         description: Return detailed description or IDs only
-  #         required: false
-  #         schema:
-  #           type: boolean
-  #       - in: query
-  #         name: userIdIn
-  #         description: Filter by user ID list (comma-separated list of IDs)
-  #         required: false
-  #         schema:
-  #           type: string
-  #     responses:
-  #       "200":
-  #         description: List of wallets matching the criteria
-  #         content:
-  #           application/json:
-  #             schema:
-  #               type: array
-  #               items:
-  #                 anyOf:
-  #                   - $ref: "#/components/schemas/Wallet"
-  #                   - $ref: "#/components/schemas/WalletId"
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+        "404":
+          description: User does not exist
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BasicError"
+  /user/{user_id}/wallets:
+    get:
+      summary: Lists wallets of a user
+      operationId: endpoint.get_user_wallets.get_user_wallets
+      tags:
+        - user
+        - wallet
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: List of wallets
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Wallet"
+        "404":
+          description: User does not exist
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BasicError"
+  /wallet/{wallet_id}:
+    get:
+      summary: Returns detailed information about a wallet
+      operationId: endpoint.get_wallet.get_wallet
+      tags:
+        - wallet
+      parameters:
+        - name: wallet_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Wallet details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Wallet"
+        "404":
+          description: Wallet does not exist
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BasicError"
 components:
   schemas:
     VersionInfo:
@@ -138,15 +169,15 @@ components:
             - description: ID of this wallet
         name:
           type: string
-          example: Example Wallet
-        userId:
+          example: Bank Account at Shady & Co. Banking Trust
+        ownerId:
           allOf:
             - $ref: "#/components/schemas/UserId"
             - description: ID of the user who owns this wallet
       required:
         - id
         - name
-        - userId
+        - ownerId
     BasicError:
       type: object
       properties:

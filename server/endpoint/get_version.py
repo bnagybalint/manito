@@ -7,4 +7,4 @@ def _read_version() -> str:
 MANITO_SERVER_VERSION = _read_version()
 
 def get_version():
-    return { "version": MANITO_SERVER_VERSION }
+    return { "version": MANITO_SERVER_VERSION }, 200

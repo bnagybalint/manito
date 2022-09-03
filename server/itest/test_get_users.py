@@ -1,8 +1,6 @@
-import datetime as dt
-
-from db.entities import User
 from db.connection import Connection
 from itest.fixtures import db_connection, ensure_db_empty, app_client, AppClient
+from itest.data import create_dummy_users
 
 def test_empty_db(
     app_client: AppClient,
@@ -14,21 +12,13 @@ def test_empty_db(
     users = r.json
     assert len(users) == 0
 
-def test_single(
+def test_simple(
     app_client: AppClient,
     ensure_db_empty,
     db_connection: Connection,
 ) -> None:
     with db_connection.create_session() as db:
-        db.add_all([
-            User(
-                name="Some Body",
-                email="s@b.com",
-                created_at=dt.datetime.now(),
-                password_hash="abcdef"
-            ),
-        ])
-
+        db.add_all(create_dummy_users(num_users=1))
         db.commit()
 
     r = app_client.get("/users")
@@ -36,4 +26,4 @@ def test_single(
 
     users = r.json
     assert len(users) == 1
-    assert users[0]["name"] == "Some Body"
+    assert "name" in users[0]
