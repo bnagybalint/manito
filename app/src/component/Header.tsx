@@ -8,7 +8,7 @@ type Props = {};
 
 type State = {};
 
-export class Header extends React.Component<Props, State> {
+export default class Header extends React.Component<Props, State> {
     render() {
         return (
             <Link to="/" className="no-underline">

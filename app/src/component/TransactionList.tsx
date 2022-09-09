@@ -1,8 +1,8 @@
 import React from 'react';
 import { DataGrid, GridValueGetterParams } from '@mui/x-data-grid';
 
-import { Localization } from 'util/Localization';
-import { Transaction, Category } from 'entity';
+import Localization from 'util/Localization';
+import Transaction from 'entity/Transaction';
 
 
 type Props = {};
@@ -11,13 +11,35 @@ type State = {
     transactions: Transaction[],
 };
 
-export class TransactionViewer extends React.Component<Props, State> {
+export default class TransactionList extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props);
         this.state = {
             transactions: [
-                new Transaction(1, new Date(), new Category(1000, new Date(), "Groceries", ""), "SPAR bevasarlas", -20345),
-                new Transaction(2, new Date(), new Category(1001, new Date(), "Income", ""), "Fizetes", 1000000),
+                {
+                    id: 1,
+                    time: new Date(),
+                    category: {
+                        id: 1000,
+                        createdAt: new Date(),
+                        name: 'Groceries',
+                        iconUrl: '',
+                    },
+                    note: 'SPAR bevasarlas',
+                    amount: -20345,
+                },
+                {
+                    id: 2,
+                    time: new Date(),
+                    category: {
+                        id: 1001,
+                        createdAt: new Date(),
+                        name: 'Income',
+                        iconUrl: '',
+                    },
+                    note: 'Fizetes',
+                    amount: 1000000,
+                },
             ]
         }
     }

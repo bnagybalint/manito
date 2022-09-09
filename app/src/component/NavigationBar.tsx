@@ -6,7 +6,7 @@ type Props = {};
 
 type State = {};
 
-export class NavigationBar extends React.Component<Props, State> {
+export default class NavigationBar extends React.Component<Props, State> {
     render() {
         return (
             <div className="block">

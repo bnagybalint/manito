@@ -2,17 +2,17 @@ import React from 'react';
 import { ThemeProvider } from '@mui/material/styles';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 
-import { Header } from 'component/Header';
-import { Footer } from 'component/Footer';
-import { LoginPanel } from 'component/LoginPanel';
-import { WalletPanel } from 'component/WalletPanel';
-import { SettingsPanel } from 'component/SettingsPanel';
-import { NavigationBar } from 'component/NavigationBar';
+import Header from 'component/Header';
+import Footer from 'component/Footer';
+import LoginPanel from 'component/LoginPanel';
+import WalletPanel from 'component/WalletPanel';
+import SettingsPanel from 'component/SettingsPanel';
+import NavigationBar from 'component/NavigationBar';
 
-import { User } from 'entity/User'
+import User from 'entity/User';
 
 import { ManitoDefaultTheme } from 'Theme';
-import { UserContext } from 'UserContext';
+import UserContext from 'UserContext';
 
 import './App.css';
 
@@ -23,12 +23,18 @@ type State = {
     login_user: User | null,
 };
 
-export class App extends React.Component<Props, State> {
+export default class App extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props);
 
+        // faking login
+        let u: User = {
+            id: 12,
+            name: 'Jakab',
+        };
+
         this.state = {
-            login_user: null,
+            login_user: u,
         };
     }
 

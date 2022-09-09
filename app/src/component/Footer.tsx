@@ -1,16 +1,13 @@
-import { ThemeContext } from '@emotion/react';
 import React from 'react';
 
-import "./Footer.css"
+import './Footer.css'
 
 
-type Props = {
-};
+type Props = {};
 
-type State = {
-};
+type State = {};
 
-export class Footer extends React.Component<Props, State> {
+export default class Footer extends React.Component<Props, State> {
     render() {
         return (
             <div className="footer">

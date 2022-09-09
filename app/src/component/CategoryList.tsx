@@ -1,9 +1,14 @@
 import React from 'react';
-import { DataGrid, GridValueGetterParams, GridRenderCellParams, GridColDef } from '@mui/x-data-grid';
+import {
+    DataGrid,
+    GridValueGetterParams,
+    GridRenderCellParams,
+    GridColDef,
+} from '@mui/x-data-grid';
 import { Button } from '@mui/material';
 
-import { Category } from 'entity';
-import { Localization } from 'util/Localization';
+import Category from 'entity/Category';
+import Localization from 'util/Localization';
 
 
 type Props = {};
@@ -12,15 +17,30 @@ type State = {
     categories: Category[];
 };
 
-export class CategoryManager extends React.Component<Props, State> {
+export default class CategoryList extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props);
 
         this.state = {
             categories: [
-                new Category(1000, new Date(), "Income", ""),
-                new Category(1001, new Date(), "Expense", ""),
-                new Category(1002, new Date(), "Transfer", ""),
+                {
+                    id: 1000,
+                    createdAt: new Date(),
+                    name: 'Income',
+                    iconUrl: '',
+                },
+                {
+                    id: 1001,
+                    createdAt: new Date(),
+                    name: 'Expense',
+                    iconUrl: '',
+                },
+                {
+                    id: 1002,
+                    createdAt: new Date(),
+                    name: 'Transfer',
+                    iconUrl: '',
+                },
             ]
         }
     }

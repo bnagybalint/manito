@@ -1,12 +1,12 @@
 import dateFormat from 'dateformat';
 
-export class Localization {
+export default class Localization {
     static formatDateTime(date: Date) {
-        return dateFormat(date, "yyyy-mm-dd, HH:MM:ss")
+        return dateFormat(date, 'yyyy-mm-dd, HH:MM:ss')
     }
 
     static formatDate(date: Date) {
-        return dateFormat(date, "yyyy-mm-dd")
+        return dateFormat(date, 'yyyy-mm-dd')
     }
 
     static formatMoneyAmount(amount: number) {

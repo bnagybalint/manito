@@ -49,6 +49,7 @@ td, tr {
     text-transform: uppercase;
     font-size: larger;
     color: #4BA3C3;
+    padding-bottom: 12px;
 }
 
 .block {

@@ -1,23 +1,9 @@
-import { Category } from 'entity/Category';
+import Category from 'entity/Category';
 
-export class Transaction {
+export default interface Transaction {
     id: number;
     time: Date;
     category: Category;
-    note: string | null;
+    note?: string;
     amount: number;
-
-    constructor(
-        id: number,
-        time: Date,
-        category: Category,
-        note: string | null,
-        amount: number,
-    ) {
-        this.id = id;
-        this.time = time;
-        this.category = category;
-        this.note = note;
-        this.amount = amount;
-    }
 }

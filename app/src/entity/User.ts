@@ -1,4 +1,4 @@
-export class User {
-    id: number = 0;
-    name: string = "";
+export default interface User {
+    id: number;
+    name: string;
 }
