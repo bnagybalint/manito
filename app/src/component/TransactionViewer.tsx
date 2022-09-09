@@ -4,8 +4,6 @@ import { DataGrid, GridValueGetterParams } from '@mui/x-data-grid';
 import { Localization } from 'util/Localization';
 import { Transaction, Category } from 'entity';
 
-import './TransactionViewer.css';
-
 
 type Props = {};
 
@@ -55,12 +53,12 @@ export class TransactionViewer extends React.Component<Props, State> {
         ];
 
         return (
-            <div style={{ height: 400, width: '100%' }}>
+            <div style={{ height: 300, width: '100%' }}>
                 <DataGrid
                     rows={this.state.transactions}
                     columns={COLUMN_DEFINITIONS}
-                    pageSize={10}
-                    rowsPerPageOptions={[10,20]}
+                    pageSize={5}
+                    rowsPerPageOptions={[5, 10,20]}
                     checkboxSelection
                 />
             </div>

@@ -1,65 +1,74 @@
 import React from 'react';
+import { DataGrid, GridValueGetterParams, GridRenderCellParams, GridColDef } from '@mui/x-data-grid';
+import { Button } from '@mui/material';
 
 import { Category } from 'entity';
+import { Localization } from 'util/Localization';
 
-import './CategoryManager.css';
 
+type Props = {};
 
-type CategoryEditorLineProps = {
-    category: Category,
-};
-
-type CategoryEditorLineState = {};
-
-class CategoryEditorLine extends React.Component<CategoryEditorLineProps, CategoryEditorLineState> {
-    render() {
-        return (
-            <tr className="category-row">
-                <td className="category-select"><input type="checkbox"/></td>
-                <td className="category-icon">
-                    <img alt={this.props.category.name} src={this.props.category.iconUrl}></img>
-                </td>
-                <td className="category-name">{this.props.category.name}</td>
-                <td className="category-manip-edit"><button className="greenbutton"></button></td>
-                <td className="category-manip-delete"><button className="redbutton"></button></td>
-            </tr>
-        );
-    }
-}
-
-type CategoryManagerProps = {};
-
-type CategoryManagerState = {
+type State = {
     categories: Category[];
 };
 
-export class CategoryManager extends React.Component<CategoryManagerProps, CategoryManagerState> {
-    constructor(props: CategoryManagerProps) {
+export class CategoryManager extends React.Component<Props, State> {
+    constructor(props: Props) {
         super(props);
 
         this.state = {
             categories: [
-                new Category(1000, new Date(), "Income", "https://static.xx.fbcdn.net/images/emoji.php/v9/t72/1/32/2764.png"),
-                new Category(1001, new Date(), "Expense", "https://static.xx.fbcdn.net/images/emoji.php/v9/t72/1/32/2764.png"),
-                new Category(1002, new Date(), "Transfer", "https://static.xx.fbcdn.net/images/emoji.php/v9/t72/1/32/2764.png"),
+                new Category(1000, new Date(), "Income", ""),
+                new Category(1001, new Date(), "Expense", ""),
+                new Category(1002, new Date(), "Transfer", ""),
             ]
         }
     }
 
     render() {
+
+        const COLUMN_DEFINITIONS: GridColDef[] = [
+            {
+                field: 'icon',
+                headerName: '',
+                sortable: false,
+                width: 32,
+                align: 'center',
+                renderCell: (params: GridRenderCellParams) => {
+                    return (<img src={params.row.iconUrl} />);
+                }
+            },
+            {
+                field: 'name',
+                headerName: 'Name',
+                sortable: false,
+                width: 100,
+                valueGetter: (params: GridValueGetterParams) => params.row.name,
+            },
+            {
+                field: 'createdAt',
+                headerName: 'Created',
+                width: 180,
+                valueGetter: (params: GridValueGetterParams) => Localization.formatDateTime(params.row.time),
+            },
+        ];
+
         return (
-            <div className="block category-manager">
+            <div className="block">
                 <h1 className="block-title">Categories</h1>
-                <div className="">
-                    <button className="airy greenbutton">+ Add category</button>
-                    <button className="airy bluebutton">+ Merge categories</button>
-                    <button className="airy redbutton">Delete categories</button>
+                <div className='button-row'>
+                    <Button variant="contained">+ Add</Button>
+                    <Button variant="contained" color="error">Delete</Button>
                 </div>
-                <table className="category-table">
-                    {this.state.categories.map(category =>
-                        <CategoryEditorLine category={category} />
-                    )}
-                </table>
+                <div style={{ height: 400, width: '100%' }}>
+                    <DataGrid
+                        rows={this.state.categories}
+                        columns={COLUMN_DEFINITIONS}
+                        pageSize={10}
+                        rowsPerPageOptions={[5,10]}
+                        checkboxSelection
+                    />
+                </div>
             </div>
         );
     }
