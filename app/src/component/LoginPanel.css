@@ -1,0 +1,14 @@
+.login-form {
+    max-width: 300px;
+    margin: 0 auto;
+    padding: 30px;
+}
+
+.login-title {
+    text-align: center;
+    font-size: 30px;
+}
+
+.login-subtitle {
+    text-align: center;
+}

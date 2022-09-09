@@ -1,0 +1,9 @@
+.header-title {
+    text-align: center;
+}
+
+.no-underline {
+    text-decoration: none;
+    font-weight: bold;
+    color: inherit;
+}
