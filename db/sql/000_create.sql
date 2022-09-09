@@ -10,35 +10,36 @@ CREATE TABLE "user" (
 CREATE TABLE "wallet" (
   "id" BIGSERIAL PRIMARY KEY,
   "created_at" timestamp without time zone NOT NULL DEFAULT (now() AT TIME ZONE 'utc'),
-  "creator_id" int NOT NULL,
+  "creator_id" bigint NOT NULL,
   "deleted_at" timestamp without time zone,
-  "deleter_id" int,
-  "owner_id" int NOT NULL,
+  "deleter_id" bigint,
+  "owner_id" bigint NOT NULL,
   "name" varchar(128) NOT NULL
 );
 
 CREATE TABLE "category" (
   "id" BIGSERIAL PRIMARY KEY,
   "created_at" timestamp without time zone NOT NULL DEFAULT (now() AT TIME ZONE 'utc'),
-  "creator_id" int NOT NULL,
+  "creator_id" bigint NOT NULL,
   "deleted_at" timestamp without time zone,
-  "deleter_id" int,
+  "deleter_id" bigint,
   "name" varchar(128) NOT NULL,
-  "parent_category_id" int,
-  "owner_id" int
+  "parent_category_id" bigint,
+  "owner_id" bigint
 );
 
 CREATE TABLE "transaction" (
   "id" BIGSERIAL PRIMARY KEY,
   "created_at" timestamp without time zone NOT NULL DEFAULT (now() AT TIME ZONE 'utc'),
-  "creator_id" int NOT NULL,
+  "creator_id" bigint NOT NULL,
   "deleted_at" timestamp without time zone,
-  "deleter_id" int,
-  "src_wallet_id" int,
-  "dst_wallet_id" int,
-  "amount" int NOT NULL,
+  "deleter_id" bigint,
+  "src_wallet_id" bigint,
+  "dst_wallet_id" bigint,
+  "time" timestamp without time zone NOT NULL,
+  "amount" numeric(128,3) NOT NULL,
   "description" varchar(256),
-  "category_id" int NOT NULL
+  "category_id" bigint
 );
 
 ALTER TABLE "wallet" ADD FOREIGN KEY ("owner_id") REFERENCES "user" ("id");

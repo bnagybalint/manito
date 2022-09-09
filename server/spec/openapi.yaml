@@ -113,6 +113,48 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/BasicError"
+  /wallet/{wallet_id}/transactions:
+    get:
+      summary: Lists transactions for a wallet
+      operationId: endpoint.get_wallet_transactions.get_wallet_transactions
+      tags:
+        - wallet
+        - transaction
+      parameters:
+        - name: wallet_id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: from_date
+          in: query
+          required: false
+          schema:
+            description: Start date of the search, inclusive. Time is interpreted in the wallet's time settings.
+            type: string
+            format: date
+        - name: to_date
+          in: query
+          required: false
+          schema:
+            description: End date of the search, inclusive. Time is interpreted in the wallet's time settings.
+            type: string
+            format: date
+      responses:
+        "200":
+          description: List of transactions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Transaction"
+        "404":
+          description: Wallet does not exist
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BasicError"
 components:
   schemas:
     VersionInfo:
@@ -128,21 +170,13 @@ components:
       type: integer
       description: Database ID
       example: 528491
-    WalletId:
-      allOf:
-        - $ref: "#/components/schemas/DatabaseId"
-        - description: ID of a wallet
-    UserId:
-      allOf:
-        - $ref: "#/components/schemas/DatabaseId"
-        - description: ID of a user
     User:
       type: object
       description: Information about a user
       properties:
         id:
           allOf:
-            - $ref: "#/components/schemas/UserId"
+            - $ref: "#/components/schemas/DatabaseId"
             - description: ID of the user.
         name:
           type: string
@@ -165,19 +199,53 @@ components:
       properties:
         id:
           allOf:
-            - $ref: "#/components/schemas/WalletId"
+            - $ref: "#/components/schemas/DatabaseId"
             - description: ID of this wallet
         name:
           type: string
+          description: Name of the wallet
           example: Bank Account at Shady & Co. Banking Trust
         ownerId:
           allOf:
-            - $ref: "#/components/schemas/UserId"
+            - $ref: "#/components/schemas/DatabaseId"
             - description: ID of the user who owns this wallet
       required:
         - id
         - name
         - ownerId
+    Transaction:
+      type: object
+      properties:
+        id:
+          allOf:
+            - $ref: "#/components/schemas/DatabaseId"
+            - description: ID of this wallet
+        description:
+          type: string
+          description: Notes on this transaction
+        amount:
+          type: number
+          description: |
+            Amount of money added to the destination wallet and removed from the source wallet and
+            deposited into the destination wallet.
+        sourceWalletId:
+          allOf:
+            - $ref: "#/components/schemas/DatabaseId"
+            - description: |
+                ID of the source wallet. If missing, the transaction is considered to be a deposit
+                into the destination wallet from the outside world i.e. outside any of the user's wallets
+                within the system.
+        destinationWalletId:
+          allOf:
+            - $ref: "#/components/schemas/DatabaseId"
+            - description: |
+                ID of the destination wallet. If missing, the transaction is considered to be a withdrawal
+                from the source wallet to the outside world i.e. outside any of the user's wallets
+                within the system.
+      required:
+        - id
+        - description
+        - amount
     BasicError:
       type: object
       properties:

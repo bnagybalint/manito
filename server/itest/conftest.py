@@ -15,7 +15,7 @@ AppCliRunner = FlaskCliRunner
 
 @pytest.fixture(scope="session")
 def app() -> App:
-    app = create_app("unit test")
+    app = create_app(name="unit test")
     app.app.config.update({
         "TESTING": True,
     })

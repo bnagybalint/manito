@@ -23,7 +23,7 @@ class UserApiModel(ApiModel):
         }
 
         if self.deleted_at is not None:
-            d["deleted_at"]: self.deleted_at.isoformat()
+            d["deleted_at"] = self.deleted_at.isoformat()
 
         return d
 

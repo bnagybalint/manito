@@ -1,0 +1,5 @@
+db:
+  host: localhost
+  port: 5433
+  database_name: manito_itest
+  secrets: ./secrets.yaml

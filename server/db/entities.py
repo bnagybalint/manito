@@ -9,6 +9,7 @@ from sqlalchemy import (
     DateTime,
     ForeignKey,
     Integer,
+    Numeric,
     String,
 )
 
@@ -50,3 +51,26 @@ class Wallet(EntityBase):
 
     def __repr__(self) -> str:
         return f"Wallet(id={self.id!r}, name={self.name!r})"
+
+
+class Transaction(EntityBase):
+    __tablename__ = "transaction"
+
+    id = Column(Integer, primary_key=True)
+    description = Column(String)
+    amount = Column(Numeric(128,3), nullable=False)
+    time = Column(DateTime, nullable=False)
+    created_at = Column(DateTime, nullable=False, default=dt.datetime.now)
+    creator_id = Column(Integer, ForeignKey("user.id"), nullable=False)
+    deleted_at = Column(DateTime)
+    deleter_id = Column(Integer, ForeignKey("user.id"))
+    src_wallet_id = Column(Integer, ForeignKey("wallet.id"))
+    dst_wallet_id = Column(Integer, ForeignKey("wallet.id"))
+
+    src_wallet = relationship("Wallet", foreign_keys=[src_wallet_id])
+    dst_wallet = relationship("Wallet", foreign_keys=[dst_wallet_id])
+    creator = relationship("User", foreign_keys=[creator_id])
+    deleter = relationship("User", foreign_keys=[deleter_id])
+
+    def __repr__(self) -> str:
+        return f"Transaction(id={self.id!r}, amount={self.amount!r}, src={self.src_wallet_id!r}, dst={self.dst_wallet_id!r})"
