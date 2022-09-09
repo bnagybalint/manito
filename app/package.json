@@ -42,5 +42,6 @@
   },
   "devDependencies": {
     "@types/dateformat": "^5.0.0"
-  }
+  },
+  "proxy": "http://localhost:5000"
 }
