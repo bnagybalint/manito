@@ -25,9 +25,8 @@ export default class LoginPanel extends React.Component<Props, State> {
                             id="username"
                             label="E-mail"
                             required
-                            autoComplete="current-password"
                             variant="standard"
-                        />
+                            />
                         <TextField
                             id="password"
                             label="Password"

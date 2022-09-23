@@ -7,14 +7,18 @@
     "@emotion/styled": "^11.10.0",
     "@mui/material": "^5.10.1",
     "@mui/x-data-grid": "^5.15.3",
+    "@mui/x-date-pickers": "^5.0.2",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.3.0",
     "@testing-library/user-event": "^13.5.0",
+    "date-fns": "^2.29.3",
     "dateformat": "^5.0.3",
+    "http-proxy-middleware": "^2.0.6",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.3.0",
     "react-scripts": "5.0.1",
+    "urlcat": "^2.0.4",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
@@ -43,6 +47,5 @@
   },
   "devDependencies": {
     "@types/dateformat": "^5.0.0"
-  },
-  "proxy": "http://localhost:5000"
+  }
 }

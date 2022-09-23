@@ -29,7 +29,7 @@ export default class App extends React.Component<Props, State> {
 
         // faking login
         let u: User = {
-            id: 12,
+            id: 159,
             name: 'Jakab',
         };
 
