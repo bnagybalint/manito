@@ -1,4 +1,6 @@
 from pathlib import Path
+from model.api_response import ApiResponse
+
 
 def _read_version() -> str:
     with open(Path(__file__).parent.parent / "VERSION") as fp:
@@ -6,5 +8,5 @@ def _read_version() -> str:
 
 MANITO_SERVER_VERSION = _read_version()
 
-def get_version():
+def get_version() -> ApiResponse:
     return { "version": MANITO_SERVER_VERSION }, 200

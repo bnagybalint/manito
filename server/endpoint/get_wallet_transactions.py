@@ -7,16 +7,20 @@ from db.connection import ConnectionManager
 from db.entities import Wallet, Transaction
 from model.transaction import TransactionApiModel
 from model.basic_error import BasicErrorApiModel
+from model.utils import serialize_response
+from model.api_response import ApiResponse
 
+
+@serialize_response()
 def get_wallet_transactions(
     wallet_id: int,
     from_date: dt.date = None,
     to_date: dt.date = None,
-):
+) -> ApiResponse:
     with ConnectionManager().create_connection().create_session() as db:
         wallet: Wallet = db.query(Wallet).get(wallet_id)
         if wallet is None:
-            return BasicErrorApiModel(message=f"No wallet with ID {wallet_id}.").to_json(), 404
+            return BasicErrorApiModel(message=f"No wallet with ID {wallet_id}."), 404
 
         q = db.query(Transaction)
         q = q.filter(sqlalchemy.or_(Transaction.src_wallet_id == wallet_id, Transaction.dst_wallet_id == wallet_id))
@@ -28,4 +32,4 @@ def get_wallet_transactions(
             
         transactions: List[Transaction] = q.all()
 
-    return [TransactionApiModel.from_entity(t).to_json() for t in transactions], 200
+    return [TransactionApiModel.from_entity(t) for t in transactions], 200

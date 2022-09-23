@@ -117,6 +117,7 @@ paths:
     get:
       summary: Lists transactions for a wallet
       operationId: endpoint.get_wallet_transactions.get_wallet_transactions
+      deprecated: true
       tags:
         - wallet
         - transaction
@@ -155,6 +156,36 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/BasicError"
+  /transactions/search:
+    post:
+      summary: Returns a filtered list of transactions 
+      operationId: endpoint.post_transactions_search.post_transactions_search
+      tags:
+        - transaction
+      requestBody:
+        description: Filter criteria
+        required: true
+        content: 
+          'application/json':
+            schema:
+              $ref: "#/components/schemas/TransactionSearchParams"
+      responses:
+        "200":
+          description: List of transactions matching the criteria
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Transaction"
+        "403":
+          description: |
+            The request was rejected because the filter expression could potentially return information
+            that the caller is not authorized for.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BasicError"
 components:
   schemas:
     VersionInfo:
@@ -185,11 +216,11 @@ components:
         created_at:
           type: string
           description: Time when the user account was created.
-          format: datetime
+          format: date-time
         deleted_at:
           type: string
           description: Time when the user account was deleted.
-          format: datetime
+          format: date-time
       required:
         - id
         - name
@@ -223,6 +254,10 @@ components:
         description:
           type: string
           description: Notes on this transaction
+        time:
+          type: string
+          format: date-time
+          description: UTC time when the transaction took place.
         amount:
           type: number
           description: |
@@ -246,6 +281,28 @@ components:
         - id
         - description
         - amount
+    TransactionSearchParams:
+      type: object
+      properties:
+        walletId:
+          allOf:
+            - $ref: "#/components/schemas/DatabaseId"
+            - description: Result will only contain transactions for which either the source or the destination wallet's ID matches this ID.
+        startDate:
+          type: string
+          format: date
+          description: Start of the time range included in the search, including the specified date.
+        endDate:
+          type: string
+          format: date
+          description: End of the time range included in the search, including the specified date.
+        minAmount:
+          type: number
+          description: Minimum amount that was transferred with the transaction.
+        maxAmount:
+          type: number
+          description: Maximum amount that was transferred with the transaction.
+      additionalProperties: false
     BasicError:
       type: object
       properties:
