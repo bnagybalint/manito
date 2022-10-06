@@ -26,6 +26,7 @@ type State = {
     wallets: Wallet[],
     activeWallet: Wallet | null,
 
+    searchString: string,
     startDate: Date,
     endDate: Date,
     transactions: Transaction[],
@@ -46,6 +47,7 @@ class WalletPanelImpl extends React.Component<Props, State> {
         this.state = {
             wallets: [],
             activeWallet: null,
+            searchString: "",
             startDate: startDate,
             endDate: endDate,
             transactions: [],
@@ -94,6 +96,7 @@ class WalletPanelImpl extends React.Component<Props, State> {
             client.getTransactions(this.state.activeWallet.id, {
                     startDate: this.state.startDate,
                     endDate: this.state.endDate,
+                    searchString: this.state.searchString
                 })
                 .then((transactions) => this.setState({transactions: transactions}))
                 .catch(error => {
@@ -135,8 +138,10 @@ class WalletPanelImpl extends React.Component<Props, State> {
             <div>
                 <h1 className="block-title">{wallet.name}</h1>
                 <TransactionFilter
+                    searchString={this.state.searchString}
                     startDate={this.state.startDate}
                     endDate={this.state.endDate}
+                    onSearchStringChanged={(value: string | null) => this.invalidateState({searchString: value!})}
                     onStartDateChanged={(value: Date | null) => this.invalidateState({startDate: value!})}
                     onEndDateChanged={(value: Date | null) => this.invalidateState({endDate: value!})}
                 />

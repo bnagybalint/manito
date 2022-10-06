@@ -17,7 +17,7 @@ AppCliRunner = FlaskCliRunner
 @pytest.fixture(scope="session")
 def app() -> App:
     app = create_app(name="unit test")
-    app.app.config.update({
+    app.config.update({
         "TESTING": True,
     })
 
@@ -25,11 +25,11 @@ def app() -> App:
 
 @pytest.fixture(scope="session")
 def app_client(app: App) -> AppClient:
-    return app.app.test_client()
+    return app.test_client()
 
 @pytest.fixture(scope="session")
 def app_cli_runner(app: App) -> AppCliRunner:
-    return app.app.test_cli_runner()
+    return app.test_cli_runner()
 
 @pytest.fixture(scope="session")
 def db_connection_params() -> ConnectionParams:

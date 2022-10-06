@@ -5,9 +5,11 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import hu from 'date-fns/locale/hu';
 
 type Props = {
+    searchString: string,
     startDate: Date,
     endDate: Date,
 
+    onSearchStringChanged?: (value: string | null) => void,
     onStartDateChanged?: (value: Date | null) => void,
     onEndDateChanged?: (value: Date | null) => void,
 };
@@ -20,6 +22,8 @@ export function TransactionFilter(props: Props) {
                     <TextField
                         label="Search"
                         variant="outlined"
+                        value={props.searchString}
+                        onChange={(e) => props.onSearchStringChanged?.(e.target.value)}
                     />
                 </Grid>
                 <Grid item>

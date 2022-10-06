@@ -29,6 +29,9 @@ def post_transactions_search(body: TransactionSearchParamsApiModel) -> ApiRespon
         if body.max_amount is not None:
             q = q.filter(Transaction.amount <= body.max_amount)
 
+        if body.search_string is not None and body.search_string != "":
+            q = q.filter(Transaction.description.ilike(f"%{body.search_string}%"))
+
         if body.start_date is not None:
             q = q.filter(sqlalchemy.sql.func.date(Transaction.time) >= dt.datetime.combine(body.start_date, dt.time()))
         if body.end_date is not None:

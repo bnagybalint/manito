@@ -25,4 +25,4 @@ def create_app(name: str = "", openapi_spec_files: List[Path] = None) -> flask.F
     for spec_path in spec_files:
         app.add_api(spec_path)
 
-    return app
+    return app.app

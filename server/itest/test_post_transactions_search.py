@@ -29,7 +29,6 @@ def setup_db(db_connection: Connection) -> Tuple[int, int]:
         transactions = [
             Transaction(
                 time=dt.datetime.fromisoformat("2022-08-08T13:20:00"),
-                description="Salary",
                 amount=5432,
                 dst_wallet=bank_wallet,
                 creator=user,
@@ -61,13 +60,15 @@ def test(
 ) -> None:
     bank_wallet_id, savings_wallet_id = setup_db(db_connection)
 
-    def check(sp: TransactionSearchParamsApiModel, expected_count: int):
+    def check(sp: TransactionSearchParamsApiModel, expected_count: int, message: str = ""):
         payload = sp.to_json()
         r = app_client.post(f"/transactions/search", json=payload)
         transactions = r.json
-        assert len(transactions) == expected_count
+        assert len(transactions) == expected_count, message
 
     M = TransactionSearchParamsApiModel
+
+    check(M(), expected_count=3, message="Empty search matches everything")
 
     check(M(start_date=dt.date.fromisoformat("2022-08-01")), expected_count=3)
     check(M(start_date=dt.date.fromisoformat("2022-08-08")), expected_count=3)
@@ -98,3 +99,8 @@ def test(
     check(M(max_amount=20_000), expected_count=3)
 
     check(M(min_amount=1000, max_amount=2000), expected_count=1)
+
+    check(M(search_string=""), expected_count=3, message="Empty search matches everything, even transactions without a note")
+    check(M(search_string="Groceries"), expected_count=1)
+    check(M(search_string="groceries"), expected_count=1, message="Search is case-insensitive")
+    check(M(search_string="er"), expected_count=2, message="Search can match parts")

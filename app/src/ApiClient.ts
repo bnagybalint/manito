@@ -7,7 +7,7 @@ type CheckResponseCallback = (res: Response) => Response;
 export interface TransactionSearchFilter {
     startDate?: Date,
     endDate?: Date,
-    filterText?: string,
+    searchString?: string,
 };
 
 type RequestParams = {
@@ -57,6 +57,7 @@ export default class ApiClient {
         const url = '/api/transactions/search'
         const data = {
             walletId: walletId,
+            searchString: filters?.searchString, 
             startDate: filters?.startDate ? toISODateString(removeTimeZoneOffset(filters?.startDate)) : null,
             endDate: filters?.endDate ? toISODateString(removeTimeZoneOffset(filters?.endDate)) : null,
         }

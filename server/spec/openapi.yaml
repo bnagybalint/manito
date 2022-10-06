@@ -287,7 +287,14 @@ components:
         walletId:
           allOf:
             - $ref: "#/components/schemas/DatabaseId"
-            - description: Result will only contain transactions for which either the source or the destination wallet's ID matches this ID.
+            - description: |
+                Result will only contain transactions for which either the source or the destination wallet's ID
+                matches this ID.
+        searchString:
+          type: string
+          description: |
+            Result will only contain transactions for which the note field contains this string.
+            The search is case-insensitive.
         startDate:
           type: string
           format: date

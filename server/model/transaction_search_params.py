@@ -17,6 +17,7 @@ def date_parser(x: str) -> dt.date:
 class TransactionSearchParamsApiModel(ApiModel):
     max_amount: float = None
     min_amount: float = None
+    search_string: str = None
     end_date: dt.date = None
     start_date: dt.date = None
     wallet_id: int = None
@@ -26,6 +27,7 @@ class TransactionSearchParamsApiModel(ApiModel):
         m = TransactionSearchParamsApiModel(
             min_amount=read_json(j, "minAmount", parser=float, default=None),
             max_amount=read_json(j, "maxAmount", parser=float, default=None),
+            search_string=read_json(j, "searchString", parser=str, default=None),
             start_date=read_json(j, "startDate", parser=date_parser, default=None),
             end_date=read_json(j, "endDate", parser=date_parser, default=None),
             wallet_id=read_json(j, "walletId", parser=int, default=None),
@@ -38,6 +40,8 @@ class TransactionSearchParamsApiModel(ApiModel):
             j["minAmount"] = float(self.min_amount)
         if self.max_amount is not None:
             j["maxAmount"] = float(self.max_amount)
+        if self.search_string is not None:
+            j["searchString"] = self.search_string
         if self.start_date is not None:
             j["startDate"] = self.start_date.isoformat()
         if self.end_date is not None:
