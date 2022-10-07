@@ -75,5 +75,9 @@ class TransactionApiModel(ApiModel):
     def validate(self) -> None:
         if self.src_wallet_id is None and self.dst_wallet_id is None:
             raise ValidationError(error="Either source or destination wallet must be defined")
+
+        if self.src_wallet_id == self.dst_wallet_id:
+            raise ValidationError(error="Source and destination wallets cannot be the same")
+
         if self.amount < 0:
             raise ValidationError(error="Amount must be non-negative")

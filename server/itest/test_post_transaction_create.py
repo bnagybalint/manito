@@ -136,6 +136,24 @@ def test_fail_when_missing_wallet(
 
     assert r.status_code in [400], "Request should be rejected if not wallet was defined"
 
+def test_fail_when_transferring_to_the_same_wallet(
+    app_client: AppClient,
+    ensure_db_empty,
+    db_connection: Connection,
+) -> None:
+    bank_wallet_id, _ = setup_db(db_connection)
+
+    data = TransactionApiModel(
+        amount=1000,
+        time=dt.datetime.now(),
+        src_wallet_id=bank_wallet_id,
+        dst_wallet_id=bank_wallet_id,
+    )
+    payload = data.to_json()
+    r = app_client.post("/transaction/create", json=payload)
+
+    assert r.status_code in [400], "Request should be rejected if the source and destination wallets are the same"
+
 def test_fail_when_invalid_amount(
     app_client: AppClient,
     ensure_db_empty,

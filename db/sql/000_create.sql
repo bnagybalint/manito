@@ -61,4 +61,5 @@ ALTER TABLE "transaction" ADD FOREIGN KEY ("category_id") REFERENCES "category" 
 ALTER TABLE "transaction" ADD FOREIGN KEY ("creator_id") REFERENCES "user" ("id");
 ALTER TABLE "transaction" ADD FOREIGN KEY ("deleter_id") REFERENCES "user" ("id");
 ALTER TABLE "transaction" ADD CONSTRAINT "chk_min_one_wallets" CHECK ("src_wallet_id" IS NOT NULL OR "dst_wallet_id" IS NOT NULL);
+ALTER TABLE "transaction" ADD CONSTRAINT "chk_src_and_dst_wallets_different" CHECK ("src_wallet_id" != "dst_wallet_id");
 ALTER TABLE "transaction" ADD CONSTRAINT "chk_both_deleted_at_and_by" CHECK ("deleted_at" IS NULL OR "deleter_id" IS NOT NULL);
