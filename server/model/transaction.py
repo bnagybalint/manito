@@ -17,7 +17,7 @@ class TransactionApiModel(ApiModel):
     amount: float # TODO IMPORTANT will need to handle money with precise operations, e.g. using a fixed-point type
     time: dt.datetime
     id: int = None
-    description: str = None
+    notes: str = None
     created_at: dt.datetime = None
     deleted_at: dt.datetime = None
     src_wallet_id: int = None
@@ -33,8 +33,8 @@ class TransactionApiModel(ApiModel):
             d["createdAt"] = self.created_at.isoformat() # can be None in requests
         if self.id is not None:
             d["id"] = self.id # can be None in requests
-        if self.description is not None:
-            d["description"] = self.description
+        if self.notes is not None:
+            d["notes"] = self.notes
         if self.deleted_at is not None:
             d["deletedAt"] = self.deleted_at.isoformat()
         if self.src_wallet_id is not None:
@@ -50,7 +50,7 @@ class TransactionApiModel(ApiModel):
             id=read_json(j, "id", parser=int, default=None),
             amount=read_json(j, "amount", parser=float),
             time=read_json(j, "time", parser=dateutil.parser.isoparse),
-            description=read_json(j, "description", parser=str, default=None),
+            notes=read_json(j, "notes", parser=str, default=None),
             src_wallet_id=read_json(j, "sourceWalletId", parser=int, default=None),
             dst_wallet_id=read_json(j, "destinationWalletId", parser=int, default=None),
             created_at=read_json(j, "createdAt", parser=dateutil.parser.isoparse, default=None),
@@ -62,7 +62,7 @@ class TransactionApiModel(ApiModel):
     def from_entity(transaction: Transaction) -> TransactionApiModel:
         m = TransactionApiModel(
             id=transaction.id,
-            description=transaction.description,
+            notes=transaction.notes,
             amount=transaction.amount,
             time=transaction.time,
             created_at=transaction.created_at,

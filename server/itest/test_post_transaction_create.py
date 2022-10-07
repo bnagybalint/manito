@@ -108,7 +108,7 @@ def test_create_with_notes(
         amount=1000,
         time=dt.datetime.now(),
         src_wallet_id=bank_wallet_id,
-        description="Groceries",
+        notes="Groceries",
     )
     payload = data.to_json()
     r = app_client.post("/transaction/create", json=payload)

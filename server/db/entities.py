@@ -57,7 +57,7 @@ class Transaction(EntityBase):
     __tablename__ = "transaction"
 
     id = Column(Integer, primary_key=True)
-    description = Column(String)
+    notes = Column(String)
     amount = Column(Numeric(128,3), nullable=False)
     time = Column(DateTime, nullable=False)
     created_at = Column(DateTime, nullable=False, default=dt.datetime.now)

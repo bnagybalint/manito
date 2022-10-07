@@ -5,7 +5,7 @@ export default interface ITransaction {
     time: Date;
     amount: number;
     category: ICategory;
-    description?: string;
+    notes?: string;
     sourceWalletId?: number;
     destinationWalletId?: number;
 }

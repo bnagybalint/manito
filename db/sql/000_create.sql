@@ -40,7 +40,7 @@ CREATE TABLE "transaction" (
   "dst_wallet_id" bigint,
   "time" timestamp without time zone NOT NULL,
   "amount" numeric(128,3) NOT NULL,
-  "description" varchar(256),
+  "notes" varchar(256),
   "category_id" bigint
 );
 

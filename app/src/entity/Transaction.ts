@@ -7,15 +7,15 @@ export default class Transaction {
     time: Date;
     amount: number;
     category: Category;
-    note?: string;
+    notes?: string;
     sourceWalletId?: number;
     destinationWalletId?: number;
 
-    constructor({id, time, category, description, amount, sourceWalletId, destinationWalletId}: ITransaction) {
+    constructor({id, time, category, notes, amount, sourceWalletId, destinationWalletId}: ITransaction) {
         this.id = id;
         this.time = time;
         this.category = category;
-        this.note = description;
+        this.notes = notes;
         this.amount = amount;
         this.sourceWalletId = sourceWalletId;
         this.destinationWalletId = destinationWalletId;

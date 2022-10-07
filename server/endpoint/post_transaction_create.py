@@ -12,7 +12,7 @@ from model.api_response import ApiResponse
 def post_transaction_create(body: TransactionApiModel) -> ApiResponse:
     with ConnectionManager().create_connection().create_session() as db:
         transaction = Transaction(
-            description=body.description,
+            notes=body.notes,
             amount=body.amount,
             time=body.time,
             created_at=dt.datetime.utcnow(),

@@ -23,8 +23,8 @@ export default function TransactionList(props: Props) {
             },
         },
         {
-            field: 'note',
-            headerName: 'Note',
+            field: 'notes',
+            headerName: 'Notes',
             width: 300,
         },
         {

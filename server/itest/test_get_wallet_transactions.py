@@ -28,21 +28,21 @@ def setup_db(db_connection: Connection) -> Tuple[int, int]:
         transactions = [
             Transaction(
                 time=dt.datetime.fromisoformat("2022-08-08T13:20:00"),
-                description="Salary",
+                notes="Salary",
                 amount=5432,
                 dst_wallet=bank_wallet,
                 creator=user,
             ),
             Transaction(
                 time=dt.datetime.fromisoformat("2022-08-12T19:45:15"),
-                description="Groceries",
+                notes="Groceries",
                 amount=13.51,
                 src_wallet=bank_wallet,
                 creator=user,
             ),
             Transaction(
                 time=dt.datetime.fromisoformat("2022-08-31T12:30:00"),
-                description="Transfer savings",
+                notes="Transfer savings",
                 amount=1500,
                 src_wallet=bank_wallet,
                 dst_wallet=savings_wallet,
