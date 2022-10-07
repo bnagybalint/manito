@@ -156,10 +156,41 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/BasicError"
-  /transactions/search:
+  /transaction/{transaction_id}:
+    get:
+      summary: Returns detailed information about a transaction
+      operationId: endpoint.get_transaction.get_transaction
+      tags:
+        - transaction
+      parameters:
+        - name: transaction_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Transaction details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Transaction"
+        "403":
+          description: The request was rejected due to authorization issues.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BasicError"
+        "404":
+          description: Transaction does not exist
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BasicError"
+  /transaction/search:
     post:
       summary: Returns a filtered list of transactions 
-      operationId: endpoint.post_transactions_search.post_transactions_search
+      operationId: endpoint.post_transaction_search.post_transaction_search
       tags:
         - transaction
       requestBody:
@@ -182,6 +213,32 @@ paths:
           description: |
             The request was rejected because the filter expression could potentially return information
             that the caller is not authorized for.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BasicError"
+  /transaction/create:
+    post:
+      summary: Creates a new transaction
+      operationId: endpoint.post_transaction_create.post_transaction_create
+      tags:
+        - transaction
+      requestBody:
+        description: Transaction data
+        required: true
+        content: 
+          'application/json':
+            schema:
+              $ref: "#/components/schemas/Transaction"
+      responses:
+        "200":
+          description: ID of the newly created transaction.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DatabaseId"
+        "403":
+          description: The request was rejected due to authorization issues.
           content:
             application/json:
               schema:
@@ -251,6 +308,7 @@ components:
           allOf:
             - $ref: "#/components/schemas/DatabaseId"
             - description: ID of this wallet
+          readOnly: true
         description:
           type: string
           description: Notes on this transaction
@@ -277,10 +335,23 @@ components:
                 ID of the destination wallet. If missing, the transaction is considered to be a withdrawal
                 from the source wallet to the outside world i.e. outside any of the user's wallets
                 within the system.
+        createdAt:
+          type: string
+          format: date-time
+          readOnly: true
+          description: |
+            UTC time when the transaction database entity was created. This may be different from the time
+            when the transaction took place, which is stored in the field 'time'.
+        deletedAt:
+          type: string
+          format: date-time
+          readOnly: true
+          description: UTC time when the transaction database entity was deleted.
       required:
         - id
-        - description
         - amount
+        - time
+        - createdAt
     TransactionSearchParams:
       type: object
       properties:

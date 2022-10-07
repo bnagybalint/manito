@@ -14,7 +14,7 @@ from model.api_response import ApiResponse
 
 @deserialize_body(TransactionSearchParamsApiModel)
 @serialize_response()
-def post_transactions_search(body: TransactionSearchParamsApiModel) -> ApiResponse:
+def post_transaction_search(body: TransactionSearchParamsApiModel) -> ApiResponse:
     with ConnectionManager().create_connection().create_session() as db:
         q = db.query(Transaction)
 

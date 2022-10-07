@@ -61,7 +61,9 @@ class Transaction(EntityBase):
     amount = Column(Numeric(128,3), nullable=False)
     time = Column(DateTime, nullable=False)
     created_at = Column(DateTime, nullable=False, default=dt.datetime.now)
-    creator_id = Column(Integer, ForeignKey("user.id"), nullable=False)
+    # FIXME nullable=False removed because API has no authorization yet, no way of knowing the creator user
+    # creator_id = Column(Integer, ForeignKey("user.id"), nullable=False)
+    creator_id = Column(Integer, ForeignKey("user.id"))
     deleted_at = Column(DateTime)
     deleter_id = Column(Integer, ForeignKey("user.id"))
     src_wallet_id = Column(Integer, ForeignKey("wallet.id"))

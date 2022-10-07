@@ -31,7 +31,9 @@ CREATE TABLE "category" (
 CREATE TABLE "transaction" (
   "id" BIGSERIAL PRIMARY KEY,
   "created_at" timestamp without time zone NOT NULL DEFAULT (now() AT TIME ZONE 'utc'),
-  "creator_id" bigint NOT NULL,
+  -- FIXME notnull removed because API has no authorization yet, no way of knowing the creator user
+  -- "creator_id" bigint NOT NULL,
+  "creator_id" bigint,
   "deleted_at" timestamp without time zone,
   "deleter_id" bigint,
   "src_wallet_id" bigint,

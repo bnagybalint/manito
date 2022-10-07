@@ -82,7 +82,7 @@ def serialize_response():
                 data = ret[0]
 
                 try:
-                    data_json = jsonify_api_model(data)
+                    data_json = jsonify_response(data)
                 except Exception as e:
                     error = BasicErrorApiModel(message=f"Failed to serialize response: {e}")
                     return error.to_json(), 500
@@ -95,9 +95,16 @@ def serialize_response():
 
     return inner
 
-def jsonify_api_model(data: Union[ApiModel, List[Any]]) -> Any:
+ValidData = Union[
+    int, # mainly for IDs
+    ApiModel,
+]
+
+def jsonify_response(data: Union[ValidData, List[ValidData]]) -> Any:
+    if isinstance(data, int):
+        return data
     if isinstance(data, ApiModel):
         return data.to_json()
     if isinstance(data, list):
-        return [jsonify_api_model(d) for d in data]
+        return [jsonify_response(d) for d in data]
     raise TypeError(f"Unable to jsonify unknown type: {type(data)}")

@@ -54,7 +54,7 @@ export default class ApiClient {
     }
 
     async getTransactions(walletId: number, filters?: TransactionSearchFilter): Promise<Transaction[]> {
-        const url = '/api/transactions/search'
+        const url = '/api/transaction/search'
         const data = {
             walletId: walletId,
             searchString: filters?.searchString, 

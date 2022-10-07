@@ -1,7 +1,6 @@
 import datetime as dt
-import urllib.parse
 
-from typing import Any, Dict, Tuple
+from typing import Tuple
 
 from db.entities import User, Wallet, Transaction
 from db.connection import Connection
@@ -23,7 +22,7 @@ def setup_db(db_connection: Connection) -> Tuple[int, int]:
         ID of the bank account and the savings account in the database
     """
     with db_connection.create_session() as db:
-        user = User(name="Some Body", email="s{i}@b.com", password_hash="abcdef")
+        user = User(name="Some Body", email="s@b.com", password_hash="abcdef")
         bank_wallet = Wallet(name="Bank account", creator=user, owner=user)
         savings_wallet = Wallet(name="Savings account", creator=user, owner=user)
         transactions = [
@@ -62,7 +61,7 @@ def test(
 
     def check(sp: TransactionSearchParamsApiModel, expected_count: int, message: str = ""):
         payload = sp.to_json()
-        r = app_client.post(f"/transactions/search", json=payload)
+        r = app_client.post("/transaction/search", json=payload)
         transactions = r.json
         assert len(transactions) == expected_count, message
 
