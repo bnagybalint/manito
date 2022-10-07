@@ -6,6 +6,7 @@ import Transaction from 'entity/Transaction';
 
 
 type Props = {
+    walletId: number,
     transactions: Transaction[],
 };
 
@@ -16,10 +17,13 @@ export default function TransactionList(props: Props) {
             headerName: 'Amount',
             type: 'number',
             width: 150,
-            valueGetter: (params: GridValueGetterParams) => Localization.formatMoneyAmount(params.row.amount),
+            valueGetter: (params: GridValueGetterParams) => {
+                const amount = params.row.getSignedAmount(props.walletId)
+                return Localization.formatMoneyAmount(amount);
+            },
         },
         {
-            field: 'description',
+            field: 'note',
             headerName: 'Note',
             width: 300,
         },

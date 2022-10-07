@@ -1,3 +1,4 @@
+import ITransaction from 'api_client/model/ITransaction';
 import Transaction from 'entity/Transaction';
 import Wallet from 'entity/Wallet';
 import urlcat from 'urlcat';
@@ -64,7 +65,8 @@ export default class ApiClient {
 
         return this.post(url, {json: data})
             .then(res => this.checkResponse([200])(res))
-            .then(res => res.json());
+            .then(res => res.json())
+            .then(res => res.map((p: ITransaction) => new Transaction(p)));
     }
 
     async get(url: string, req?: RequestParams): Promise<Response> {

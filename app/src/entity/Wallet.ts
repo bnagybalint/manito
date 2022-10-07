@@ -1,7 +1,3 @@
-export default interface Wallet {
-    id: number;
-    name: string;
-    ownerId: number;
-    createdAt: Date;
-    deletedAt?: Date;
-}
+import IWallet from 'api_client/model/IWallet'
+
+export default interface Wallet extends IWallet {}

@@ -8,7 +8,7 @@ import Wallet from 'entity/Wallet';
 import User from 'entity/User';
 
 import UserContext from 'UserContext';
-import ApiClient from 'ApiClient';
+import ApiClient from 'api_client/ApiClient';
 import Transaction from 'entity/Transaction';
 
 
@@ -146,7 +146,7 @@ class WalletPanelImpl extends React.Component<Props, State> {
                     onEndDateChanged={(value: Date | null) => this.invalidateState({endDate: value!})}
                 />
                 <Button variant="contained">+ Add transation</Button>
-                <TransactionList transactions={transactions}/>
+                <TransactionList walletId={this.state.activeWallet.id} transactions={transactions}/>
             </div>
         );
     }

@@ -1,4 +1,3 @@
-export default interface User {
-    id: number;
-    name: string;
-}
+import IUser from 'api_client/model/IUser'
+
+export default interface User extends IUser {}
