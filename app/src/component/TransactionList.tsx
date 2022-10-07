@@ -1,9 +1,12 @@
+import clsx from 'clsx';
 import React from 'react';
-import { DataGrid, GridValueGetterParams } from '@mui/x-data-grid';
+import { DataGrid, GridValueGetterParams, GridCellParams } from '@mui/x-data-grid';
 
 import Localization from 'util/Localization';
 import Transaction from 'entity/Transaction';
 
+
+import './TransactionList.css'
 
 type Props = {
     walletId: number,
@@ -17,10 +20,17 @@ export default function TransactionList(props: Props) {
             headerName: 'Amount',
             type: 'number',
             width: 150,
-            valueGetter: (params: GridValueGetterParams) => {
-                const amount = params.row.getSignedAmount(props.walletId)
-                return Localization.formatMoneyAmount(amount);
+            valueGetter: (params: GridValueGetterParams<Transaction>) => params.row.getSignedAmount(props.walletId),
+            cellClassName: (params: GridCellParams<number>) => {
+                if (params.value == null) {
+                    return '';
+                }
+                return clsx('transaction-amount', {
+                    negative: params.value < 0,
+                    positive: params.value >= 0,
+                });
             },
+            valueFormatter: ({value}: any) => Localization.formatMoneyAmount(value),
         },
         {
             field: 'notes',
