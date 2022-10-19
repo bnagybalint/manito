@@ -1,6 +1,11 @@
 import React from 'react';
-import { ThemeProvider } from '@mui/material/styles';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
+
+import { ThemeProvider } from '@mui/material/styles';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { LocalizationProvider } from '@mui/x-date-pickers'
+
+import hu from 'date-fns/locale/hu';
 
 import Header from 'component/Header';
 import Footer from 'component/Footer';
@@ -38,7 +43,7 @@ export default class App extends React.Component<Props, State> {
         };
     }
 
-    render_content() {
+    renderContent() {
         if (this.state.login_user == null) {
             return (
                 <Routes>
@@ -62,19 +67,27 @@ export default class App extends React.Component<Props, State> {
         );
     }
 
-    render() {
+    renderPage() {
         return (
             <div className="mainPanel">
                 <div className="contentPanel">
                     <BrowserRouter>
                         <ThemeProvider theme={ManitoDefaultTheme}>
                             <Header />
-                            {this.render_content()}
+                            {this.renderContent()}
                             <Footer />
                         </ThemeProvider>
                     </BrowserRouter>
                 </div>
             </div>
+        );
+    }
+
+    render() {
+        return (
+            <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={hu}>
+                {this.renderPage()}
+            </LocalizationProvider>
         );
     }
 }

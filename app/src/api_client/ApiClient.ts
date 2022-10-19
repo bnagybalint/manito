@@ -55,18 +55,25 @@ export default class ApiClient {
     }
 
     async getTransactions(walletId: number, filters?: TransactionSearchFilter): Promise<Transaction[]> {
-        const url = '/api/transaction/search'
+        const url = '/api/transaction/search';
         const data = {
             walletId: walletId,
             searchString: filters?.searchString, 
             startDate: filters?.startDate ? toISODateString(removeTimeZoneOffset(filters?.startDate)) : null,
             endDate: filters?.endDate ? toISODateString(removeTimeZoneOffset(filters?.endDate)) : null,
-        }
+        };
 
         return this.post(url, {json: data})
             .then(res => this.checkResponse([200])(res))
             .then(res => res.json())
             .then(res => res.map((p: ITransaction) => new Transaction(p)));
+    }
+
+    async createTransaction(transaction: ITransaction): Promise<number> {
+        const url = '/api/transaction/create';
+        return this.post(url, {json: transaction})
+            .then(res => this.checkResponse([200])(res))
+            .then(res => res.json());
     }
 
     async get(url: string, req?: RequestParams): Promise<Response> {

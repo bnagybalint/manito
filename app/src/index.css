@@ -139,3 +139,11 @@ td, tr {
     margin-bottom: 6px;
     margin-right: 6px;
 }
+
+.numeric-by-sign.positive, .positive-amount {
+    color: #00a000;
+}
+
+.numeric-by-sign.negative, .negative-amount {
+    color: #f00000;
+}

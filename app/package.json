@@ -5,6 +5,7 @@
   "dependencies": {
     "@emotion/react": "^11.10.0",
     "@emotion/styled": "^11.10.0",
+    "@mui/icons-material": "^5.10.9",
     "@mui/material": "^5.10.1",
     "@mui/x-data-grid": "^5.15.3",
     "@mui/x-date-pickers": "^5.0.2",

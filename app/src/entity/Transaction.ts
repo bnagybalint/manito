@@ -3,10 +3,10 @@ import ITransaction from 'api_client/model/ITransaction';
 import Category from 'entity/Category';
 
 export default class Transaction {
-    id: number;
+    id?: number;
     time: Date;
     amount: number;
-    category: Category;
+    category?: Category;
     notes?: string;
     sourceWalletId?: number;
     destinationWalletId?: number;

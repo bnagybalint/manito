@@ -1,8 +1,9 @@
-import { TextField, Grid } from '@mui/material';
-import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-
-import hu from 'date-fns/locale/hu';
+import {
+    Grid,
+    Stack,
+    TextField,
+} from '@mui/material';
+import { DatePicker } from '@mui/x-date-pickers'
 
 type Props = {
     searchString: string,
@@ -16,17 +17,17 @@ type Props = {
 
 export function TransactionFilter(props: Props) {
     return (
-        <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={hu}>
-            <Grid container>
-                <Grid item>
-                    <TextField
-                        label="Search"
-                        variant="outlined"
-                        value={props.searchString}
-                        onChange={(e) => props.onSearchStringChanged?.(e.target.value)}
-                    />
-                </Grid>
-                <Grid item>
+        <Grid container gap={1}>
+            <Grid item>
+                <TextField
+                    label="Search"
+                    variant="outlined"
+                    value={props.searchString}
+                    onChange={(e) => props.onSearchStringChanged?.(e.target.value)}
+                />
+            </Grid>
+            <Grid item>
+                <Stack direction="row" columnGap={1}>
                     <DatePicker
                         label="Start date"
                         value={props.startDate}
@@ -39,9 +40,9 @@ export function TransactionFilter(props: Props) {
                         onChange={(value: Date | null) => props.onEndDateChanged?.(value)}
                         renderInput={(params) => <TextField {...params} />}
                     />
-                </Grid>
+                </Stack>
             </Grid>
-        </LocalizationProvider>
+        </Grid>
     );
 }
 export default TransactionFilter;

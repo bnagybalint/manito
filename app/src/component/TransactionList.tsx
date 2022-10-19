@@ -31,7 +31,7 @@ export default function TransactionList(props: Props) {
                 if (params.value == null) {
                     return '';
                 }
-                return clsx('transaction-amount', {
+                return clsx('numeric-by-sign', {
                     negative: params.value < 0,
                     positive: params.value >= 0,
                 });
