@@ -16,6 +16,12 @@ type Props = {
 export default function TransactionList(props: Props) {
     const COLUMN_DEFINITIONS = [
         {
+            field: 'time',
+            headerName: 'Date',
+            width: 100,
+            valueGetter: (params: GridValueGetterParams) => Localization.formatDate(params.row.time),
+        },
+        {
             field: 'amount',
             headerName: 'Amount',
             type: 'number',
@@ -37,13 +43,11 @@ export default function TransactionList(props: Props) {
             headerName: 'Notes',
             width: 300,
         },
-        {
-            field: 'time',
-            headerName: 'Time',
-            width: 200,
-            valueGetter: (params: GridValueGetterParams) => Localization.formatDate(params.row.time),
-        },
     ];
+
+    const PAGE_SIZE_OPTIONS = [10, 20, 50];
+
+    const [pageSize, setPageSize] = React.useState<number>(PAGE_SIZE_OPTIONS[0]);
 
     return (
         <div style={{ width: '100%' }}>
@@ -51,8 +55,9 @@ export default function TransactionList(props: Props) {
                 autoHeight
                 rows={props.transactions}
                 columns={COLUMN_DEFINITIONS}
-                pageSize={5}
-                rowsPerPageOptions={[5, 10,20]}
+                pageSize={pageSize}
+                rowsPerPageOptions={PAGE_SIZE_OPTIONS}
+                onPageSizeChange={(value) => setPageSize(value)}
                 checkboxSelection
             />
         </div>
