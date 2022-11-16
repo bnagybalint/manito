@@ -1,4 +1,3 @@
-import React from 'react';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 
 import { ThemeProvider } from '@mui/material/styles';
@@ -14,37 +13,18 @@ import WalletPanel from 'component/WalletPanel';
 import SettingsPanel from 'component/SettingsPanel';
 import NavigationBar from 'component/NavigationBar';
 
-import User from 'entity/User';
+import { useUserStore, selectCurrentUser } from 'stores/user'
 
 import { ManitoDefaultTheme } from 'Theme';
 import UserContext from 'UserContext';
 
 import './App.css';
 
+export default function App() {
+    const currentUser = useUserStore(selectCurrentUser);
 
-type Props = {};
-
-type State = {
-    login_user: User | null,
-};
-
-export default class App extends React.Component<Props, State> {
-    constructor(props: Props) {
-        super(props);
-
-        // faking login
-        let u: User = {
-            id: 159,
-            name: 'Jakab',
-        };
-
-        this.state = {
-            login_user: u,
-        };
-    }
-
-    renderContent() {
-        if (this.state.login_user == null) {
+    const renderContent = () => {
+        if (currentUser == null) {
             return (
                 <Routes>
                     <Route path="/login" element={<LoginPanel />} />
@@ -53,7 +33,7 @@ export default class App extends React.Component<Props, State> {
             );
         }
         return (
-            <UserContext.Provider value={this.state.login_user}>
+            <UserContext.Provider value={currentUser}>
                 <Routes>
                     <Route path="/" element={<Navigate to="/wallet" />} />
                     <Route path="/login" element={<Navigate to="/" />} />
@@ -67,14 +47,14 @@ export default class App extends React.Component<Props, State> {
         );
     }
 
-    renderPage() {
+    const renderPage = () => {
         return (
             <div className="mainPanel">
                 <div className="contentPanel">
                     <BrowserRouter>
                         <ThemeProvider theme={ManitoDefaultTheme}>
                             <Header />
-                            {this.renderContent()}
+                            { renderContent() }
                             <Footer />
                         </ThemeProvider>
                     </BrowserRouter>
@@ -83,11 +63,9 @@ export default class App extends React.Component<Props, State> {
         );
     }
 
-    render() {
-        return (
-            <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={hu}>
-                {this.renderPage()}
-            </LocalizationProvider>
-        );
-    }
+    return (
+        <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={hu}>
+            { renderPage() }
+        </LocalizationProvider>
+    );
 }
