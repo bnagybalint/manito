@@ -88,6 +88,32 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/BasicError"
+  /user/{user_id}/categories:
+    get:
+      summary: Lists transaction categories of a user
+      operationId: endpoint.get_user_categories.get_user_categories
+      tags:
+        - user
+        - category
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: List of categories
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Category"
+        "404":
+          description: User does not exist
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BasicError"
   /wallet/{wallet_id}:
     get:
       summary: Returns detailed information about a wallet
@@ -297,10 +323,31 @@ components:
           allOf:
             - $ref: "#/components/schemas/DatabaseId"
             - description: ID of the user who owns this wallet
+        createdAt:
+          type: string
+          format: date-time
+          readOnly: true
+          description: UTC time when the wallet was created.
       required:
         - id
         - name
         - ownerId
+    Category:
+      type: object
+      properties:
+        id:
+          allOf:
+            - $ref: "#/components/schemas/DatabaseId"
+            - description: ID of this category
+          readOnly: true
+        name:
+          type: string
+          description: Name of the category
+          example: Bills
+        ownerId:
+          allOf:
+            - $ref: "#/components/schemas/DatabaseId"
+            - description: ID of the user who owns this category
     Transaction:
       type: object
       properties:

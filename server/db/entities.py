@@ -30,6 +30,10 @@ class User(EntityBase):
                            foreign_keys="[Wallet.owner_id]", 
                            back_populates="owner")
 
+    categories = relationship("Category",
+                           foreign_keys="[Category.owner_id]",
+                           back_populates="owner")
+
     def __repr__(self) -> str:
         return f"User(id={self.id!r})"
 
@@ -76,3 +80,24 @@ class Transaction(EntityBase):
 
     def __repr__(self) -> str:
         return f"Transaction(id={self.id!r}, amount={self.amount!r}, src={self.src_wallet_id!r}, dst={self.dst_wallet_id!r})"
+
+
+class Category(EntityBase):
+    __tablename__ = "category"
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String)
+    owner_id = Column(Integer, ForeignKey("user.id"))
+    created_at = Column(DateTime, nullable=False, default=dt.datetime.now)
+    # FIXME nullable=False removed because API has no authorization yet, no way of knowing the creator user
+    # creator_id = Column(Integer, ForeignKey("user.id"), nullable=False)
+    creator_id = Column(Integer, ForeignKey("user.id"))
+    deleted_at = Column(DateTime)
+    deleter_id = Column(Integer, ForeignKey("user.id"))
+
+    owner = relationship("User", foreign_keys=[owner_id], back_populates="categories")
+    creator = relationship("User", foreign_keys=[creator_id])
+    deleter = relationship("User", foreign_keys=[deleter_id])
+
+    def __repr__(self) -> str:
+        return f"Category(id={self.id!r}, amount={self.name!r})"
