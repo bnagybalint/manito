@@ -26,4 +26,4 @@ def post_transaction_create(body: TransactionApiModel) -> ApiResponse:
         db.add(transaction)
         db.commit()
 
-        return transaction.id, 200
+        return TransactionApiModel.from_entity(transaction), 200

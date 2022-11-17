@@ -27,12 +27,6 @@ def setup_db(db_connection: Connection) -> Tuple[int, int]:
         db.commit()
         return (bank_wallet.id, savings_wallet.id)
 
-def get_transaction(app_client: AppClient, id: int) -> TransactionApiModel:
-    """Check if transaction with given ID exists"""
-    r = app_client.get(f"/transaction/{id}")
-    assert r.status_code in [200]
-    return TransactionApiModel.from_json(r.json)
-
 def test_create_income(
     app_client: AppClient,
     ensure_db_empty,
@@ -49,10 +43,10 @@ def test_create_income(
     r = app_client.post("/transaction/create", json=payload)
 
     assert r.status_code in [200]
-    assert isinstance(r.json, int), "Returned data should be a single database ID"
-
-    new_transaction = get_transaction(app_client=app_client, id=r.json)
+    new_transaction = TransactionApiModel.from_json(r.json)
     assert objects_equal(new_transaction, data, exclude=SERVER_ASSIGNED_FIELDS)
+    assert new_transaction.id is not None
+    assert new_transaction.created_at is not None
 
 def test_create_spending(
     app_client: AppClient,
@@ -70,10 +64,10 @@ def test_create_spending(
     r = app_client.post("/transaction/create", json=payload)
 
     assert r.status_code in [200]
-    assert isinstance(r.json, int), "Returned data should be a single database ID"
-
-    new_transaction = get_transaction(app_client=app_client, id=r.json)
+    new_transaction = TransactionApiModel.from_json(r.json)
     assert objects_equal(new_transaction, data, exclude=SERVER_ASSIGNED_FIELDS)
+    assert new_transaction.id is not None
+    assert new_transaction.created_at is not None
 
 def test_create_transfer(
     app_client: AppClient,
@@ -92,10 +86,10 @@ def test_create_transfer(
     r = app_client.post("/transaction/create", json=payload)
 
     assert r.status_code in [200]
-    assert isinstance(r.json, int), "Returned data should be a single database ID"
-
-    new_transaction = get_transaction(app_client=app_client, id=r.json)
+    new_transaction = TransactionApiModel.from_json(r.json)
     assert objects_equal(new_transaction, data, exclude=SERVER_ASSIGNED_FIELDS)
+    assert new_transaction.id is not None
+    assert new_transaction.created_at is not None
 
 def test_create_with_notes(
     app_client: AppClient,
@@ -114,10 +108,10 @@ def test_create_with_notes(
     r = app_client.post("/transaction/create", json=payload)
 
     assert r.status_code in [200]
-    assert isinstance(r.json, int), "Returned data should be a single database ID"
-
-    new_transaction = get_transaction(app_client=app_client, id=r.json)
+    new_transaction = TransactionApiModel.from_json(r.json)
     assert objects_equal(new_transaction, data, exclude=SERVER_ASSIGNED_FIELDS)
+    assert new_transaction.id is not None
+    assert new_transaction.created_at is not None
 
 def test_fail_when_missing_wallet(
     app_client: AppClient,
