@@ -1,7 +1,7 @@
 import create from 'zustand'
 
-import Wallet from 'entity/Wallet'
 import ApiClient from 'api_client/ApiClient'
+import Wallet from 'entity/Wallet'
 
 
 interface State {
@@ -34,6 +34,6 @@ export const useWalletStore = create<WalletState>((set) => ({
     setCurrentWallet: (wallet: Wallet) => set({currentWallet: wallet}),
 }));
 
-export const selectWallets = (state: WalletState) => state.wallets;
+export const selectAllWallets = (state: WalletState) => state.wallets;
 export const selectCurrentWallet = (state: WalletState) => state.currentWallet;
 export const selectWalletsLoaded = (state: WalletState) => state.loaded;

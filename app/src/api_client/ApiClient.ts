@@ -69,11 +69,13 @@ export default class ApiClient {
             .then(res => res.map((p: ITransaction) => new Transaction(p)));
     }
 
-    async createTransaction(transaction: ITransaction): Promise<number> {
+    async createTransaction(transaction: ITransaction): Promise<Transaction> {
         const url = '/api/transaction/create';
         return this.post(url, {json: transaction})
             .then(res => this.checkResponse([200])(res))
-            .then(res => res.json());
+            .then(res => res.json())
+            // TODO maybe this endpoint should return the freshly created entity's details
+            .then(id => new Transaction({...transaction, id: id}));
     }
 
     async get(url: string, req?: RequestParams): Promise<Response> {

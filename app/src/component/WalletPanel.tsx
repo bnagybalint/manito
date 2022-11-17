@@ -12,41 +12,46 @@ import TransactionList from 'component/TransactionList';
 import TransactionFilter from 'component/TransactionFilter';
 import TransactionDialog from 'component/TransactionDialog';
 
-import ApiClient from 'api_client/ApiClient';
 import ITransaction from 'api_client/model/ITransaction';
-import Transaction from 'entity/Transaction';
 
 import { useUserStore, selectCurrentUser } from 'stores/user';
 import { useWalletStore } from 'stores/wallet';
+import { selectFilteredTransactions, useTransactionStore } from 'stores/transaction';
 
 
 export default function WalletPanel() {
+    const now = new Date();
+    const [startDate, setStartDate] = useState(new Date(now.getFullYear(), now.getMonth(), 1));
+    const [endDate, setEndDate] = useState(new Date(now.getFullYear(), now.getMonth() + 1, 0));
+    const [searchString, setSearchString] = useState("");
+    const [isTransactionDialogOpen, setIsTransactionDialogOpen] = useState(false);
+
     const currentUser = useUserStore(selectCurrentUser);
     const currentWallet = useWalletStore((state) => state.currentWallet);
     const walletsLoaded = useWalletStore((state) => state.loaded);
     const walletError = useWalletStore((state) => state.error);
     const fetchWallets = useWalletStore((state) => state.fetchWallets);
-
-    const now = new Date();
-    const [startDate, setStartDate] = useState(new Date(now.getFullYear(), now.getMonth(), 1));
-    const [endDate, setEndDate] = useState(new Date(now.getFullYear(), now.getMonth() + 1, 0));
-    const [searchString, setSearchString] = useState("");
-
-    const [transactionsError, setTransactionsError] = useState<string | null>(null);
-
-    const [transactions, setTransactions] = useState<Transaction[]>([]);
-    const [isTransactionDialogOpen, setIsTransactionDialogOpen] = useState(false);
-
-    const [transactionsLoaded, setTransactionsLoaded] = useState(false);
-
+    
+    const transactions = useTransactionStore(selectFilteredTransactions({
+        wallet: currentWallet ?? undefined,
+        startDate: startDate,
+        endDate: endDate,
+        searchString: searchString,
+    }));
+    const transactionsLoaded = useTransactionStore((state) => state.loaded);
+    const transactionsError = useTransactionStore((state) => state.error);
+    const fetchTransactions = useTransactionStore((state) => state.fetchTransactions);
+    const addTransaction = useTransactionStore((state) => state.addTransaction);
+    
     useEffect(() => {
+        // TODO check if there is a better way to lazy load data than checking
+        //      if the data is loaded in every component
         if(!walletsLoaded) {
             fetchWallets(currentUser!.id!);
         } else if(currentWallet && !transactionsLoaded) {
-            loadTransactions();
-            setTransactionsLoaded(true);
+            fetchTransactions(currentWallet.id!);
         }
-    }, [currentUser, walletsLoaded, transactionsLoaded, currentWallet]);
+    }, [currentUser, currentWallet, walletsLoaded, transactionsLoaded]);
 
     const openTransactionDialog = () => {
         setIsTransactionDialogOpen(true);
@@ -54,27 +59,6 @@ export default function WalletPanel() {
 
     const closeTransactionDialog = () => {
         setIsTransactionDialogOpen(false);
-    }
-
-    const loadTransactions = () => {
-        if(currentWallet) {
-            const client = new ApiClient();
-            client.getTransactions(currentWallet.id!, {
-                    startDate: startDate,
-                    endDate: endDate,
-                    searchString: searchString
-                })
-                .then((transactions) => setTransactions(transactions))
-                .catch(error => {
-                    console.error(`Failed to fetch: ${error}`);
-                    setTransactionsError('Failed to load transactions from server!');
-                });
-        }
-    }
-
-    const handleCreateTransaction = (transaction: ITransaction) => {
-        const client = new ApiClient();
-        client.createTransaction(transaction);
     }
 
     const renderContent = () => {
@@ -105,9 +89,9 @@ export default function WalletPanel() {
                     searchString={searchString}
                     startDate={startDate}
                     endDate={endDate}
-                    onSearchStringChanged={(value: string | null) => { setSearchString(value!); setTransactionsLoaded(false); }}
-                    onStartDateChanged={(value: Date | null) => { setStartDate(value!); setTransactionsLoaded(false); }}
-                    onEndDateChanged={(value: Date | null) => { setEndDate(value!); setTransactionsLoaded(false); }}
+                    onSearchStringChanged={(value: string | null) => { setSearchString(value!); }}
+                    onStartDateChanged={(value: Date | null) => { setStartDate(value!); }}
+                    onEndDateChanged={(value: Date | null) => { setEndDate(value!); }}
                 />
                 <div>
                     <Fab
@@ -129,7 +113,7 @@ export default function WalletPanel() {
                     wallet={currentWallet}
                     open={isTransactionDialogOpen}
                     onClose={() => closeTransactionDialog()}
-                    onSubmit={(t: ITransaction) => handleCreateTransaction(t)}
+                    onSubmit={(t: ITransaction) => addTransaction(t)}
                 />
             </Stack>
         );
