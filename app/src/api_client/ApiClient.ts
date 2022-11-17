@@ -59,8 +59,8 @@ export default class ApiClient {
         const data = {
             walletId: walletId,
             searchString: filters?.searchString, 
-            startDate: filters?.startDate ? toISODateString(removeTimeZoneOffset(filters?.startDate)) : null,
-            endDate: filters?.endDate ? toISODateString(removeTimeZoneOffset(filters?.endDate)) : null,
+            startDate: filters?.startDate ? toISODateString(removeTimeZoneOffset(filters?.startDate)) : undefined,
+            endDate: filters?.endDate ? toISODateString(removeTimeZoneOffset(filters?.endDate)) : undefined,
         };
 
         return this.post(url, {json: data})
