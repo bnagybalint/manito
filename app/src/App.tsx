@@ -16,7 +16,6 @@ import NavigationBar from 'component/NavigationBar';
 import { useUserStore, selectCurrentUser } from 'stores/user'
 
 import { ManitoDefaultTheme } from 'Theme';
-import UserContext from 'UserContext';
 
 import './App.css';
 
@@ -33,7 +32,7 @@ export default function App() {
             );
         }
         return (
-            <UserContext.Provider value={currentUser}>
+            <div>
                 <Routes>
                     <Route path="/" element={<Navigate to="/wallet" />} />
                     <Route path="/login" element={<Navigate to="/" />} />
@@ -43,7 +42,7 @@ export default function App() {
                     <Route path="/wallet" element={<WalletPanel />} />
                     <Route path="/settings" element={<SettingsPanel />} />
                 </Routes>
-            </UserContext.Provider>
+            </div>
         );
     }
 
