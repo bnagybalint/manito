@@ -1,3 +1,3 @@
-import IWallet from 'api_client/model/IWallet'
+import { WalletModel } from 'api_client/model/Wallet'
 
-export default interface Wallet extends IWallet {}
+export default interface Wallet extends WalletModel {}

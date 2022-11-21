@@ -17,7 +17,7 @@ import {
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers'
 
-import ITransaction from 'api_client/model/ITransaction';
+import { ITransaction } from 'api_client/model/Transaction';
 import Wallet from 'entity/Wallet'
 
 type TransactionType = 'income' | 'expense' | 'transfer';

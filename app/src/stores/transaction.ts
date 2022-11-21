@@ -1,9 +1,11 @@
 import create from 'zustand'
 
-import ITransaction from 'api_client/model/ITransaction';
+
+import { ITransaction } from 'api_client/model/Transaction';
 import ApiClient from 'api_client/ApiClient'
 import Transaction from 'entity/Transaction'
 import Wallet from 'entity/Wallet';
+import { TransactionSearchParamsModel } from 'api_client/model/TransactionSearchParams'
 
 
 interface State {
@@ -27,16 +29,23 @@ export const useTransactionStore = create<TransactionState>((set, get) => ({
 
     fetchTransactions: (walletId: number) => {
         const client = new ApiClient();
-        client.getTransactions(walletId)
-            .then((transactions) => set({transactions: transactions, loaded: true}))
-            .catch((error) => set({error: error}))
+        client.getTransactions(new TransactionSearchParamsModel({walletId: walletId}))
+            .then((ts) => ts.map((t) => new Transaction(t)))
+            .then((transactions) => set({
+                transactions: transactions,
+                loaded: true
+            }))
+            .catch((error: Error) => set({error: error.message}));
     },
 
     addTransaction: (transaction: ITransaction) => {
         const client = new ApiClient();
         client.createTransaction(transaction)
-            .then((newTransaction) => set({transactions: [...get().transactions, newTransaction]}))
-            .catch((error) => set({error: error}))
+            .then((t) => new Transaction(t))
+            .then((newTransaction) => set({
+                transactions: [...get().transactions, newTransaction],
+            }))
+            .catch((error: Error) => set({error: error.message}));
     },
 }));
 

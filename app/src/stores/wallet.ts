@@ -29,7 +29,7 @@ export const useWalletStore = create<WalletState>((set) => ({
         const client = new ApiClient();
         client.getWallets(userId)
             .then((wallets) => set({wallets: wallets, currentWallet: wallets ? wallets[0] : null, loaded: true}))
-            .catch((error) => set({error: error}))
+            .catch((error: Error) => set({error: error.message}));
     },
     setCurrentWallet: (wallet: Wallet) => set({currentWallet: wallet}),
 }));

@@ -12,7 +12,7 @@ import TransactionList from 'component/TransactionList';
 import TransactionFilter from 'component/TransactionFilter';
 import TransactionDialog from 'component/TransactionDialog';
 
-import ITransaction from 'api_client/model/ITransaction';
+import { ITransaction } from 'api_client/model/Transaction';
 
 import { useUserStore, selectCurrentUser } from 'stores/user';
 import { useWalletStore } from 'stores/wallet';
