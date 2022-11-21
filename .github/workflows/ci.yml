@@ -1,7 +1,7 @@
 name: CI
 on: [push, pull_request]
 jobs:
-  ut_python:
+  unit_tests_python:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
@@ -19,3 +19,18 @@ jobs:
         python -m pytest server/utest
       env:
         PYTHONPATH: server/
+  unit_tests_js:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+    - name: Setup Node.js
+      uses: actions/setup-node@v1
+      with:
+        node-version: "16.x"
+    - name: Install dependencies
+      run: |
+        npm install --prefix app/
+    - name: Run Javascript unit tests
+      run: |
+        npm test --prefix app/
