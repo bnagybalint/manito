@@ -1,17 +1,17 @@
+import moment from "moment";
 import { ModelSerializer } from "api_client/ModelSerializer";
-import { dateFromISOString, dateToISOString } from "common/dateFormat";
 
 
 export interface ICategory {
     id: number;
-    createdAt: Date;
+    createdAt: moment.Moment;
     name: string;
     iconUrl: string;
 }
 
 export class CategoryModel {
     id: number;
-    createdAt: Date;
+    createdAt: moment.Moment;
     name: string;
     iconUrl: string;
 
@@ -34,7 +34,7 @@ export class CategorySerializer implements ModelSerializer<CategoryModel, RawCat
     serialize(obj: CategoryModel): RawCategoryModel {
         return {
             id: obj.id,
-            createdAt: dateToISOString(obj.createdAt),
+            createdAt: obj.createdAt.toISOString(),
             name: obj.name,
             iconUrl: obj.iconUrl,
         };
@@ -43,7 +43,7 @@ export class CategorySerializer implements ModelSerializer<CategoryModel, RawCat
     deserialize(data: RawCategoryModel): CategoryModel {
         return {
             id: data.id,
-            createdAt: dateFromISOString(data.createdAt),
+            createdAt: moment(data.createdAt, moment.ISO_8601),
             name: data.name,
             iconUrl: data.iconUrl,
         };

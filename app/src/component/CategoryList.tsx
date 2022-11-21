@@ -1,3 +1,4 @@
+import moment from 'moment';
 import React from 'react';
 import {
     DataGrid,
@@ -25,19 +26,19 @@ export default class CategoryList extends React.Component<Props, State> {
             categories: [
                 {
                     id: 1000,
-                    createdAt: new Date(),
+                    createdAt: moment(),
                     name: 'Income',
                     iconUrl: '',
                 },
                 {
                     id: 1001,
-                    createdAt: new Date(),
+                    createdAt: moment(),
                     name: 'Expense',
                     iconUrl: '',
                 },
                 {
                     id: 1002,
-                    createdAt: new Date(),
+                    createdAt: moment(),
                     name: 'Transfer',
                     iconUrl: '',
                 },

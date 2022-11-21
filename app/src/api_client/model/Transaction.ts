@@ -1,10 +1,10 @@
+import moment from 'moment';
 import { ModelSerializer } from "api_client/ModelSerializer";
-import { dateFromISOString, dateToISOString } from "common/dateFormat";
 
 
 export interface ITransaction {
     id?: number;
-    time: Date;
+    time: moment.Moment;
     amount: number;
     categoryId?: number;
     notes?: string;
@@ -14,7 +14,7 @@ export interface ITransaction {
 
 export class TransactionModel {
     id?: number;
-    time: Date;
+    time: moment.Moment;
     amount: number;
     categoryId?: number;
     notes?: string;
@@ -46,7 +46,7 @@ export class TransactionSerializer implements ModelSerializer<TransactionModel, 
     serialize(obj: TransactionModel): RawTransactionModel {
         return {
             id: obj.id,
-            time: dateToISOString(obj.time),
+            time: obj.time.toISOString(),
             categoryId: obj.categoryId,
             notes: obj.notes,
             amount: obj.amount,
@@ -58,7 +58,7 @@ export class TransactionSerializer implements ModelSerializer<TransactionModel, 
     deserialize(data: RawTransactionModel): TransactionModel {
         return {
             id: data.id,
-            time: dateFromISOString(data.time),
+            time: moment(data.time, moment.ISO_8601),
             categoryId: data.categoryId,
             notes: data.notes,
             amount: data.amount,

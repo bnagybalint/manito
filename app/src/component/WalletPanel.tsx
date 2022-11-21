@@ -1,3 +1,4 @@
+import moment from 'moment';
 import { useState, useEffect } from 'react';
 import {
     Alert,
@@ -20,9 +21,9 @@ import { selectFilteredTransactions, useTransactionStore } from 'stores/transact
 
 
 export default function WalletPanel() {
-    const now = new Date();
-    const [startDate, setStartDate] = useState(new Date(now.getFullYear(), now.getMonth(), 1));
-    const [endDate, setEndDate] = useState(new Date(now.getFullYear(), now.getMonth() + 1, 0));
+    const now = moment();
+    const [startDate, setStartDate] = useState(moment(now).startOf('month'));
+    const [endDate, setEndDate] = useState(moment(now).endOf('month'));
     const [searchString, setSearchString] = useState("");
     const [isTransactionDialogOpen, setIsTransactionDialogOpen] = useState(false);
 
@@ -90,8 +91,8 @@ export default function WalletPanel() {
                     startDate={startDate}
                     endDate={endDate}
                     onSearchStringChanged={(value: string | null) => { setSearchString(value!); }}
-                    onStartDateChanged={(value: Date | null) => { setStartDate(value!); }}
-                    onEndDateChanged={(value: Date | null) => { setEndDate(value!); }}
+                    onStartDateChanged={(value: moment.Moment | null) => { setStartDate(value!); }}
+                    onEndDateChanged={(value: moment.Moment | null) => { setEndDate(value!); }}
                 />
                 <div>
                     <Fab
