@@ -1,21 +1,21 @@
+import moment from "moment";
 import { ModelSerializer } from "api_client/ModelSerializer";
-import { dateFromISOString, dateToISOString } from "common/dateFormat";
 
 
 export interface IWallet {
     id: number;
     name: string;
     ownerId: number;
-    createdAt?: Date;
-    deletedAt?: Date;
+    createdAt?: moment.Moment;
+    deletedAt?: moment.Moment;
 };
 
 export class WalletModel {
     id: number;
     name: string;
     ownerId: number;
-    createdAt?: Date;
-    deletedAt?: Date;
+    createdAt?: moment.Moment;
+    deletedAt?: moment.Moment;
 
     constructor({id, name, ownerId, createdAt, deletedAt}: IWallet) {
         this.id = id;
@@ -41,8 +41,8 @@ export class WalletSerializer implements ModelSerializer<WalletModel, RawWalletM
             id: obj.id,
             name: obj.name,
             ownerId: obj.ownerId,
-            createdAt: obj.createdAt ? dateToISOString(obj.createdAt) : undefined,
-            deletedAt: obj.deletedAt ? dateToISOString(obj.deletedAt) : undefined,
+            createdAt: obj.createdAt?.toISOString(),
+            deletedAt: obj.deletedAt?.toISOString(),
         }
     }
 
@@ -51,8 +51,8 @@ export class WalletSerializer implements ModelSerializer<WalletModel, RawWalletM
             id: data.id,
             name: data.name,
             ownerId: data.ownerId,
-            createdAt: data.createdAt ? dateFromISOString(data.createdAt) : undefined,
-            deletedAt: data.deletedAt ? dateFromISOString(data.deletedAt) : undefined,
+            createdAt: data.createdAt ? moment(data.createdAt, moment.ISO_8601) : undefined,
+            deletedAt: data.deletedAt ? moment(data.deletedAt, moment.ISO_8601) : undefined,
         }
     }
 }

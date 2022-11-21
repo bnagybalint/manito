@@ -1,3 +1,4 @@
+import moment from 'moment';
 import React from 'react';
 
 import {
@@ -32,7 +33,7 @@ type Props = {
 };
 
 type State = {
-    time: Date,
+    time: moment.Moment,
     amount: number | null,
     notes: string | null,
     transactionType: TransactionType,
@@ -46,7 +47,7 @@ export default class TransactionDialog extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props);
         this.state = {
-            time: new Date(),
+            time: moment(),
             amount: null,
             notes: null,
             transactionType: 'income',

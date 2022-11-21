@@ -1,3 +1,4 @@
+import moment from 'moment';
 import {
     Grid,
     Stack,
@@ -7,12 +8,12 @@ import { DatePicker } from '@mui/x-date-pickers'
 
 type Props = {
     searchString: string,
-    startDate: Date,
-    endDate: Date,
+    startDate: moment.Moment,
+    endDate: moment.Moment,
 
     onSearchStringChanged?: (value: string | null) => void,
-    onStartDateChanged?: (value: Date | null) => void,
-    onEndDateChanged?: (value: Date | null) => void,
+    onStartDateChanged?: (value: moment.Moment | null) => void,
+    onEndDateChanged?: (value: moment.Moment | null) => void,
 };
 
 export function TransactionFilter(props: Props) {
@@ -31,13 +32,13 @@ export function TransactionFilter(props: Props) {
                     <DatePicker
                         label="Start date"
                         value={props.startDate}
-                        onChange={(value: Date | null) => props.onStartDateChanged?.(value)}
+                        onChange={(value: Date | null) => props.onStartDateChanged?.(moment(value))}
                         renderInput={(params) => <TextField {...params} />}
                     />
                     <DatePicker
                         label="End date"
                         value={props.endDate}
-                        onChange={(value: Date | null) => props.onEndDateChanged?.(value)}
+                        onChange={(value: Date | null) => props.onEndDateChanged?.(moment(value))}
                         renderInput={(params) => <TextField {...params} />}
                     />
                 </Stack>

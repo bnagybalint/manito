@@ -1,3 +1,3 @@
 import { WalletModel } from 'api_client/model/Wallet'
 
-export default interface Wallet extends WalletModel {}
+export default class Wallet extends WalletModel {}

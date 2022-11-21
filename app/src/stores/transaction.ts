@@ -1,5 +1,5 @@
-import create from 'zustand'
-
+import create from 'zustand';
+import moment from 'moment';
 
 import { ITransaction } from 'api_client/model/Transaction';
 import ApiClient from 'api_client/ApiClient'
@@ -53,8 +53,8 @@ export const selectAllTransactions = (state: TransactionState) => state.transact
 
 type TransactionFilters = {
     wallet?: Wallet,
-    startDate?: Date,
-    endDate?: Date,
+    startDate?: moment.Moment,
+    endDate?: moment.Moment,
     searchString?: string,
 };
 
@@ -62,10 +62,8 @@ export const selectFilteredTransactions = (filters: TransactionFilters) => {
     const impl = (state: TransactionState) => {
         return state.transactions.filter((x) => (
             (!filters.wallet || filters.wallet.id == x.sourceWalletId || filters.wallet.id == x.destinationWalletId)
-            // FIXME BUG dates are not checked at the moment: Dates are returned in the API response
-            // as strings and they are currently not parsed into Date objects, making these checks to always fail.
-            // // && (!filters.startDate || x.time >= filters.startDate)
-            // // && (!filters.endDate || x.time >= filters.endDate)
+            && (!filters.startDate || x.time.isSameOrAfter(filters.startDate, 'day'))
+            && (!filters.endDate || x.time.isSameOrBefore(filters.endDate, 'day'))
             && (!filters.searchString || x.notes?.includes(filters.searchString))
         ))
     }

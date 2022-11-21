@@ -1,13 +1,13 @@
+import moment from "moment";
 import { ModelSerializer } from "api_client/ModelSerializer";
-import { dateToISODateString } from "common/dateFormat";
 
 
 export interface ITransactionSearchParams {
     maxAmount?: number;
     minAmount?: number;
     searchString?: string;
-    endDate?: Date;
-    startDate?: Date;
+    endDate?: moment.Moment;
+    startDate?: moment.Moment;
     walletId: number;
 }
 
@@ -15,8 +15,8 @@ export class TransactionSearchParamsModel {
     maxAmount?: number;
     minAmount?: number;
     searchString?: string;
-    endDate?: Date;
-    startDate?: Date;
+    endDate?: moment.Moment;
+    startDate?: moment.Moment;
     walletId: number;
 
     constructor({maxAmount, minAmount, searchString, endDate, startDate, walletId}: ITransactionSearchParams) {
@@ -44,8 +44,8 @@ export class TransactionSearchParamsSerializer implements ModelSerializer<Transa
             maxAmount: obj.maxAmount,
             minAmount: obj.minAmount,
             searchString: obj.searchString,
-            endDate: obj.endDate ? dateToISODateString(obj.endDate) : undefined,
-            startDate: obj.startDate ? dateToISODateString(obj.startDate) : undefined,
+            endDate: obj.endDate?.format(moment.HTML5_FMT.DATE),
+            startDate: obj.startDate?.format(moment.HTML5_FMT.DATE),
             walletId: obj.walletId,
         }
     }
