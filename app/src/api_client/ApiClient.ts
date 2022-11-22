@@ -3,6 +3,7 @@ import urlcat from 'urlcat';
 import { TransactionModel, TransactionSerializer } from 'api_client/model/Transaction';
 import { TransactionSearchParamsModel, TransactionSearchParamsSerializer } from 'api_client/model/TransactionSearchParams';
 import { WalletModel, WalletSerializer } from 'api_client/model/Wallet';
+import { CategoryModel, CategorySerializer } from 'api_client/model/Category';
 
 
 type CheckResponseCallback = (res: Response) => Response;
@@ -21,6 +22,14 @@ export default class ApiClient {
             .then(res => this.checkResponse([200])(res))
             .then(res => res.json())
             .then(res => res.map((p: any) => new WalletSerializer().deserialize(p)))
+    }
+
+    async getCategories(userId: number): Promise<CategoryModel[]> {
+        const url = urlcat('/api/user/:id/categories', {id: userId});
+        return this.get(url)
+            .then(res => this.checkResponse([200])(res))
+            .then(res => res.json())
+            .then(res => res.map((p: any) => new CategorySerializer().deserialize(p)));
     }
 
     async getTransactions(searchParams: TransactionSearchParamsModel): Promise<TransactionModel[]> {

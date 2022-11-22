@@ -4,14 +4,14 @@ import { ModelSerializer } from "api_client/ModelSerializer";
 
 export interface ICategory {
     id: number;
-    createdAt: moment.Moment;
+    createdAt?: moment.Moment;
     name: string;
     iconUrl: string;
 }
 
 export class CategoryModel {
     id: number;
-    createdAt: moment.Moment;
+    createdAt?: moment.Moment;
     name: string;
     iconUrl: string;
 
@@ -25,7 +25,7 @@ export class CategoryModel {
 
 type RawCategoryModel = {
     id: number;
-    createdAt: string;
+    createdAt?: string;
     name: string;
     iconUrl: string;
 };
@@ -34,7 +34,7 @@ export class CategorySerializer implements ModelSerializer<CategoryModel, RawCat
     serialize(obj: CategoryModel): RawCategoryModel {
         return {
             id: obj.id,
-            createdAt: obj.createdAt.toISOString(),
+            createdAt: obj.createdAt?.toISOString(),
             name: obj.name,
             iconUrl: obj.iconUrl,
         };
@@ -43,7 +43,7 @@ export class CategorySerializer implements ModelSerializer<CategoryModel, RawCat
     deserialize(data: RawCategoryModel): CategoryModel {
         return {
             id: data.id,
-            createdAt: moment(data.createdAt, moment.ISO_8601),
+            createdAt: data.createdAt ? moment(data.createdAt, moment.ISO_8601) : undefined,
             name: data.name,
             iconUrl: data.iconUrl,
         };
