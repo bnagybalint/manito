@@ -1,5 +1,8 @@
-.header-title {
-    text-align: center;
+.header {
+    height: 48px;
+    width: 100%;
+    color: #4A4A48;
+    background-color: #A4C2A5;
 }
 
 .no-underline {

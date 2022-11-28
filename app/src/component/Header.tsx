@@ -1,21 +1,15 @@
-import React from 'react';
+import { Box, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
 
 import './Header.css'
 
 
-type Props = {};
-
-type State = {};
-
-export default class Header extends React.Component<Props, State> {
-    render() {
-        return (
-            <Link to="/" className="no-underline">
-                <div className="block">
-                    <h1 className="header-title">MANITO - The Wolf of Wallet Street</h1>
-                </div>
-            </Link>
-        );
-    }
+export default function Header() {
+    return (
+        <Link to="/" className="no-underline">
+            <Box className="header">
+                <Typography align="center" variant="h4">MANITO</Typography>
+            </Box>
+        </Link>
+    );
 }

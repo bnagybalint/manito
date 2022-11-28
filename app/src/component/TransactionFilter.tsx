@@ -3,8 +3,10 @@ import {
     Grid,
     Stack,
     TextField,
+    Typography,
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers'
+import { Box } from '@mui/system';
 
 type Props = {
     searchString: string,
@@ -18,32 +20,34 @@ type Props = {
 
 export function TransactionFilter(props: Props) {
     return (
-        <Grid container gap={1}>
-            <Grid item>
-                <TextField
-                    label="Search"
-                    variant="outlined"
-                    value={props.searchString}
-                    onChange={(e) => props.onSearchStringChanged?.(e.target.value)}
-                />
-            </Grid>
-            <Grid item>
-                <Stack direction="row" columnGap={1}>
-                    <DatePicker
-                        label="Start date"
-                        value={props.startDate}
-                        onChange={(value: Date | null) => props.onStartDateChanged?.(moment(value))}
-                        renderInput={(params) => <TextField {...params} />}
+        <Box>
+            <Grid container gap={1} marginTop={1}>
+                <Grid item>
+                    <TextField
+                        label="Search"
+                        variant="outlined"
+                        value={props.searchString}
+                        onChange={(e) => props.onSearchStringChanged?.(e.target.value)}
                     />
-                    <DatePicker
-                        label="End date"
-                        value={props.endDate}
-                        onChange={(value: Date | null) => props.onEndDateChanged?.(moment(value))}
-                        renderInput={(params) => <TextField {...params} />}
-                    />
-                </Stack>
+                </Grid>
+                <Grid item>
+                    <Stack direction="row" columnGap={1}>
+                        <DatePicker
+                            label="Start date"
+                            value={props.startDate}
+                            onChange={(value: Date | null) => props.onStartDateChanged?.(moment(value))}
+                            renderInput={(params) => <TextField {...params} />}
+                        />
+                        <DatePicker
+                            label="End date"
+                            value={props.endDate}
+                            onChange={(value: Date | null) => props.onEndDateChanged?.(moment(value))}
+                            renderInput={(params) => <TextField {...params} />}
+                        />
+                    </Stack>
+                </Grid>
             </Grid>
-        </Grid>
+        </Box>
     );
 }
 export default TransactionFilter;

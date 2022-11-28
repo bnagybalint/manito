@@ -4,7 +4,7 @@ body {
     font-size: 14px;
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     color: #000000;
-    background-color: #DEE5E5;
+    background-color: #F1F2EB;
 }
 
 p {
@@ -140,10 +140,10 @@ td, tr {
     margin-right: 6px;
 }
 
-.numeric-by-sign.positive, .positive-amount {
+.numeric-by-sign-positive, .positive-amount {
     color: #00a000;
 }
 
-.numeric-by-sign.negative, .negative-amount {
+.numeric-by-sign-negative, .negative-amount {
     color: #f00000;
 }
