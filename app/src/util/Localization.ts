@@ -1,4 +1,5 @@
 import dateFormat from 'dateformat';
+import moment from 'moment';
 
 export default class Localization {
     static formatDateTime(date: Date) {
@@ -7,6 +8,11 @@ export default class Localization {
 
     static formatDate(date: Date) {
         return dateFormat(date, 'yyyy-mm-dd')
+    }
+
+    static formatDateLocale(date: moment.Moment): string {
+        const localeData = moment.localeData();
+        return date.format(localeData.longDateFormat('LL'));
     }
 
     static formatMoneyAmount(amount: number) {

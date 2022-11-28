@@ -4,10 +4,9 @@ import {
     GridRenderCellParams,
     GridColDef,
 } from '@mui/x-data-grid';
-import { Button } from '@mui/material';
 
 import Localization from 'util/Localization';
-import { selectAllCategories, useCategoryStore } from 'stores/category';
+import Category from 'entity/Category';
 
 const COLUMN_DEFINITIONS: GridColDef[] = [
     {
@@ -35,25 +34,20 @@ const COLUMN_DEFINITIONS: GridColDef[] = [
     },
 ];
 
-export default function CategoryList() {
-    const categories = useCategoryStore(selectAllCategories);
+type Props = {
+    categories: Category[],
+}
 
+export default function CategoryList(props: Props) {
     return (
-        <div className="block">
-            <h1 className="block-title">Categories</h1>
-            <div className='button-row'>
-                <Button variant="contained">+ Add</Button>
-                <Button variant="contained" color="error">Delete</Button>
-            </div>
-            <div style={{ height: 400, width: '100%' }}>
-                <DataGrid
-                    rows={categories}
-                    columns={COLUMN_DEFINITIONS}
-                    pageSize={10}
-                    rowsPerPageOptions={[5,10]}
-                    checkboxSelection
-                />
-            </div>
+        <div style={{ height: 400, width: '100%' }}>
+            <DataGrid
+                rows={props.categories}
+                columns={COLUMN_DEFINITIONS}
+                pageSize={10}
+                rowsPerPageOptions={[5,10]}
+                checkboxSelection
+            />
         </div>
     );
 }
