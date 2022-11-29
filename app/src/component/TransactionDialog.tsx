@@ -120,9 +120,9 @@ export default class TransactionDialog extends React.Component<Props, State> {
                                 value={this.state.transactionType}
                                 onChange={(e, newValue) => this.handleTransactionTypeChange(newValue)}
                             >
-                                <ToggleButton color="primary" value="income">Income</ToggleButton>
-                                <ToggleButton color="secondary" value="expense">Expense</ToggleButton>
-                                <ToggleButton disabled color="standard" value="transfer">Transfer</ToggleButton>
+                                <ToggleButton color="green" value="income">Income</ToggleButton>
+                                <ToggleButton color="red" value="expense">Expense</ToggleButton>
+                                <ToggleButton disabled value="transfer">Transfer</ToggleButton>
                             </ToggleButtonGroup>
                             <DatePicker
                                 label="Date"

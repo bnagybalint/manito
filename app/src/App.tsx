@@ -3,6 +3,7 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { ThemeProvider } from '@mui/material/styles';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers'
+import { Container } from '@mui/material';
 
 import hu from 'date-fns/locale/hu';
 
@@ -15,13 +16,13 @@ import NavBar from 'component/NavBar';
 
 import { useUserStore, selectCurrentUser } from 'stores/user'
 
-import { ManitoDefaultTheme } from 'Theme';
+import ThemeFactory from 'Theme';
 
-import './App.css';
 
 
 export default function App() {
     const currentUser = useUserStore(selectCurrentUser);
+    const theme = ThemeFactory.createLightTheme();
 
     const renderContent = () => {
         return (
@@ -46,11 +47,11 @@ export default function App() {
             );
         }
         return (
-            <div className="mainPanel">
+            <div>
                 <NavBar />
-                <div className="contentPanel">
+                <Container maxWidth="md">
                     { renderContent() }
-                </div>
+                </Container>
             </div>
         );
     }
@@ -58,7 +59,7 @@ export default function App() {
     return (
         <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={hu}>
             <BrowserRouter>
-                <ThemeProvider theme={ManitoDefaultTheme}>
+                <ThemeProvider theme={theme}>
                     <Header />
                     { renderPage() }
                     <Footer />

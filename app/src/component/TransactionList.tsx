@@ -1,12 +1,16 @@
 import { useState } from 'react';
-import clsx from 'clsx';
-import { Checkbox, Table, TableBody, TableCell, TableRow, Typography } from '@mui/material';
-import { GridValueGetterParams, GridCellParams, GridColumns } from '@mui/x-data-grid';
+import {
+    useTheme,
+    Checkbox,
+    Table,
+    TableBody,
+    TableCell,
+    TableRow,
+    Typography,
+} from '@mui/material';
 
 import Localization from 'util/Localization';
 import Transaction from 'entity/Transaction';
-
-import './TransactionList.css'
 
 
 type Props = {
@@ -25,13 +29,13 @@ type RowProps = {
 
 function TransactionRow(props: RowProps) {
     const [selected, setSelected] = useState(false);
-
+    
     const amount = props.transaction.getSignedAmount(props.walletId);
     const amountString = Localization.formatMoneyAmount(amount);
-    const amountCellClassName = (amount < 0) ? 'numeric-by-sign-negative' : 'numeric-by-sign-positive';
     
-    // TODO derive color from theme
-    const rowClassName = selected ? 'transaction-row-selected' : '';
+    const theme = useTheme();
+    const rowColor = selected ? theme.palette.primary.light : undefined;
+    const amountColor = (amount < 0) ? theme.palette.negative.main : theme.palette.positive.main;
 
     const handleSelectedChanged = (e: any, selected: boolean) => {
         setSelected(selected);
@@ -39,15 +43,15 @@ function TransactionRow(props: RowProps) {
     }
 
     return (
-        <TableRow className={rowClassName}>
-            <TableCell align="center" className="transaction-row-cell-checkbox">
+        <TableRow sx={{backgroundColor: rowColor}}>
+            <TableCell align="center" width={24}>
                 <Checkbox value={selected} onChange={handleSelectedChanged}/>
             </TableCell>
             <TableCell>
                 <Typography>{props.transaction.notes ?? '-'}</Typography>
             </TableCell>
             <TableCell align="right">
-                <Typography className={amountCellClassName}>{amountString}</Typography>
+                <Typography color={amountColor}>{amountString} Ft</Typography>
             </TableCell>
         </TableRow>
     );

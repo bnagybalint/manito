@@ -183,7 +183,7 @@ export default function WalletPage() {
                     </Fab>
                     <Fab
                         size="medium"
-                        color="error"
+                        color="red"
                         variant="extended"
                         aria-label="delete"
                         disabled={selectedTransactionIds.size == 0}

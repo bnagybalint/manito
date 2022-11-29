@@ -21,6 +21,7 @@ export default function SettingsPage() {
             <Card>
                 <CardContent>
                     <Stack gap={1}>
+                        <Typography fontWeight="bold">Categories</Typography>
                         <Stack direction="row" gap={1}>
                             <Fab
                                 size="medium"
@@ -52,7 +53,6 @@ export default function SettingsPage() {
                                 Merge categories
                             </Fab>
                         </Stack>
-                        <Typography fontWeight="bold">Categories</Typography>
                         <CategoryList categories={categories}/>
                     </Stack>
                 </CardContent>

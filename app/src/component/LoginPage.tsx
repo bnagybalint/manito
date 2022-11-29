@@ -11,8 +11,6 @@ import {
 
 import { useUserStore } from 'stores/user';
 
-import './LoginPage.css'
-
 
 export default function LoginPage() {
 
