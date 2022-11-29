@@ -7,11 +7,12 @@ import { Container } from '@mui/material';
 
 import hu from 'date-fns/locale/hu';
 
+import LoginPage from 'page/LoginPage';
+import WalletPage from 'page/WalletPage';
+import SettingsPage from 'page/SettingsPage';
+
 import Header from 'component/Header';
 import Footer from 'component/Footer';
-import LoginPage from 'component/LoginPage';
-import WalletPage from 'component/WalletPage';
-import SettingsPage from 'component/SettingsPage';
 import NavBar from 'component/NavBar';
 
 import { useUserStore, selectCurrentUser } from 'stores/user'
