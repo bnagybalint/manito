@@ -181,16 +181,17 @@ export default function WalletPage() {
                         <AddIcon />
                         New transaction
                     </Fab>
-                    <Fab
-                        size="medium"
-                        color="red"
-                        variant="extended"
-                        aria-label="delete"
-                        disabled={selectedTransactionIds.size == 0}
-                    >
-                        <DeleteIcon />
-                        Delete transaction{selectedTransactionIds.size > 1 ? 's' : ''} ({selectedTransactionIds.size})
-                    </Fab>
+                    {selectedTransactionIds.size > 0 &&
+                        <Fab
+                            size="medium"
+                            color="red"
+                            variant="extended"
+                            aria-label="delete"
+                        >
+                            <DeleteIcon />
+                            Delete transactions ({selectedTransactionIds.size})
+                        </Fab>
+                    }
                 </Stack>
                 {renderTransactions()}
                 <TransactionDialog
