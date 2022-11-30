@@ -24,6 +24,7 @@ if __name__ == "__main__":
     os.environ["DB_PASSWORD"] = str(db_secrets["db"]["password"])
     
     pytest_args = [
+        "--verbose",
         Path(__file__).parent,
     ]
 
