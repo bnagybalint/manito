@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import {
     useTheme,
     Checkbox,
@@ -13,39 +12,37 @@ import Localization from 'util/Localization';
 import Transaction from 'entity/Transaction';
 
 
-type Props = {
-    walletId: number,
-    transactions: Transaction[],
-
-    onTransactionSelectedChange?: (transaction: Transaction, selected: boolean) => void,
-};
+export type TransactionListSelectionModel = {
+    selectedTransactions: Set<Transaction>,
+}
 
 type RowProps = {
     walletId: number,
     transaction: Transaction,
+    selected: boolean,
 
     onSelectedChange?: (selected: boolean) => void,
 }
 
 function TransactionRow(props: RowProps) {
-    const [selected, setSelected] = useState(false);
-    
     const amount = props.transaction.getSignedAmount(props.walletId);
     const amountString = Localization.formatMoneyAmount(amount);
     
     const theme = useTheme();
-    const rowColor = selected ? theme.palette.primary.light : undefined;
+    const rowColor = props.selected ? theme.palette.primary.light : undefined;
     const amountColor = (amount < 0) ? theme.palette.negative.main : theme.palette.positive.main;
 
     const handleSelectedChanged = (e: any, selected: boolean) => {
-        setSelected(selected);
         props.onSelectedChange?.(selected);
     }
 
     return (
         <TableRow sx={{backgroundColor: rowColor}}>
             <TableCell align="center" width={24}>
-                <Checkbox value={selected} onChange={handleSelectedChanged}/>
+                <Checkbox
+                    checked={props.selected}
+                    onChange={handleSelectedChanged}
+                />
             </TableCell>
             <TableCell>
                 <Typography>{props.transaction.notes ?? '-'}</Typography>
@@ -57,11 +54,25 @@ function TransactionRow(props: RowProps) {
     );
 }
 
+type Props = {
+    walletId: number,
+    transactions: Transaction[],
+    selectionModel: TransactionListSelectionModel,
+
+    onSelectionModelChange: (model: TransactionListSelectionModel) => void,
+};
+
 export default function TransactionList(props: Props) {
-    const PAGE_SIZE = 5;
+
 
     const handleTransactionSelected = (transaction: Transaction, selected: boolean) => {
-        props.onTransactionSelectedChange?.(transaction, selected);
+        const newSet = new Set(props.selectionModel.selectedTransactions);
+        if(selected) {
+            newSet.add(transaction);
+        } else {
+            newSet.delete(transaction);
+        }
+        props.onSelectionModelChange?.({ selectedTransactions: newSet });
     }
 
     return (
@@ -75,6 +86,7 @@ export default function TransactionList(props: Props) {
                         <TransactionRow
                             transaction={transaction}
                             walletId={props.walletId}
+                            selected={props.selectionModel.selectedTransactions.has(transaction)}
                             onSelectedChange={(selected) => handleTransactionSelected(transaction, selected)}
                         />
                     ))}

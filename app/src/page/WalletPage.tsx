@@ -15,9 +15,7 @@ import {
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-import { groupBy } from 'common/arrayUtils';
-
-import TransactionList from 'component/TransactionList';
+import TransactionHistory, {TransactionHistorySelectionModel } from 'component/TransactionHistory';
 import TransactionFilter from 'component/TransactionFilter';
 import TransactionDialog from 'component/TransactionDialog';
 
@@ -26,8 +24,6 @@ import { ITransaction } from 'api_client/model/Transaction';
 import { selectCurrentUser, useUserStore } from 'stores/user';
 import { useWalletStore } from 'stores/wallet';
 import { selectFilteredTransactions, useTransactionStore } from 'stores/transaction';
-import Localization from 'util/Localization';
-import Transaction from 'entity/Transaction';
 
 
 export default function WalletPage() {
@@ -36,7 +32,7 @@ export default function WalletPage() {
     const [endDate, setEndDate] = useState(moment(now).endOf('month'));
     const [searchString, setSearchString] = useState("");
     const [isTransactionDialogOpen, setIsTransactionDialogOpen] = useState(false);
-    const [selectedTransactionIds, setSelectedTransactionIds] = useState(new Set<number>());
+    const [transactionSelectionModel, setTransactionSelectionModel] = useState<TransactionHistorySelectionModel>({selectedTransactions: new Set()});
 
     const currentUser = useUserStore(selectCurrentUser);
     const currentWallet = useWalletStore((state) => state.currentWallet);
@@ -73,48 +69,6 @@ export default function WalletPage() {
 
     const closeTransactionDialog = () => {
         setIsTransactionDialogOpen(false);
-    }
-
-    const handleTransactionSelectedChanged = (transaction: Transaction, selected: boolean) => {
-        const newSet = new Set(selectedTransactionIds);
-        if(selected) {
-            newSet.add(transaction.id!);
-        } else {
-            newSet.delete(transaction.id!);
-        }
-        console.log(newSet);
-        setSelectedTransactionIds(newSet);
-    }
-
-    const renderTransactions = () => {
-        if(transactions.length == 0) {
-            return (
-                <Card>
-                    <CardContent>
-                        <Typography align="center" sx={{ color: 'text.disabled' }}>No transactions to show</Typography>
-                    </CardContent>
-                </Card>
-            );
-        }
-        
-        const transactionsByDate = groupBy(transactions, (t) => Localization.formatDateLocale(t.time.startOf('day')));
-
-        return (
-            <Stack gap={1}>
-                {Array.from(transactionsByDate.keys()).map((dateStr: string) => 
-                    <Card>
-                        <CardContent>
-                            <Typography fontWeight="bold">{dateStr}</Typography>
-                            <TransactionList
-                                walletId={currentWallet!.id!}
-                                transactions={transactionsByDate.get(dateStr)!}
-                                onTransactionSelectedChange={handleTransactionSelectedChanged}
-                            />
-                        </CardContent>
-                    </Card>
-                )}
-            </Stack>
-        );
     }
 
     const renderContent = () => {
@@ -181,7 +135,7 @@ export default function WalletPage() {
                         <AddIcon />
                         New transaction
                     </Fab>
-                    {selectedTransactionIds.size > 0 &&
+                    {transactionSelectionModel.selectedTransactions.size > 0 &&
                         <Fab
                             size="medium"
                             color="red"
@@ -189,11 +143,16 @@ export default function WalletPage() {
                             aria-label="delete"
                         >
                             <DeleteIcon />
-                            Delete transactions ({selectedTransactionIds.size})
+                            Delete transactions ({transactionSelectionModel.selectedTransactions.size})
                         </Fab>
                     }
                 </Stack>
-                {renderTransactions()}
+                <TransactionHistory
+                    transactions={transactions}
+                    walletId={currentWallet.id}
+                    selectionModel={transactionSelectionModel}
+                    onSelectionModelChange={(model) => setTransactionSelectionModel(model)}
+                />
                 <TransactionDialog
                     wallet={currentWallet}
                     open={isTransactionDialogOpen}
