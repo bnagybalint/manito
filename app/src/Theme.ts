@@ -8,6 +8,7 @@ declare module '@mui/material/styles' {
         red: Palette['primary'];
         green: Palette['primary'];
         blue: Palette['primary'];
+        undesired: Palette['primary'];
         bg: Palette['primary'];
         backdrop: Palette['primary'];
         positive: Palette['primary'];
@@ -17,6 +18,7 @@ declare module '@mui/material/styles' {
         red: PaletteOptions['primary'];
         green: PaletteOptions['primary'];
         blue: PaletteOptions['primary'];
+        undesired: PaletteOptions['primary'];
         bg: PaletteOptions['primary'];
         backdrop: PaletteOptions['primary'];
         positive: PaletteOptions['primary'];
@@ -28,6 +30,7 @@ interface ManitoOverrides {
     red: true;
     green: true;
     blue: true;
+    undesired: true;
     bg: true;
     backdrop: true;
     positive: true;
@@ -83,6 +86,12 @@ const manitoLightTheme = createTheme(
                 light: '#8dd4a0',
                 dark: '#2e7345',
                 contrastText: '#ffffff'
+            },
+            undesired: {
+                main: '#e8e8e8',
+                light: '#ffffff',
+                dark: '#d6d6d6',
+                contrastText: '#909090'
             },
             backdrop: {
                 main: '#e7e7e7',

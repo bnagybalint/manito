@@ -11,9 +11,7 @@ import TransactionList, {TransactionListSelectionModel} from 'component/Transact
 import { groupBy } from 'common/arrayUtils';
 import { useWalletStore } from 'stores/wallet';
 
-export type TransactionHistorySelectionModel = {
-    selectedTransactions: Set<Transaction>,
-};
+export type TransactionHistorySelectionModel = Set<Transaction>;
 
 type Props = {
     walletId: number,
@@ -40,17 +38,13 @@ export default function TransactionHistory(props: Props) {
     
     let selectionModelByDate = new Map<string, TransactionListSelectionModel>();
     transactionsByDate.forEach((transactionsForDate, dateStr) => {
-        selectionModelByDate.set(dateStr, {
-            selectedTransactions: new Set(transactionsForDate.filter((t) => props.selectionModel.selectedTransactions.has(t)))
-        });
+        selectionModelByDate.set(dateStr, new Set(transactionsForDate.filter((t) => props.selectionModel.has(t))));
     });
 
     const handleSelectedChanged = (dateStr: string, model: TransactionListSelectionModel) => {
         selectionModelByDate.set(dateStr, model);
-        const newSelectedTransactions = Array.from(selectionModelByDate.values()).flatMap((m) => Array.from(m.selectedTransactions.values()));
-        props.onSelectionModelChange?.({
-            selectedTransactions: new Set(newSelectedTransactions)
-        })
+        const newSelectedTransactions = Array.from(selectionModelByDate.values()).flatMap((m) => Array.from(m.values()));
+        props.onSelectionModelChange?.(new Set(newSelectedTransactions));
     }
 
     return (

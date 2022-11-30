@@ -18,6 +18,7 @@ interface State {
 interface Actions {
     fetchTransactions: (walletId: number) => void;
     addTransaction: (transaction: ITransaction) => void;
+    deleteTransaction: (transaction: Transaction) => void;
 }
 
 export type TransactionState = State & Actions;
@@ -44,6 +45,15 @@ export const useTransactionStore = create<TransactionState>((set, get) => ({
             .then((t) => new Transaction(t))
             .then((newTransaction) => set({
                 transactions: [...get().transactions, newTransaction],
+            }))
+            .catch((error: Error) => set({error: error.message}));
+    },
+
+    deleteTransaction: (transaction: Transaction) => {
+        const client = new ApiClient();
+        client.deleteTransaction(transaction.id!)
+            .then(() => set({
+                transactions: get().transactions.filter((t: Transaction) => t.id != transaction.id)
             }))
             .catch((error: Error) => set({error: error.message}));
     },

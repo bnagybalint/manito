@@ -101,7 +101,7 @@ ValidData = Union[
 ]
 
 def jsonify_response(data: Union[ValidData, List[ValidData]]) -> Any:
-    if isinstance(data, int):
+    if isinstance(data, (int, float, str, bool)):
         return data
     if isinstance(data, ApiModel):
         return data.to_json()

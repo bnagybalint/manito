@@ -48,12 +48,22 @@ export default class ApiClient {
             .then(res => new TransactionSerializer().deserialize(res));
     }
 
+    async deleteTransaction(transactionId: number): Promise<void> {
+        const url = urlcat('/api/transaction/:id', {id: transactionId});
+        this.delete(url)
+            .then(res => this.checkResponse([204])(res))
+    }
+
     async get(url: string, req?: RequestParams): Promise<Response> {
         return this.request(url, 'GET', req);
     }
 
     async post(url: string, req?: RequestParams): Promise<Response> {
         return this.request(url, 'POST', req);
+    }
+
+    async delete(url: string, req?: RequestParams): Promise<Response> {
+        return this.request(url, 'DELETE', req);
     }
 
     async request(url: string, method: 'GET' | 'POST' | 'DELETE', req?: RequestParams): Promise<Response> {

@@ -47,13 +47,15 @@ CREATE TABLE "transaction" (
 ALTER TABLE "wallet" ADD FOREIGN KEY ("owner_id") REFERENCES "user" ("id");
 ALTER TABLE "wallet" ADD FOREIGN KEY ("creator_id") REFERENCES "user" ("id");
 ALTER TABLE "wallet" ADD FOREIGN KEY ("deleter_id") REFERENCES "user" ("id");
-ALTER TABLE "wallet" ADD CONSTRAINT "chk_both_deleted_at_and_by" CHECK ("deleted_at" IS NULL OR "deleter_id" IS NOT NULL);
+-- FIXME constraint removed because API has no authorization yet, no way of knowing the deleter user
+-- ALTER TABLE "wallet" ADD CONSTRAINT "chk_both_deleted_at_and_by" CHECK ("deleted_at" IS NULL OR "deleter_id" IS NOT NULL);
 
 ALTER TABLE "category" ADD FOREIGN KEY ("parent_category_id") REFERENCES "category" ("id");
 ALTER TABLE "category" ADD FOREIGN KEY ("owner_id") REFERENCES "user" ("id");
 ALTER TABLE "category" ADD FOREIGN KEY ("creator_id") REFERENCES "user" ("id");
 ALTER TABLE "category" ADD FOREIGN KEY ("deleter_id") REFERENCES "user" ("id");
-ALTER TABLE "category" ADD CONSTRAINT "chk_both_deleted_at_and_by" CHECK ("deleted_at" IS NULL OR "deleter_id" IS NOT NULL);
+-- FIXME constraint removed because API has no authorization yet, no way of knowing the deleter user
+-- ALTER TABLE "category" ADD CONSTRAINT "chk_both_deleted_at_and_by" CHECK ("deleted_at" IS NULL OR "deleter_id" IS NOT NULL);
 
 ALTER TABLE "transaction" ADD FOREIGN KEY ("src_wallet_id") REFERENCES "wallet" ("id");
 ALTER TABLE "transaction" ADD FOREIGN KEY ("dst_wallet_id") REFERENCES "wallet" ("id");
@@ -62,4 +64,5 @@ ALTER TABLE "transaction" ADD FOREIGN KEY ("creator_id") REFERENCES "user" ("id"
 ALTER TABLE "transaction" ADD FOREIGN KEY ("deleter_id") REFERENCES "user" ("id");
 ALTER TABLE "transaction" ADD CONSTRAINT "chk_min_one_wallets" CHECK ("src_wallet_id" IS NOT NULL OR "dst_wallet_id" IS NOT NULL);
 ALTER TABLE "transaction" ADD CONSTRAINT "chk_src_and_dst_wallets_different" CHECK ("src_wallet_id" != "dst_wallet_id");
-ALTER TABLE "transaction" ADD CONSTRAINT "chk_both_deleted_at_and_by" CHECK ("deleted_at" IS NULL OR "deleter_id" IS NOT NULL);
+-- FIXME constraint removed because API has no authorization yet, no way of knowing the deleter user
+-- ALTER TABLE "transaction" ADD CONSTRAINT "chk_both_deleted_at_and_by" CHECK ("deleted_at" IS NULL OR "deleter_id" IS NOT NULL);

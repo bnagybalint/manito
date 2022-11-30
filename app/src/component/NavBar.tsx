@@ -13,7 +13,6 @@ export default function NavBar() {
 
     return (
         <Box
-            className="navbar"
             sx={{
                 backgroundColor: theme.palette.bg.main,
                 borderBottom: theme.palette.backdrop.dark,

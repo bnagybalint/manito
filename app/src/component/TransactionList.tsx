@@ -12,9 +12,7 @@ import Localization from 'util/Localization';
 import Transaction from 'entity/Transaction';
 
 
-export type TransactionListSelectionModel = {
-    selectedTransactions: Set<Transaction>,
-}
+export type TransactionListSelectionModel = Set<Transaction>;
 
 type RowProps = {
     walletId: number,
@@ -66,13 +64,13 @@ export default function TransactionList(props: Props) {
 
 
     const handleTransactionSelected = (transaction: Transaction, selected: boolean) => {
-        const newSet = new Set(props.selectionModel.selectedTransactions);
+        const newModel = new Set(props.selectionModel);
         if(selected) {
-            newSet.add(transaction);
+            newModel.add(transaction);
         } else {
-            newSet.delete(transaction);
+            newModel.delete(transaction);
         }
-        props.onSelectionModelChange?.({ selectedTransactions: newSet });
+        props.onSelectionModelChange?.(newModel);
     }
 
     return (
@@ -86,7 +84,7 @@ export default function TransactionList(props: Props) {
                         <TransactionRow
                             transaction={transaction}
                             walletId={props.walletId}
-                            selected={props.selectionModel.selectedTransactions.has(transaction)}
+                            selected={props.selectionModel.has(transaction)}
                             onSelectedChange={(selected) => handleTransactionSelected(transaction, selected)}
                         />
                     ))}

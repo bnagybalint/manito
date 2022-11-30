@@ -15,9 +15,10 @@ import {
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-import TransactionHistory, {TransactionHistorySelectionModel } from 'component/TransactionHistory';
+import TransactionHistory, { TransactionHistorySelectionModel } from 'component/TransactionHistory';
 import TransactionFilter from 'component/TransactionFilter';
 import TransactionDialog from 'component/TransactionDialog';
+import ConfirmDialog from 'component/ConfirmDialog';
 
 import { ITransaction } from 'api_client/model/Transaction';
 
@@ -32,7 +33,8 @@ export default function WalletPage() {
     const [endDate, setEndDate] = useState(moment(now).endOf('month'));
     const [searchString, setSearchString] = useState("");
     const [isTransactionDialogOpen, setIsTransactionDialogOpen] = useState(false);
-    const [transactionSelectionModel, setTransactionSelectionModel] = useState<TransactionHistorySelectionModel>({selectedTransactions: new Set()});
+    const [isDeleteConfirmDialogOpen, setIsDeleteConfirmDialogOpen] = useState(false);
+    const [transactionSelectionModel, setTransactionSelectionModel] = useState<TransactionHistorySelectionModel>(new Set());
 
     const currentUser = useUserStore(selectCurrentUser);
     const currentWallet = useWalletStore((state) => state.currentWallet);
@@ -52,6 +54,7 @@ export default function WalletPage() {
     const transactionsError = useTransactionStore((state) => state.error);
     const fetchTransactions = useTransactionStore((state) => state.fetchTransactions);
     const addTransaction = useTransactionStore((state) => state.addTransaction);
+    const deleteTransaction = useTransactionStore((state) => state.deleteTransaction);
     
     useEffect(() => {
         // TODO check if there is a better way to lazy load data than checking
@@ -63,12 +66,15 @@ export default function WalletPage() {
         }
     }, [currentUser, currentWallet, walletsLoaded, transactionsLoaded]);
 
-    const openTransactionDialog = () => {
-        setIsTransactionDialogOpen(true);
+    const handleDeleteTransactionsClicked = () => {
+        setIsDeleteConfirmDialogOpen(true);
     }
 
-    const closeTransactionDialog = () => {
-        setIsTransactionDialogOpen(false);
+    const handleDeleteTransactions = () => {
+        transactionSelectionModel.forEach((t) => {
+            deleteTransaction(t);
+        })
+        setTransactionSelectionModel(new Set());
     }
 
     const renderContent = () => {
@@ -130,20 +136,22 @@ export default function WalletPage() {
                         variant="extended"
                         aria-label="add"
                         
-                        onClick={() => openTransactionDialog()}
+                        onClick={() => setIsTransactionDialogOpen(true)}
                     >
                         <AddIcon />
                         New transaction
                     </Fab>
-                    {transactionSelectionModel.selectedTransactions.size > 0 &&
+                    {transactionSelectionModel.size > 0 &&
                         <Fab
                             size="medium"
                             color="red"
                             variant="extended"
                             aria-label="delete"
+
+                            onClick={() => handleDeleteTransactionsClicked()}
                         >
                             <DeleteIcon />
-                            Delete transactions ({transactionSelectionModel.selectedTransactions.size})
+                            Delete transactions ({transactionSelectionModel.size})
                         </Fab>
                     }
                 </Stack>
@@ -156,8 +164,16 @@ export default function WalletPage() {
                 <TransactionDialog
                     wallet={currentWallet}
                     open={isTransactionDialogOpen}
-                    onClose={() => closeTransactionDialog()}
+                    onClose={() => setIsTransactionDialogOpen(false)}
                     onSubmit={(t: ITransaction) => addTransaction(t)}
+                />
+                <ConfirmDialog
+                    open={isDeleteConfirmDialogOpen}
+                    title="Confirm delete?"
+                    message="Are you sure you want to delete the selected transactions?"
+                    color="red"
+                    onClose={() => setIsDeleteConfirmDialogOpen(false)}
+                    onConfirmed={() => handleDeleteTransactions()}
                 />
             </Stack>
         );

@@ -113,7 +113,7 @@ def test_create_with_notes(
     assert new_transaction.id is not None
     assert new_transaction.created_at is not None
 
-def test_fail_when_missing_wallet(
+def test_should_fail_when_wallet_is_missing(
     app_client: AppClient,
     ensure_db_empty,
     db_connection: Connection,
@@ -130,7 +130,7 @@ def test_fail_when_missing_wallet(
 
     assert r.status_code in [400], "Request should be rejected if not wallet was defined"
 
-def test_fail_when_transferring_to_the_same_wallet(
+def test_should_fail_when_transferring_to_the_same_wallet(
     app_client: AppClient,
     ensure_db_empty,
     db_connection: Connection,
@@ -148,7 +148,7 @@ def test_fail_when_transferring_to_the_same_wallet(
 
     assert r.status_code in [400], "Request should be rejected if the source and destination wallets are the same"
 
-def test_fail_when_invalid_amount(
+def test_should_fail_on_invalid_amount(
     app_client: AppClient,
     ensure_db_empty,
     db_connection: Connection,

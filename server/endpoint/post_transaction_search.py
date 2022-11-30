@@ -18,6 +18,8 @@ def post_transaction_search(body: TransactionSearchParamsApiModel) -> ApiRespons
     with ConnectionManager().create_connection().create_session() as db:
         q = db.query(Transaction)
 
+        q = q.filter(Transaction.deleted_at == None)
+
         if body.wallet_id is not None:
             q = q.filter(sqlalchemy.or_(
                 Transaction.src_wallet_id == body.wallet_id,
