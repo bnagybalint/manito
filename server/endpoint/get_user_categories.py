@@ -19,4 +19,4 @@ def get_user_categories(user_id: int) -> ApiResponse:
     if user is None:
         return BasicErrorApiModel(message=f"No user with ID {user_id}."), 404
 
-    return [CategoryApiModel.from_entity(w) for w in user.categories], 200
+    return [CategoryApiModel.from_entity(c) for c in user.categories if c.deleted_at is None], 200

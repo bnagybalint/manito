@@ -295,6 +295,62 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/BasicError"
+  /category/create:
+    post:
+      summary: Creates a new category
+      operationId: endpoint.post_category_create.post_category_create
+      tags:
+        - category
+      requestBody:
+        description: Category data
+        required: true
+        content: 
+          'application/json':
+            schema:
+              $ref: "#/components/schemas/Category"
+      responses:
+        "200":
+          description: Details of the newly created category.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Category"
+        "403":
+          description: The request was rejected due to authorization issues.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BasicError"
+  /category/{category_id}:
+    delete:
+      summary: Delete a category
+      operationId: endpoint.delete_category.delete_category
+      tags:
+        - category
+      parameters:
+        - name: category_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Successfully deleted
+        "403":
+          description: The request was rejected due to authorization issues.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BasicError"
+        "404":
+          description: Category does not exist
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BasicError"
+
+
+  
 components:
   schemas:
     VersionInfo:

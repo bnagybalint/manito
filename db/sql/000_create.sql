@@ -10,7 +10,9 @@ CREATE TABLE "user" (
 CREATE TABLE "wallet" (
   "id" BIGSERIAL PRIMARY KEY,
   "created_at" timestamp without time zone NOT NULL DEFAULT (now() AT TIME ZONE 'utc'),
-  "creator_id" bigint NOT NULL,
+  -- FIXME notnull removed because API has no authorization yet, no way of knowing the creator user
+  -- "creator_id" bigint NOT NULL,
+  "creator_id" bigint,
   "deleted_at" timestamp without time zone,
   "deleter_id" bigint,
   "owner_id" bigint NOT NULL,
@@ -20,7 +22,9 @@ CREATE TABLE "wallet" (
 CREATE TABLE "category" (
   "id" BIGSERIAL PRIMARY KEY,
   "created_at" timestamp without time zone NOT NULL DEFAULT (now() AT TIME ZONE 'utc'),
-  "creator_id" bigint NOT NULL,
+  -- FIXME notnull removed because API has no authorization yet, no way of knowing the creator user
+  -- "creator_id" bigint NOT NULL,
+  "creator_id" bigint,
   "deleted_at" timestamp without time zone,
   "deleter_id" bigint,
   "name" varchar(128) NOT NULL,
