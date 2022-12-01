@@ -55,7 +55,7 @@ export const useCategoryStore = create<CategoryState>((set, get) => ({
         const client = new ApiClient();
         client.deleteCategory(category.id!)
             .then(() => set({
-                categories: get().categories.filter((c: Category) => c.id != category.id)
+                categories: get().categories.filter((c: Category) => c.id !== category.id)
             }))
             .catch((error: Error) => set({error: error.message}));
     },

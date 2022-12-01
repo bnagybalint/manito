@@ -24,7 +24,7 @@ type Props = {
 export default function TransactionHistory(props: Props) {
     const currentWallet = useWalletStore((state) => state.currentWallet);
     
-    if(props.transactions.length == 0) {
+    if(props.transactions.length === 0) {
         return (
             <Card>
                 <CardContent>

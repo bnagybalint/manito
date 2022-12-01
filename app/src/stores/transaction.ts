@@ -1,11 +1,11 @@
 import create from 'zustand';
 import moment from 'moment';
 
-import { ITransaction } from 'api_client/model/Transaction';
 import ApiClient from 'api_client/ApiClient'
+import { TransactionSearchParamsModel } from 'api_client/model/TransactionSearchParams'
+
 import Transaction from 'entity/Transaction'
 import Wallet from 'entity/Wallet';
-import { TransactionSearchParamsModel } from 'api_client/model/TransactionSearchParams'
 
 
 interface State {
@@ -59,7 +59,7 @@ export const useTransactionStore = create<TransactionState>((set, get) => ({
         const client = new ApiClient();
         client.deleteTransaction(transaction.id!)
             .then(() => set({
-                transactions: get().transactions.filter((t: Transaction) => t.id != transaction.id)
+                transactions: get().transactions.filter((t: Transaction) => t.id !== transaction.id)
             }))
             .catch((error: Error) => set({error: error.message}));
     },
@@ -77,7 +77,7 @@ type TransactionFilters = {
 export const selectFilteredTransactions = (filters: TransactionFilters) => {
     const impl = (state: TransactionState) => {
         return state.transactions.filter((x) => (
-            (!filters.wallet || filters.wallet.id == x.sourceWalletId || filters.wallet.id == x.destinationWalletId)
+            (!filters.wallet || filters.wallet.id === x.sourceWalletId || filters.wallet.id === x.destinationWalletId)
             && (!filters.startDate || x.time.isSameOrAfter(filters.startDate, 'day'))
             && (!filters.endDate || x.time.isSameOrBefore(filters.endDate, 'day'))
             && (!filters.searchString || x.notes?.includes(filters.searchString))

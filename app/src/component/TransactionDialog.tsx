@@ -43,7 +43,7 @@ export default function TransactionDialog(props: Props) {
     const [notes, setNotes] = useState<string | null>(null);
     const [transactionCategory, setTransactionCategory] = useState<Category | null>(null);
     const [transactionType, setTransactionType] = useState('income');
-    const [activeWallet, _] = useState(props.wallet);
+    const [activeWallet] = useState(props.wallet);
     const [keepOpenOnSubmit, setKeepOpenOnSubmit] = useState(false);
 
     const currentUser = useUserStore((state) => state.loginUser);
@@ -66,8 +66,8 @@ export default function TransactionDialog(props: Props) {
             amount: amount!,
             notes: notes ?? undefined,
             categoryId: transactionCategory?.id,
-            sourceWalletId: transactionType == 'income' ? undefined : activeWallet.id,
-            destinationWalletId: transactionType == 'income' ? activeWallet.id : undefined,
+            sourceWalletId: transactionType === 'income' ? undefined : activeWallet.id,
+            destinationWalletId: transactionType === 'income' ? activeWallet.id : undefined,
         });
 
         props.onSubmit?.(transaction);
@@ -91,13 +91,13 @@ export default function TransactionDialog(props: Props) {
     }
 
     const handleTransactionCategoryChanged = (categoryId: number) => {
-        const category = categories.find((c) => c.id == categoryId);
+        const category = categories.find((c) => c.id === categoryId);
         setTransactionCategory(category!);
     }
 
     const handleAmountChanged = (e: any) => {
         const rawValue = e.target.value;
-        if(rawValue == '') {
+        if(rawValue === '') {
             setAmount(null);
         } else {
             const x = parseFloat(rawValue);
@@ -150,7 +150,7 @@ export default function TransactionDialog(props: Props) {
                             type="number"
                             onChange={(e) => handleAmountChanged(e)}
                             InputProps={{
-                                startAdornment: <InputAdornment position="start">{transactionType == 'expense' ? '-' : '+'}</InputAdornment>,
+                                startAdornment: <InputAdornment position="start">{transactionType === 'expense' ? '-' : '+'}</InputAdornment>,
                                 endAdornment: <InputAdornment position="end">Ft</InputAdornment>,
                             }}
                         />

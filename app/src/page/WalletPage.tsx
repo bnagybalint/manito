@@ -39,7 +39,6 @@ export default function WalletPage() {
     const currentUser = useUserStore(selectCurrentUser);
     const currentWallet = useWalletStore((state) => state.currentWallet);
     const wallets = useWalletStore((state) => state.wallets);
-    const walletsLoaded = useWalletStore((state) => state.loaded);
     const walletError = useWalletStore((state) => state.error);
     const fetchWallets = useWalletStore((state) => state.fetchWallets);
     const setCurrentWallet = useWalletStore((state) => state.setCurrentWallet);
@@ -62,7 +61,7 @@ export default function WalletPage() {
         if(currentWallet) {
             fetchTransactions(currentWallet.id!);
         }
-    }, [currentUser, currentWallet]);
+    }, [currentUser, currentWallet, fetchWallets, fetchTransactions]);
 
     const handleDeleteTransactionsClicked = () => {
         setIsDeleteConfirmDialogOpen(true);
@@ -102,7 +101,7 @@ export default function WalletPage() {
                     <Select
                         value={currentWallet.id!}
                         onChange={(e) => {
-                            const wallet = wallets.find((w) => w.id == e.target.value);
+                            const wallet = wallets.find((w) => w.id === e.target.value);
                             setCurrentWallet(wallet!);
                         }}
                         sx={{boxShadow: 'none', '.MuiOutlinedInput-notchedOutline': { border: 0 }}}

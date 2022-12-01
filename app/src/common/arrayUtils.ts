@@ -9,7 +9,7 @@ export function groupBy<K, T>(arr: T[], keyFn: (item: T) => K): Map<K,T[]> {
     return arr.reduce((m: Map<K,T[]>, item: T) => {
         const k = keyFn(item);
         let r = m.get(k);
-        r = (r != undefined) ? r : [];
+        r = (r !== undefined) ? r : [];
         r.push(item);
         m.set(k, r);
         return m;
