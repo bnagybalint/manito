@@ -17,7 +17,7 @@ interface State {
 
 interface Actions {
     fetchTransactions: (walletId: number) => void;
-    addTransaction: (transaction: ITransaction) => void;
+    addTransaction: (transaction: Transaction) => void;
     deleteTransaction: (transaction: Transaction) => void;
 }
 
@@ -29,6 +29,12 @@ export const useTransactionStore = create<TransactionState>((set, get) => ({
     error: null,
 
     fetchTransactions: (walletId: number) => {
+        const state = get();
+        if(state.loaded || state.error) {
+            // already loaded
+            return;
+        }
+
         const client = new ApiClient();
         client.getTransactions(new TransactionSearchParamsModel({walletId: walletId}))
             .then((ts) => ts.map((t) => new Transaction(t)))
@@ -39,7 +45,7 @@ export const useTransactionStore = create<TransactionState>((set, get) => ({
             .catch((error: Error) => set({error: error.message}));
     },
 
-    addTransaction: (transaction: ITransaction) => {
+    addTransaction: (transaction: Transaction) => {
         const client = new ApiClient();
         client.createTransaction(transaction)
             .then((t) => new Transaction(t))

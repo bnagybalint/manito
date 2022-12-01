@@ -450,6 +450,10 @@ components:
           description: |
             Amount of money added to the destination wallet and removed from the source wallet and
             deposited into the destination wallet.
+        categoryId:
+          allOf:
+            - $ref: "#/components/schemas/DatabaseId"
+            - description: ID of the category to assign the transaction to.
         sourceWalletId:
           allOf:
             - $ref: "#/components/schemas/DatabaseId"
@@ -480,6 +484,7 @@ components:
         - id
         - amount
         - time
+        - categoryId
         - createdAt
     TransactionSearchParams:
       type: object

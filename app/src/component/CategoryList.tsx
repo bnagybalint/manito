@@ -1,53 +1,85 @@
 import {
-    DataGrid,
-    GridValueGetterParams,
-    GridRenderCellParams,
-    GridColDef,
-} from '@mui/x-data-grid';
+    useTheme,
+    Checkbox,
+    Table,
+    TableBody,
+    TableCell,
+    TableRow,
+    Typography,
+} from '@mui/material';
 
-import Localization from 'util/Localization';
 import Category from 'entity/Category';
 
-const COLUMN_DEFINITIONS: GridColDef[] = [
-    {
-        field: 'icon',
-        headerName: '',
-        sortable: false,
-        width: 32,
-        align: 'center',
-        renderCell: (params: GridRenderCellParams) => {
-            return (<img src={params.row.iconUrl} />);
-        }
-    },
-    {
-        field: 'name',
-        headerName: 'Name',
-        sortable: false,
-        width: 100,
-        valueGetter: (params: GridValueGetterParams) => params.row.name,
-    },
-    {
-        field: 'createdAt',
-        headerName: 'Created',
-        width: 180,
-        valueGetter: (params: GridValueGetterParams) => Localization.formatDateTime(params.row.time),
-    },
-];
+
+export type CategoryListSelectionModel = Set<Category>;
+
+type RowProps = {
+    category: Category,
+    selected: boolean,
+
+    onSelectedChange?: (selected: boolean) => void,
+}
+
+function CategoryRow(props: RowProps) {
+    const theme = useTheme();
+    const rowColor = props.selected ? theme.palette.primary.light : undefined;
+
+    const handleSelectedChanged = (e: any, selected: boolean) => {
+        props.onSelectedChange?.(selected);
+    }
+
+    return (
+        <TableRow
+            sx={{
+                backgroundColor: rowColor,
+                "& td": { border: 0},
+            }}
+        >
+            <TableCell align="center" width={24}>
+                <Checkbox
+                    checked={props.selected}
+                    onChange={handleSelectedChanged}
+                />
+            </TableCell>
+            <TableCell>
+                <Typography>{props.category.name}</Typography>
+            </TableCell>
+        </TableRow>
+    );
+}
 
 type Props = {
     categories: Category[],
-}
+    selectionModel: CategoryListSelectionModel,
+
+    onSelectionModelChange: (model: CategoryListSelectionModel) => void,
+};
 
 export default function CategoryList(props: Props) {
+    const handleCategorySelected = (category: Category, selected: boolean) => {
+        const newModel = new Set(props.selectionModel);
+        if(selected) {
+            newModel.add(category);
+        } else {
+            newModel.delete(category);
+        }
+        props.onSelectionModelChange?.(newModel);
+    }
+
     return (
-        <div style={{ height: 400, width: '100%' }}>
-            <DataGrid
-                rows={props.categories}
-                columns={COLUMN_DEFINITIONS}
-                pageSize={10}
-                rowsPerPageOptions={[5,10]}
-                checkboxSelection
-            />
-        </div>
+        <Table
+            size="small"
+            padding="none"
+        >
+            <TableBody>
+                {props.categories.map((category) => (
+                    <CategoryRow
+                        category={category}
+                        selected={props.selectionModel.has(category)}
+                        onSelectedChange={(selected) => handleCategorySelected(category, selected)}
+                    />
+                ))}
+            </TableBody>
+        </Table>
     );
 }

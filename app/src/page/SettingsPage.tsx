@@ -1,4 +1,6 @@
+import { useEffect, useState } from 'react';
 import {
+    Box,
     Card,
     CardContent,
     Fab,
@@ -9,12 +11,22 @@ import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import MergeIcon from '@mui/icons-material/Merge';
 
+import Category from 'entity/Category';
 import CategoryList from 'component/CategoryList';
-import { selectAllCategories, useCategoryStore } from 'stores/category';
+import { useCategoryStore } from 'stores/category';
+import { useUserStore } from 'stores/user';
 
 
 export default function SettingsPage() {
-    const categories = useCategoryStore(selectAllCategories);
+    const [categoryListSelectionModel, setCategoryListSelectionModel] = useState(new Set<Category>())
+
+    const currentUser = useUserStore((state) => state.loginUser);
+    const categories = useCategoryStore((state) => state.categories);
+    const fetchCategories = useCategoryStore((state) => state.fetchCategories);
+
+    useEffect(() => {
+        fetchCategories(currentUser!.id);
+    });
 
     return (
         <Stack gap={1} paddingTop={1}>
@@ -25,35 +37,48 @@ export default function SettingsPage() {
                         <Stack direction="row" gap={1}>
                             <Fab
                                 size="medium"
-                                color="primary"
+                                color="green"
                                 variant="extended"
                                 aria-label="add"
                             >
                                 <AddIcon />
-                                New category
+                                New
                             </Fab>
-                            <Fab
-                                size="medium"
-                                color="error"
-                                variant="extended"
-                                aria-label="delete"
-                                disabled={true}
-                            >
-                                <DeleteIcon />
-                                Delete categories
-                            </Fab>
-                            <Fab
-                                size="medium"
-                                color="info"
-                                variant="extended"
-                                aria-label="delete"
-                                disabled={true}
-                            >
-                                <MergeIcon />
-                                Merge categories
-                            </Fab>
+                            {categoryListSelectionModel.size >= 0 &&
+                                <Fab
+                                    size="medium"
+                                    color="red"
+                                    variant="extended"
+                                    aria-label="delete"
+
+                                    disabled={categoryListSelectionModel.size < 1}
+                                >
+                                    <DeleteIcon />
+                                    Delete{categoryListSelectionModel.size ? ` (${categoryListSelectionModel.size})` : ''}
+                                </Fab>
+                            }
+                            {categoryListSelectionModel.size >= 0 &&
+                                <Fab
+                                    size="medium"
+                                    color="blue"
+                                    variant="extended"
+                                    aria-label="delete"
+
+                                    disabled={categoryListSelectionModel.size < 2}
+                                >
+                                    <MergeIcon />
+                                    Merge{categoryListSelectionModel.size ? ` (${categoryListSelectionModel.size})` : ''}
+                                </Fab>
+                            }
                         </Stack>
-                        <CategoryList categories={categories}/>
+                        <Typography paddingTop={2} fontWeight="bold">Active categories</Typography>
+                        <Box paddingTop={0}>
+                            <CategoryList
+                                categories={categories}
+                                selectionModel={categoryListSelectionModel}
+                                onSelectionModelChange={(model) => setCategoryListSelectionModel(model)}
+                                />
+                        </Box>
                     </Stack>
                 </CardContent>
             </Card>

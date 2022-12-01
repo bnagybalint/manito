@@ -1,6 +1,6 @@
 import datetime as dt
 
-from db.entities import Wallet
+from db.entities import Wallet, Category
 from db.connection import Connection
 from itest.fixtures import db_connection, ensure_db_empty, app_client, AppClient
 from itest.data import create_dummy_users
@@ -20,14 +20,21 @@ def create_dummy_transaction(
             creator=user,
             owner=user,
         )
-        db.add(wallet)
+        category = Category(
+            name="Dummy Category",
+            creator=user,
+            owner=user,
+        )
+        db.add_all([wallet, category])
         db.commit()
         wallet_id = wallet.id
+        category_id = category.id
 
     transaction = TransactionApiModel(
         amount=1000,
         time=dt.datetime.now(),
         src_wallet_id=wallet_id,
+        category_id=category_id,
     )
 
     r = app_client.post("/transaction/create", json=transaction.to_json())

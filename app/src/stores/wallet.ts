@@ -19,13 +19,19 @@ interface Actions {
 
 export type WalletState = State & Actions;
 
-export const useWalletStore = create<WalletState>((set) => ({
+export const useWalletStore = create<WalletState>((set, get) => ({
     wallets: [],
     currentWallet: null,
     loaded: false,
     error: null,
 
     fetchWallets: (userId: number) => {
+        const state = get();
+        if(state.loaded || state.error) {
+            // already loaded
+            return;
+        }
+
         const client = new ApiClient();
         client.getWallets(userId)
             .then((wallets) => set({wallets: wallets, currentWallet: wallets ? wallets[0] : null, loaded: true}))

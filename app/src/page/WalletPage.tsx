@@ -20,7 +20,7 @@ import TransactionFilter from 'component/TransactionFilter';
 import TransactionDialog from 'component/TransactionDialog';
 import ConfirmDialog from 'component/ConfirmDialog';
 
-import { ITransaction } from 'api_client/model/Transaction';
+import Transaction from 'entity/Transaction';
 
 import { selectCurrentUser, useUserStore } from 'stores/user';
 import { useWalletStore } from 'stores/wallet';
@@ -57,14 +57,12 @@ export default function WalletPage() {
     const deleteTransaction = useTransactionStore((state) => state.deleteTransaction);
     
     useEffect(() => {
-        // TODO check if there is a better way to lazy load data than checking
-        //      if the data is loaded in every component
-        if(!walletsLoaded) {
-            fetchWallets(currentUser!.id!);
-        } else if(currentWallet && !transactionsLoaded) {
+        fetchWallets(currentUser!.id!);
+
+        if(currentWallet) {
             fetchTransactions(currentWallet.id!);
         }
-    }, [currentUser, currentWallet, walletsLoaded, transactionsLoaded]);
+    }, [currentUser, currentWallet]);
 
     const handleDeleteTransactionsClicked = () => {
         setIsDeleteConfirmDialogOpen(true);
@@ -139,7 +137,7 @@ export default function WalletPage() {
                         onClick={() => setIsTransactionDialogOpen(true)}
                     >
                         <AddIcon />
-                        New transaction
+                        New
                     </Fab>
                     {transactionSelectionModel.size > 0 &&
                         <Fab
@@ -151,7 +149,7 @@ export default function WalletPage() {
                             onClick={() => handleDeleteTransactionsClicked()}
                         >
                             <DeleteIcon />
-                            Delete transactions ({transactionSelectionModel.size})
+                            Delete ({transactionSelectionModel.size})
                         </Fab>
                     }
                 </Stack>
@@ -165,7 +163,7 @@ export default function WalletPage() {
                     wallet={currentWallet}
                     open={isTransactionDialogOpen}
                     onClose={() => setIsTransactionDialogOpen(false)}
-                    onSubmit={(t: ITransaction) => addTransaction(t)}
+                    onSubmit={(t: Transaction) => addTransaction(t)}
                 />
                 <ConfirmDialog
                     open={isDeleteConfirmDialogOpen}

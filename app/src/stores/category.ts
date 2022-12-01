@@ -23,6 +23,12 @@ export const useCategoryStore = create<CategoryState>((set, get) => ({
     error: null,
 
     fetchCategories: (userId: number) => {
+        const state = get();
+        if(state.loaded || state.error) {
+            // already loaded
+            return;
+        }
+
         const client = new ApiClient();
         client.getCategories(userId)
             .then((cs) => cs.map((c) => new Category(c)))

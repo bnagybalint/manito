@@ -64,6 +64,7 @@ class Transaction(EntityBase):
     notes = Column(String)
     amount = Column(Numeric(128,3), nullable=False)
     time = Column(DateTime, nullable=False)
+    category_id = Column(Integer, ForeignKey("category.id"))
     created_at = Column(DateTime, nullable=False, default=dt.datetime.now)
     # FIXME nullable=False removed because API has no authorization yet, no way of knowing the creator user
     # creator_id = Column(Integer, ForeignKey("user.id"), nullable=False)
@@ -73,6 +74,7 @@ class Transaction(EntityBase):
     src_wallet_id = Column(Integer, ForeignKey("wallet.id"))
     dst_wallet_id = Column(Integer, ForeignKey("wallet.id"))
 
+    category = relationship("Category")
     src_wallet = relationship("Wallet", foreign_keys=[src_wallet_id])
     dst_wallet = relationship("Wallet", foreign_keys=[dst_wallet_id])
     creator = relationship("User", foreign_keys=[creator_id])

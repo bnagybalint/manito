@@ -16,6 +16,7 @@ from db.entities import Transaction
 class TransactionApiModel(ApiModel):
     amount: float # TODO IMPORTANT will need to handle money with precise operations, e.g. using a fixed-point type
     time: dt.datetime
+    category_id: int
     id: int = None
     notes: str = None
     created_at: dt.datetime = None
@@ -27,6 +28,7 @@ class TransactionApiModel(ApiModel):
         d = {
             "amount": float(self.amount),
             "time": self.time.isoformat(),
+            "categoryId": self.category_id,
         }
 
         if self.created_at is not None:
@@ -50,6 +52,7 @@ class TransactionApiModel(ApiModel):
             id=read_json(j, "id", parser=int, default=None),
             amount=read_json(j, "amount", parser=float),
             time=read_json(j, "time", parser=dateutil.parser.isoparse),
+            category_id=read_json(j, "categoryId", parser=int),
             notes=read_json(j, "notes", parser=str, default=None),
             src_wallet_id=read_json(j, "sourceWalletId", parser=int, default=None),
             dst_wallet_id=read_json(j, "destinationWalletId", parser=int, default=None),
@@ -65,6 +68,7 @@ class TransactionApiModel(ApiModel):
             notes=transaction.notes,
             amount=transaction.amount,
             time=transaction.time,
+            category_id=transaction.category_id,
             created_at=transaction.created_at,
             deleted_at=transaction.deleted_at,
             src_wallet_id=transaction.src_wallet_id,
@@ -81,3 +85,6 @@ class TransactionApiModel(ApiModel):
 
         if self.amount < 0:
             raise ValidationError(error="Amount must be non-negative")
+
+        if self.category_id is None:
+            raise ValidationError(error="Category cannot be empty")

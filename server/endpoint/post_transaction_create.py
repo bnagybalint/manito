@@ -1,20 +1,27 @@
 import datetime as dt
 
 from db.connection import ConnectionManager
-from db.entities import Transaction
+from db.entities import Category, Transaction
 from model.transaction import TransactionApiModel
 from model.utils import deserialize_body, serialize_response
 from model.api_response import ApiResponse
+from model.basic_error import BasicErrorApiModel
 
 
 @deserialize_body(TransactionApiModel)
 @serialize_response()
 def post_transaction_create(body: TransactionApiModel) -> ApiResponse:
     with ConnectionManager().create_connection().create_session() as db:
+        category = db.query(Category).get(body.category_id)
+
+        if category is None:
+            return BasicErrorApiModel(message=f"No category with ID {body.category_id}."), 400
+
         transaction = Transaction(
             notes=body.notes,
             amount=body.amount,
             time=body.time,
+            category=category,
             created_at=dt.datetime.utcnow(),
             creator=None, # FIXME this should come from an authorization token
             deleted_at=None,

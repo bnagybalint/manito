@@ -1,5 +1,5 @@
+import { useEffect, useState } from 'react';
 import moment from 'moment';
-import React from 'react';
 
 import {
     Box,
@@ -15,11 +15,16 @@ import {
     TextField,
     ToggleButton,
     ToggleButtonGroup,
+    MenuItem,
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers'
 
-import { ITransaction } from 'api_client/model/Transaction';
+import Transaction from 'entity/Transaction';
 import Wallet from 'entity/Wallet'
+import Category from 'entity/Category';
+import { useCategoryStore } from 'stores/category';
+import { useUserStore } from 'stores/user';
+
 
 type TransactionType = 'income' | 'expense' | 'transfer';
 
@@ -28,143 +33,149 @@ type Props = {
 
     wallet: Wallet,
 
-    onSubmit?: (value: ITransaction) => void,
+    onSubmit?: (value: Transaction) => void,
     onClose?: () => void,
 };
 
-type State = {
-    time: moment.Moment,
-    amount: number | null,
-    notes: string | null,
-    transactionType: TransactionType,
-    activeWallet: Wallet,
-    
-    // Keeps the dialog open when it is submitted
-    keepOpenOnSubmit: boolean;
-};
+export default function TransactionDialog(props: Props) {
+    const [transactionTime, setTransactionTime] = useState(moment());
+    const [amount, setAmount] = useState<number | null>(null);
+    const [notes, setNotes] = useState<string | null>(null);
+    const [transactionCategory, setTransactionCategory] = useState<Category | null>(null);
+    const [transactionType, setTransactionType] = useState('income');
+    const [activeWallet, _] = useState(props.wallet);
+    const [keepOpenOnSubmit, setKeepOpenOnSubmit] = useState(false);
 
-export default class TransactionDialog extends React.Component<Props, State> {
-    constructor(props: Props) {
-        super(props);
-        this.state = {
-            time: moment(),
-            amount: null,
-            notes: null,
-            transactionType: 'income',
-            activeWallet: props.wallet,
-            keepOpenOnSubmit: false,
-        }
+    const currentUser = useUserStore((state) => state.loginUser);
+    const categories = useCategoryStore((state) => state.categories);
+    const fetchCategories = useCategoryStore((state) => state.fetchCategories);
+
+    useEffect(() => {
+        fetchCategories(currentUser!.id);
+    });
+
+    const clearForm = () => {
+        // NOTE: do not reset date for convenience
+        setAmount(null);
+        setNotes(null);
     }
 
-    clearForm() {
-        this.setState({
-            // NOTE: do not reset date for convenience
-            amount: null,
-            notes: null,
-        })
-    }
+    const handleSubmit = () => {
+        const transaction = new Transaction({
+            time: transactionTime!,
+            amount: amount!,
+            notes: notes ?? undefined,
+            categoryId: transactionCategory?.id,
+            sourceWalletId: transactionType == 'income' ? undefined : activeWallet.id,
+            destinationWalletId: transactionType == 'income' ? activeWallet.id : undefined,
+        });
 
-    handleSubmit() {
-        const transaction: ITransaction = {
-            time: this.state.time!,
-            amount: this.state.amount!,
-            notes: this.state.notes ?? undefined,
-            sourceWalletId: this.state.transactionType == 'income' ? undefined : this.state.activeWallet.id,
-            destinationWalletId: this.state.transactionType == 'income' ? this.state.activeWallet.id : undefined,
-        };
+        props.onSubmit?.(transaction);
 
-        this.props.onSubmit?.(transaction);
+        clearForm();
 
-        this.clearForm();
-
-        if(!this.state.keepOpenOnSubmit)
+        if(!keepOpenOnSubmit)
         {
-            this.props.onClose?.();
+            props.onClose?.();
         }
     }
 
-    handleTransactionTypeChange(newValue: TransactionType) {
+    const handleTransactionTypeChange = (newValue: TransactionType) => {
         if(newValue == null)
         {
             // ignore, one button must be active
             return;
         }
 
-        this.setState({transactionType: newValue});
+        setTransactionType(newValue);
     }
 
-    handleAmountChanged(e: any) {
+    const handleTransactionCategoryChanged = (categoryId: number) => {
+        const category = categories.find((c) => c.id == categoryId);
+        setTransactionCategory(category!);
+    }
+
+    const handleAmountChanged = (e: any) => {
         const rawValue = e.target.value;
         if(rawValue == '') {
-            this.setState({amount: null});
+            setAmount(null);
         } else {
             const x = parseFloat(rawValue);
             if(!isNaN(x)) {
-                this.setState({amount: x});
+                setAmount(x);
             }
         }
     }
     
-    render() {
-        return (
-            <Dialog
-                open={this.props.open}
-                onClose={() => this.props.onClose?.()}
-            >
-                <DialogTitle>New transaction</DialogTitle>
-                <DialogContent>
-                    <FormControl fullWidth>
-                        <Stack sx={{p: 1}} gap={1}>
-                            <ToggleButtonGroup
-                                exclusive
-                                value={this.state.transactionType}
-                                onChange={(e, newValue) => this.handleTransactionTypeChange(newValue)}
-                            >
-                                <ToggleButton color="green" value="income">Income</ToggleButton>
-                                <ToggleButton color="red" value="expense">Expense</ToggleButton>
-                                <ToggleButton disabled value="transfer">Transfer</ToggleButton>
-                            </ToggleButtonGroup>
-                            <DatePicker
-                                label="Date"
-                                value={this.state.time}
-                                onChange={(e) => this.setState({time: e!})}
-                                renderInput={(params) => <TextField {...params} />}
+    return (
+        <Dialog
+            open={props.open}
+            onClose={() => props.onClose?.()}
+        >
+            <DialogTitle>New transaction</DialogTitle>
+            <DialogContent>
+                <FormControl fullWidth>
+                    <Stack sx={{p: 1}} gap={1}>
+                        <ToggleButtonGroup
+                            exclusive
+                            value={transactionType}
+                            onChange={(e, newValue) => handleTransactionTypeChange(newValue)}
+                        >
+                            <ToggleButton color="green" value="income">Income</ToggleButton>
+                            <ToggleButton color="red" value="expense">Expense</ToggleButton>
+                            <ToggleButton disabled value="transfer">Transfer</ToggleButton>
+                        </ToggleButtonGroup>
+                        <DatePicker
+                            label="Date"
+                            value={transactionTime}
+                            onChange={(e) => setTransactionTime(e!)}
+                            renderInput={(params) => <TextField {...params} />}
+                        />
+                        <TextField
+                            label="Category"
+                            variant="outlined"
+                            select
+                            value={transactionCategory?.id ?? ''}
+                            onChange={(e) => handleTransactionCategoryChanged(e.target.value as any as number)}
+                        >
+                            {categories.map((category, idx) => (
+                                <MenuItem key={idx} value={category.id}>{category.name}</MenuItem>
+                            ))}
+                        </TextField>
+                        <TextField
+                            label="Amount"
+                            variant="outlined"
+                            placeholder="0"
+                            value={amount ?? ""}
+                            type="number"
+                            onChange={(e) => handleAmountChanged(e)}
+                            InputProps={{
+                                startAdornment: <InputAdornment position="start">{transactionType == 'expense' ? '-' : '+'}</InputAdornment>,
+                                endAdornment: <InputAdornment position="end">Ft</InputAdornment>,
+                            }}
+                        />
+                        <TextField
+                            label="Note (optional)"
+                            variant="outlined"
+                            value={notes ?? ""}
+                            placeholder="e.g. Groceries"
+                            onChange={(e) => setNotes(e.target.value)}
                             />
-                            <TextField
-                                label="Amount"
-                                variant="outlined"
-                                placeholder="0"
-                                value={this.state.amount ?? ""}
-                                type="number"
-                                onChange={(e) => this.handleAmountChanged(e)}
-                                InputProps={{
-                                    startAdornment: <InputAdornment position="start">{this.state.transactionType == 'expense' ? '-' : '+'}</InputAdornment>,
-                                    endAdornment: <InputAdornment position="end">Ft</InputAdornment>,
-                                }}
+                        <Box sx={{display: "inline-flex", justifyContent: "flex-end"}}>
+                            <FormControlLabel
+                                control={
+                                    <Checkbox
+                                        value={keepOpenOnSubmit}
+                                        onChange={(e) => setKeepOpenOnSubmit(e.target.checked)}
+                                    />
+                                }
+                                label="Keep open"
                             />
-                            <TextField
-                                label="Note (optional)"
-                                variant="outlined"
-                                value={this.state.notes ?? ""}
-                                placeholder="e.g. Groceries"
-                                onChange={(e) => this.setState({notes: e.target.value})}
-                                />
-                            <Box sx={{display: "inline-flex", justifyContent: "flex-end"}}>
-                                <FormControlLabel
-                                    control={
-                                        <Checkbox
-                                            value={this.state.keepOpenOnSubmit}
-                                            onChange={(e) => this.setState({keepOpenOnSubmit: e.target.checked})}
-                                        />
-                                    }
-                                    label="Keep open"
-                                />
-                                <Button variant="contained"  onClick={() => this.handleSubmit()}>Save</Button>
-                            </Box>
-                        </Stack>
-                    </FormControl>
-                </DialogContent>
-            </Dialog>
-        );
-    }
+                            <Button variant="contained"  onClick={handleSubmit}>Save</Button>
+                        </Box>
+                    </Stack>
+                </FormControl>
+            </DialogContent>
+        </Dialog>
+    );
 }
