@@ -3,29 +3,33 @@ import { ModelSerializer } from "api_client/ModelSerializer";
 
 
 export interface ICategory {
-    id: number;
+    id?: number;
     createdAt?: moment.Moment;
+    ownerId: number;
     name: string;
     iconUrl: string;
 }
 
 export class CategoryModel {
-    id: number;
+    id?: number;
     createdAt?: moment.Moment;
+    ownerId: number;
     name: string;
     iconUrl: string;
 
-    constructor({id, createdAt, name, iconUrl}: ICategory) {
+    constructor({id, createdAt, ownerId, name, iconUrl}: ICategory) {
         this.id = id;
         this.createdAt = createdAt;
+        this.ownerId = ownerId;
         this.name = name;
         this.iconUrl = iconUrl;
     }
 }
 
 type RawCategoryModel = {
-    id: number;
+    id?: number;
     createdAt?: string;
+    ownerId: number;
     name: string;
     iconUrl: string;
 };
@@ -35,6 +39,7 @@ export class CategorySerializer implements ModelSerializer<CategoryModel, RawCat
         return {
             id: obj.id,
             createdAt: obj.createdAt?.toISOString(),
+            ownerId: obj.ownerId,
             name: obj.name,
             iconUrl: obj.iconUrl,
         };
@@ -44,6 +49,7 @@ export class CategorySerializer implements ModelSerializer<CategoryModel, RawCat
         return {
             id: data.id,
             createdAt: data.createdAt ? moment(data.createdAt, moment.ISO_8601) : undefined,
+            ownerId: data.ownerId,
             name: data.name,
             iconUrl: data.iconUrl,
         };

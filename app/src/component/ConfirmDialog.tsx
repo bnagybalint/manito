@@ -20,7 +20,7 @@ type Props = {
     cancelButtonText?: string,
     
     onClose?: () => void,
-    onConfirmed?: () => void,
+    onConfirm?: () => void,
 }
 
 export default function ConfirmDialog(props: Props) {
@@ -54,7 +54,7 @@ export default function ConfirmDialog(props: Props) {
                                     variant="contained"
                                     color={props.color ?? 'primary'}
                                     onClick={() => {
-                                        props.onConfirmed?.();
+                                        props.onConfirm?.();
                                         props.onClose?.();
                                     }}
                                 >

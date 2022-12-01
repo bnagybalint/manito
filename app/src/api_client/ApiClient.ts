@@ -32,6 +32,20 @@ export default class ApiClient {
             .then(res => res.map((p: any) => new CategorySerializer().deserialize(p)));
     }
 
+    async createCategory(category: CategoryModel): Promise<CategoryModel> {
+        const url = '/api/category/create';
+        return this.post(url, {json: new CategorySerializer().serialize(category)})
+            .then(res => this.checkResponse([200])(res))
+            .then(res => res.json())
+            .then(res => new CategorySerializer().deserialize(res));
+    }
+
+    async deleteCategory(categoryId: number): Promise<void> {
+        const url = urlcat('/api/category/:id', {id: categoryId});
+        this.delete(url)
+            .then(res => this.checkResponse([204])(res))
+    }
+
     async getTransactions(searchParams: TransactionSearchParamsModel): Promise<TransactionModel[]> {
         const url = '/api/transaction/search';
         return this.post(url, {json: new TransactionSearchParamsSerializer().serialize(searchParams)})

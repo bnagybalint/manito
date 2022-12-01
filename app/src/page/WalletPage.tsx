@@ -68,7 +68,7 @@ export default function WalletPage() {
         setIsDeleteConfirmDialogOpen(true);
     }
 
-    const handleDeleteTransactions = () => {
+    const handleDeleteTransactionsConfirmed = () => {
         transactionSelectionModel.forEach((t) => {
             deleteTransaction(t);
         })
@@ -171,7 +171,7 @@ export default function WalletPage() {
                     message="Are you sure you want to delete the selected transactions?"
                     color="red"
                     onClose={() => setIsDeleteConfirmDialogOpen(false)}
-                    onConfirmed={() => handleDeleteTransactions()}
+                    onConfirm={() => handleDeleteTransactionsConfirmed()}
                 />
             </Stack>
         );

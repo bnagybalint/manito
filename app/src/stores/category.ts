@@ -13,6 +13,8 @@ interface State {
 
 interface Actions {
     fetchCategories: (userId: number) => void;
+    addCategory: (category: Category) => void;
+    deleteCategory: (category: Category) => void;
 }
 
 export type CategoryState = State & Actions;
@@ -35,6 +37,25 @@ export const useCategoryStore = create<CategoryState>((set, get) => ({
             .then((categories) => set({
                 categories: categories,
                 loaded: true
+            }))
+            .catch((error: Error) => set({error: error.message}));
+    },
+
+    addCategory: (category: Category)  => {
+        const client = new ApiClient();
+        client.createCategory(category)
+            .then((c) => new Category(c))
+            .then((newCategory) => set({
+                categories: [...get().categories, newCategory],
+            }))
+            .catch((error: Error) => set({error: error.message}));
+    },
+
+    deleteCategory: (category: Category)  => {
+        const client = new ApiClient();
+        client.deleteCategory(category.id!)
+            .then(() => set({
+                categories: get().categories.filter((c: Category) => c.id != category.id)
             }))
             .catch((error: Error) => set({error: error.message}));
     },
