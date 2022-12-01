@@ -82,9 +82,9 @@ const manitoLightTheme = createTheme(
                 contrastText: '#ffffff'
             },
             blue: {
-                main: '#5da271',
-                light: '#8dd4a0',
-                dark: '#2e7345',
+                main: '#0288d1',
+                light: '#5eb8ff',
+                dark: '#005b9f',
                 contrastText: '#ffffff'
             },
             undesired: {
