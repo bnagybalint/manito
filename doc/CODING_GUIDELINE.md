@@ -2,8 +2,18 @@
 
 ## Data formats
 
-1. Datetime values in databases should be defined in UTC time standard.
-1. Datetime values in exchange formats (API response, file data, etc.) should be defined in UTC time standard.
+1. Datetime values should be stored in UTC time standard, UTC+00:00 time zone. This rule applies to:
+    - program variables, functions
+    - databases and other data sources
+    - application logs
+    - exchange formats: API responses, file data, etc.
+
+    **Motivation**: Somewhat lessens the pain that is handling time in software.
+
+    **Exception**: In some situations, this constraint does not make sense (e.g. when displaying local time to the user). In those cases, this rule does not apply. However, naming should always reflect that other standard/time zone was used. Example:
+    ```Python
+    time_in_local = convert_to_local_time(transaction.created_at)
+    ```
 
 # Language-specific rules
 
