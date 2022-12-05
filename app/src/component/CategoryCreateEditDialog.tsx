@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import {
     Box,
@@ -23,17 +23,29 @@ type ValidationErrors = {
 
 type Props = {
     open: boolean,
+    category?: Category,
 
-    onSubmit?: (value: Category) => void,
+    onCreate?: (value: Category) => void,
+    onEdit?: (value: Category) => void,
     onClose?: () => void,
 };
 
-export default function CategoryDialog(props: Props) {
+export default function CategoryCreateEditDialog(props: Props) {
     const [categoryName, setCategoryName] = useState('')
     const [keepOpenOnSubmit, setKeepOpenOnSubmit] = useState(false);
     const [validationErrors, setValidationErrors] = useState<ValidationErrors>({});
 
-    const currentUser = useUserStore((state) => state.loginUser);
+    const currentUser = useUserStore((state) => state.loginUser)!;
+
+    const isEditMode = props.category && props.category.id !== undefined;
+
+    useEffect(() => {
+        if(isEditMode) {
+            setCategoryName(props.category!.name);
+        } else {
+            setCategoryName('');
+        }
+    }, [props.category, isEditMode]);
 
     const validateForm = () => {
         let result: ValidationErrors = {}
@@ -61,12 +73,17 @@ export default function CategoryDialog(props: Props) {
         }
 
         const category = new Category({
-            name: categoryName,
+            id: isEditMode ? props.category!.id : undefined,
             iconUrl: "dummy",
-            ownerId: currentUser!.id,
+            ownerId: isEditMode ? props.category!.ownerId : currentUser.id,
+            name: categoryName,
         });
 
-        props.onSubmit?.(category);
+        if(isEditMode) {
+            props.onEdit?.(category);
+        } else {
+            props.onCreate?.(category);
+        }
 
         clearForm();
 

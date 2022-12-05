@@ -378,7 +378,36 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/BasicError"
-
+    patch:
+      summary: Updates a category
+      operationId: endpoint.update_category.update_category
+      tags:
+        - category
+      parameters:
+        - name: category_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Details of the successfully updated category.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Category"
+        "403":
+          description: The request was rejected due to authorization issues.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BasicError"
+        "404":
+          description: Category does not exist
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BasicError"
 
   
 components:
@@ -460,6 +489,10 @@ components:
           allOf:
             - $ref: "#/components/schemas/DatabaseId"
             - description: ID of the user who owns this category
+      required:
+        - id
+        - name
+        - ownerId
     Transaction:
       type: object
       properties:

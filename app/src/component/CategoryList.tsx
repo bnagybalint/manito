@@ -11,7 +11,7 @@ import {
 import Category from 'entity/Category';
 
 
-export type CategoryListSelectionModel = Set<Category>;
+export type CategoryListSelectionModel = Set<number>;
 
 type RowProps = {
     category: Category,
@@ -59,9 +59,9 @@ export default function CategoryList(props: Props) {
     const handleCategorySelected = (category: Category, selected: boolean) => {
         const newModel = new Set(props.selectionModel);
         if(selected) {
-            newModel.add(category);
+            newModel.add(category.id!);
         } else {
-            newModel.delete(category);
+            newModel.delete(category.id!);
         }
         props.onSelectionModelChange?.(newModel);
     }
@@ -75,7 +75,7 @@ export default function CategoryList(props: Props) {
                 {props.categories.map((category) => (
                     <CategoryRow
                         category={category}
-                        selected={props.selectionModel.has(category)}
+                        selected={props.selectionModel.has(category.id!)}
                         onSelectedChange={(selected) => handleCategorySelected(category, selected)}
                     />
                 ))}

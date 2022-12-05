@@ -40,6 +40,14 @@ export default class ApiClient {
             .then(res => new CategorySerializer().deserialize(res));
     }
 
+    async updateCategory(category: CategoryModel): Promise<CategoryModel> {
+        const url = urlcat('/api/category/:id', {id: category.id!});
+        return this.patch(url, {json: new CategorySerializer().serialize(category)})
+            .then(res => this.checkResponse([200])(res))
+            .then(res => res.json())
+            .then(res => new CategorySerializer().deserialize(res))
+    }
+
     async deleteCategory(categoryId: number): Promise<void> {
         const url = urlcat('/api/category/:id', {id: categoryId});
         this.delete(url)

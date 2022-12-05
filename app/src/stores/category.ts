@@ -1,4 +1,5 @@
 import create from 'zustand';
+import produce from 'immer';
 
 import ApiClient from 'api_client/ApiClient'
 import Category from 'entity/Category'
@@ -14,7 +15,8 @@ interface State {
 interface Actions {
     fetchCategories: (userId: number) => void;
     addCategory: (category: Category) => void;
-    deleteCategory: (category: Category) => void;
+    deleteCategoryById: (categoryId: number) => void;
+    updateCategory: (category: Category) => void;
 }
 
 export type CategoryState = State & Actions;
@@ -51,13 +53,25 @@ export const useCategoryStore = create<CategoryState>((set, get) => ({
             .catch((error: Error) => set({error: error.message}));
     },
 
-    deleteCategory: (category: Category)  => {
+    deleteCategoryById: (categoryId: number)  => {
         const client = new ApiClient();
-        client.deleteCategory(category.id!)
+        client.deleteCategory(categoryId)
             .then(() => set({
-                categories: get().categories.filter((c: Category) => c.id !== category.id)
+                categories: get().categories.filter((c: Category) => c.id !== categoryId)
             }))
             .catch((error: Error) => set({error: error.message}));
+    },
+
+    updateCategory: (category: Category) => {
+        const client = new ApiClient();
+        client.updateCategory(category)
+            .then((c) => new Category(c))
+            .then((updatedCategory) => set(
+                produce((state) => {
+                    const idx = state.categories.findIndex((c: Category) => c.id === category.id);
+                    state.categories.splice(idx, 1, updatedCategory);
+                })
+            ))
     },
 }));
 

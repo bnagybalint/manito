@@ -9,6 +9,7 @@ import {
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 import MergeIcon from '@mui/icons-material/Merge';
 
 import Category from 'entity/Category';
@@ -16,33 +17,55 @@ import CategoryList from 'component/CategoryList';
 import { useCategoryStore } from 'stores/category';
 import { useUserStore } from 'stores/user';
 import ConfirmDialog from 'component/ConfirmDialog';
-import CategoryDialog from 'component/CategoryDialog';
+import CategoryCreateEditDialog from 'component/CategoryCreateEditDialog';
 
 
 export default function SettingsPage() {
-    const [categoryListSelectionModel, setCategoryListSelectionModel] = useState(new Set<Category>())
+    const [categorySelectionModel, setCategorySelectionModel] = useState(new Set<number>())
     const [isDeleteConfirmDialogOpen, setIsDeleteConfirmDialogOpen] = useState(false);
-    const [isCreateEditDialogOpen, setIsCreateEditDialogOpen] = useState(false);
+    const [isCategoryDialogOpen, setIsCategoryDialogOpen] = useState(false);
+    const [editedCategory, setEditedCategory] = useState<Category | null>(null);
 
     const currentUser = useUserStore((state) => state.loginUser);
     const categories = useCategoryStore((state) => state.categories);
     const fetchCategories = useCategoryStore((state) => state.fetchCategories);
-    const deleteCategory = useCategoryStore((state) => state.deleteCategory);
+    const deleteCategoryById = useCategoryStore((state) => state.deleteCategoryById);
     const addCategory = useCategoryStore((state) => state.addCategory);
+    const updateCategory = useCategoryStore((state) => state.updateCategory);
     
     useEffect(() => {
         fetchCategories(currentUser!.id);
     });
+
+    const handleCreateCategoryClicked = () => {
+        setIsCategoryDialogOpen(true);
+    }
+
+    const handleEditCategorysClicked = () => {
+        const categoryId = Array.from(categorySelectionModel.values())[0];
+        const category = categories.find((c) => c.id === categoryId);
+        setEditedCategory(category!);
+        setIsCategoryDialogOpen(true);
+    }
+
+    const handleCreateEditCategoryClosed = () => {
+        setIsCategoryDialogOpen(false);
+        setEditedCategory(null);
+    }
+
+    const handleMergeCategoriesClicked = () => {
+        // TODO implement
+    }
 
     const handleDeleteCategoriesClicked = () => {
         setIsDeleteConfirmDialogOpen(true);
     }
 
     const handleDeleteCategoriesConfirmed = () => {
-        categoryListSelectionModel.forEach((t) => {
-            deleteCategory(t);
+        categorySelectionModel.forEach((t) => {
+            deleteCategoryById(t);
         })
-        setCategoryListSelectionModel(new Set());
+        setCategorySelectionModel(new Set());
     }
 
     return (
@@ -56,32 +79,44 @@ export default function SettingsPage() {
                                 size="medium"
                                 color="green"
                                 variant="extended"
-                                onClick={() => setIsCreateEditDialogOpen(true)}
+                                onClick={handleCreateCategoryClicked}
                             >
                                 <AddIcon />
                                 New
                             </Fab>
-                            {categoryListSelectionModel.size >= 0 &&
+                            {categorySelectionModel.size >= 0 &&
+                                <Fab
+                                    size="medium"
+                                    color="blue"
+                                    variant="extended"
+                                    onClick={handleEditCategorysClicked}
+                                    disabled={categorySelectionModel.size != 1}
+                                >
+                                    <EditIcon />
+                                    Edit
+                                </Fab>
+                            }
+                            {categorySelectionModel.size >= 0 &&
                                 <Fab
                                     size="medium"
                                     color="red"
                                     variant="extended"
                                     onClick={handleDeleteCategoriesClicked}
-                                    disabled={categoryListSelectionModel.size < 1}
+                                    disabled={categorySelectionModel.size < 1}
                                 >
                                     <DeleteIcon />
-                                    Delete{categoryListSelectionModel.size ? ` (${categoryListSelectionModel.size})` : ''}
+                                    Delete{categorySelectionModel.size ? ` (${categorySelectionModel.size})` : ''}
                                 </Fab>
                             }
-                            {categoryListSelectionModel.size >= 0 &&
+                            {categorySelectionModel.size >= 0 &&
                                 <Fab
                                     size="medium"
                                     color="blue"
                                     variant="extended"
-                                    disabled={categoryListSelectionModel.size < 2}
+                                    disabled={categorySelectionModel.size < 2}
                                 >
                                     <MergeIcon />
-                                    Merge{categoryListSelectionModel.size ? ` (${categoryListSelectionModel.size})` : ''}
+                                    Merge{categorySelectionModel.size ? ` (${categorySelectionModel.size})` : ''}
                                 </Fab>
                             }
                         </Stack>
@@ -89,9 +124,9 @@ export default function SettingsPage() {
                         <Box paddingTop={0}>
                             <CategoryList
                                 categories={categories}
-                                selectionModel={categoryListSelectionModel}
-                                onSelectionModelChange={(model) => setCategoryListSelectionModel(model)}
-                                />
+                                selectionModel={categorySelectionModel}
+                                onSelectionModelChange={(model) => setCategorySelectionModel(model)}
+                            />
                         </Box>
                     </Stack>
                 </CardContent>
@@ -104,10 +139,12 @@ export default function SettingsPage() {
                 onClose={() => setIsDeleteConfirmDialogOpen(false)}
                 onConfirm={handleDeleteCategoriesConfirmed}
             />
-            <CategoryDialog
-                open={isCreateEditDialogOpen}
-                onClose={() => setIsCreateEditDialogOpen(false)}
-                onSubmit={(category) => addCategory(category)}
+            <CategoryCreateEditDialog
+                open={isCategoryDialogOpen}
+                category={editedCategory ?? undefined}
+                onClose={handleCreateEditCategoryClosed}
+                onCreate={(category) => addCategory(category)}
+                onEdit={(category) => updateCategory(category)}
             />
         </Stack>
     );
