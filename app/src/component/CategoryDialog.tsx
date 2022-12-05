@@ -17,6 +17,10 @@ import Category from 'entity/Category';
 import { useUserStore } from 'stores/user';
 
 
+type ValidationErrors = {
+    name?: string,
+};
+
 type Props = {
     open: boolean,
 
@@ -27,14 +31,35 @@ type Props = {
 export default function CategoryDialog(props: Props) {
     const [categoryName, setCategoryName] = useState('')
     const [keepOpenOnSubmit, setKeepOpenOnSubmit] = useState(false);
+    const [validationErrors, setValidationErrors] = useState<ValidationErrors>({});
 
     const currentUser = useUserStore((state) => state.loginUser);
+
+    const validateForm = () => {
+        let result: ValidationErrors = {}
+        if(categoryName === null || categoryName === undefined || categoryName === "") {
+            result.name = 'Required';
+        }
+        return result;
+    }
 
     const clearForm = () => {
         setCategoryName('');
     }
 
+    const handleClose = () => {
+        setValidationErrors({});
+        props.onClose?.();
+    }
+
     const handleSubmit = () => {
+        const validationErrors = validateForm();
+        
+        if(Object.keys(validationErrors).length !== 0) {
+            setValidationErrors(validationErrors);
+            return;
+        }
+
         const category = new Category({
             name: categoryName,
             iconUrl: "dummy",
@@ -54,7 +79,7 @@ export default function CategoryDialog(props: Props) {
     return (
         <Dialog
             open={props.open}
-            onClose={() => props.onClose?.()}
+            onClose={handleClose}
         >
             <DialogTitle>New category</DialogTitle>
             <DialogContent>
@@ -65,6 +90,8 @@ export default function CategoryDialog(props: Props) {
                             variant="outlined"
                             value={categoryName}
                             placeholder="e.g. Bills"
+                            error={validationErrors.name !== undefined}
+                            helperText={validationErrors.name}
                             onChange={(e) => setCategoryName(e.target.value)}
                             />
                         <Box sx={{display: "inline-flex", justifyContent: "flex-end"}}>

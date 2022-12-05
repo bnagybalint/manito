@@ -26,6 +26,13 @@ import { useUserStore } from 'stores/user';
 import { useWalletStore } from 'stores/wallet';
 
 
+type ValidationErrors = {
+    date?: string,
+    category?: string,
+    amount?: string,
+    notes?: string,
+};
+
 type Props = {
     open: boolean,
     transaction?: Transaction,
@@ -42,13 +49,14 @@ export default function TransactionCreateEditDialog(props: Props) {
     const [transactionCategory, setTransactionCategory] = useState<Category | null>(null);
     const [transactionType, setTransactionType] = useState('expense');
     const [keepOpenOnSubmit, setKeepOpenOnSubmit] = useState(false);
+    const [validationErrors, setValidationErrors] = useState<ValidationErrors>({});
     
     const currentUser = useUserStore((state) => state.loginUser)!;
     const currentWallet = useWalletStore((state) => state.currentWallet)!;
     const categories = useCategoryStore((state) => state.categories);
     const getCategoryById = useCategoryStore(selectCategoryById);
     const fetchCategories = useCategoryStore((state) => state.fetchCategories);
-
+    
     const isEditMode = props.transaction && props.transaction.id !== undefined;
 
     useEffect(() => {
@@ -69,13 +77,39 @@ export default function TransactionCreateEditDialog(props: Props) {
         }
     }, [props.transaction, currentUser, currentWallet, isEditMode, fetchCategories, getCategoryById]);
 
+    const validateForm = () => {
+        let result: ValidationErrors = {}
+        if(amount === null || amount === undefined) {
+            result.amount = 'Required';
+        }
+        if(amount === 0) {
+            result.amount = 'Cannot be zero';
+        }
+        if(transactionCategory === null || transactionCategory === undefined) {
+            result.category = 'Required';
+        }
+        return result;
+    }
+
     const clearFormAfterSubmit = () => {
         // NOTE: do not reset date and category for convenience
         setAmount(null);
         setNotes(null);
     }
 
+    const handleClose = () => {
+        setValidationErrors({});
+        props.onClose?.();
+    }
+
     const handleSubmit = () => {
+        const validationErrors = validateForm();
+        setValidationErrors(validationErrors);
+        
+        if(Object.keys(validationErrors).length !== 0) {
+            return;
+        }
+
         const transaction = new Transaction({
             id: props.transaction?.id,
             time: transactionTime.utc(),
@@ -130,7 +164,7 @@ export default function TransactionCreateEditDialog(props: Props) {
     return (
         <Dialog
             open={props.open}
-            onClose={() => props.onClose?.()}
+            onClose={handleClose}
         >
             <DialogTitle>{isEditMode ? 'Edit' : 'New'} transaction</DialogTitle>
             <DialogContent>
@@ -156,6 +190,8 @@ export default function TransactionCreateEditDialog(props: Props) {
                             variant="outlined"
                             select
                             value={transactionCategory?.id ?? ''}
+                            error={validationErrors.category !== undefined}
+                            helperText={validationErrors.category}
                             onChange={(e) => handleTransactionCategoryChanged(e.target.value as any as number)}
                         >
                             {categories.map((category, idx) => (
@@ -168,6 +204,8 @@ export default function TransactionCreateEditDialog(props: Props) {
                             placeholder="0"
                             value={amount ?? ""}
                             type="number"
+                            error={validationErrors.amount !== undefined}
+                            helperText={validationErrors.amount}
                             onChange={(e) => handleAmountChanged(e)}
                             InputProps={{
                                 startAdornment: <InputAdornment position="start">{transactionType === 'expense' ? '-' : '+'}</InputAdornment>,
@@ -179,6 +217,8 @@ export default function TransactionCreateEditDialog(props: Props) {
                             variant="outlined"
                             value={notes ?? ""}
                             placeholder="e.g. Groceries"
+                            error={validationErrors.notes !== undefined}
+                            helperText={validationErrors.notes}
                             onChange={(e) => setNotes(e.target.value)}
                             />
                         <Box sx={{display: "inline-flex", justifyContent: "flex-end"}}>
@@ -191,7 +231,12 @@ export default function TransactionCreateEditDialog(props: Props) {
                                 }
                                 label="Keep open"
                             />
-                            <Button variant="contained"  onClick={handleSubmit}>Save</Button>
+                            <Button
+                                variant="contained"
+                                onClick={handleSubmit}
+                            >
+                                Save
+                            </Button>
                         </Box>
                     </Stack>
                 </FormControl>
