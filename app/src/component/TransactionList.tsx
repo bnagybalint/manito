@@ -8,11 +8,12 @@ import {
     Typography,
 } from '@mui/material';
 
+import { sortBy } from 'common/arrayUtils';
 import Localization from 'util/Localization';
 import Transaction from 'entity/Transaction';
 
 
-export type TransactionListSelectionModel = Set<Transaction>;
+export type TransactionListSelectionModel = Set<number>;
 
 type RowProps = {
     walletId: number,
@@ -61,14 +62,14 @@ type Props = {
 };
 
 export default function TransactionList(props: Props) {
-
+    const transactions = sortBy(props.transactions, (t) => t.id);
 
     const handleTransactionSelected = (transaction: Transaction, selected: boolean) => {
         const newModel = new Set(props.selectionModel);
         if(selected) {
-            newModel.add(transaction);
+            newModel.add(transaction.id!);
         } else {
-            newModel.delete(transaction);
+            newModel.delete(transaction.id!);
         }
         props.onSelectionModelChange?.(newModel);
     }
@@ -80,11 +81,11 @@ export default function TransactionList(props: Props) {
                 padding="none"
             >
                 <TableBody>
-                    {props.transactions.map((transaction) => (
+                    {transactions.map((transaction) => (
                         <TransactionRow
                             transaction={transaction}
                             walletId={props.walletId}
-                            selected={props.selectionModel.has(transaction)}
+                            selected={props.selectionModel.has(transaction.id!)}
                             onSelectedChange={(selected) => handleTransactionSelected(transaction, selected)}
                         />
                     ))}

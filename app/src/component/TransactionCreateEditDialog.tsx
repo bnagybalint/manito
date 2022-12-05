@@ -19,60 +19,80 @@ import {
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers'
 
-import Transaction from 'entity/Transaction';
-import Wallet from 'entity/Wallet'
+import Transaction, { TransactionType } from 'entity/Transaction';
 import Category from 'entity/Category';
-import { useCategoryStore } from 'stores/category';
+import { selectCategoryById, useCategoryStore } from 'stores/category';
 import { useUserStore } from 'stores/user';
+import { useWalletStore } from 'stores/wallet';
 
-
-type TransactionType = 'income' | 'expense' | 'transfer';
 
 type Props = {
     open: boolean,
+    transaction?: Transaction,
 
-    wallet: Wallet,
-
-    onSubmit?: (value: Transaction) => void,
+    onCreate?: (value: Transaction) => void,
+    onEdit?: (value: Transaction) => void,
     onClose?: () => void,
 };
 
-export default function TransactionDialog(props: Props) {
+export default function TransactionCreateEditDialog(props: Props) {
     const [transactionTime, setTransactionTime] = useState(moment());
     const [amount, setAmount] = useState<number | null>(null);
     const [notes, setNotes] = useState<string | null>(null);
     const [transactionCategory, setTransactionCategory] = useState<Category | null>(null);
-    const [transactionType, setTransactionType] = useState('income');
-    const [activeWallet] = useState(props.wallet);
+    const [transactionType, setTransactionType] = useState('expense');
     const [keepOpenOnSubmit, setKeepOpenOnSubmit] = useState(false);
-
-    const currentUser = useUserStore((state) => state.loginUser);
+    
+    const currentUser = useUserStore((state) => state.loginUser)!;
+    const currentWallet = useWalletStore((state) => state.currentWallet)!;
     const categories = useCategoryStore((state) => state.categories);
+    const getCategoryById = useCategoryStore(selectCategoryById);
     const fetchCategories = useCategoryStore((state) => state.fetchCategories);
 
-    useEffect(() => {
-        fetchCategories(currentUser!.id);
-    });
+    const isEditMode = props.transaction && props.transaction.id !== undefined;
 
-    const clearForm = () => {
-        // NOTE: do not reset date for convenience
+    useEffect(() => {
+        fetchCategories(currentUser.id);
+
+        if(isEditMode) {
+            setTransactionTime(props.transaction!.time);
+            setAmount(props.transaction!.amount);
+            setNotes(props.transaction!.notes ?? null);
+            setTransactionCategory(getCategoryById(props.transaction?.categoryId!) ?? null);
+            setTransactionType(props.transaction!.getTransactionType(currentWallet.id));
+        } else {
+            setTransactionTime(moment());
+            setAmount(null);
+            setNotes(null);
+            setTransactionCategory(null);
+            setTransactionType('expense');
+        }
+    }, [props.transaction, currentUser, currentWallet, isEditMode, fetchCategories, getCategoryById]);
+
+    const clearFormAfterSubmit = () => {
+        // NOTE: do not reset date and category for convenience
         setAmount(null);
         setNotes(null);
     }
 
     const handleSubmit = () => {
         const transaction = new Transaction({
-            time: transactionTime!,
+            id: props.transaction?.id,
+            time: transactionTime.utc(),
             amount: amount!,
             notes: notes ?? undefined,
             categoryId: transactionCategory?.id,
-            sourceWalletId: transactionType === 'income' ? undefined : activeWallet.id,
-            destinationWalletId: transactionType === 'income' ? activeWallet.id : undefined,
+            sourceWalletId: transactionType === 'income' ? undefined : currentWallet.id,
+            destinationWalletId: transactionType === 'income' ? currentWallet.id : undefined,
         });
 
-        props.onSubmit?.(transaction);
+        if(isEditMode) {
+            props.onEdit?.(transaction);
+        } else {
+            props.onCreate?.(transaction);
+        }
 
-        clearForm();
+        clearFormAfterSubmit();
 
         if(!keepOpenOnSubmit)
         {
@@ -112,7 +132,7 @@ export default function TransactionDialog(props: Props) {
             open={props.open}
             onClose={() => props.onClose?.()}
         >
-            <DialogTitle>New transaction</DialogTitle>
+            <DialogTitle>{isEditMode ? 'Edit' : 'New'} transaction</DialogTitle>
             <DialogContent>
                 <FormControl fullWidth>
                     <Stack sx={{p: 1}} gap={1}>
@@ -121,13 +141,13 @@ export default function TransactionDialog(props: Props) {
                             value={transactionType}
                             onChange={(e, newValue) => handleTransactionTypeChange(newValue)}
                         >
-                            <ToggleButton color="green" value="income">Income</ToggleButton>
                             <ToggleButton color="red" value="expense">Expense</ToggleButton>
+                            <ToggleButton color="green" value="income">Income</ToggleButton>
                             <ToggleButton disabled value="transfer">Transfer</ToggleButton>
                         </ToggleButtonGroup>
                         <DatePicker
                             label="Date"
-                            value={transactionTime}
+                            value={moment(transactionTime).local()}
                             onChange={(e) => setTransactionTime(e!)}
                             renderInput={(params) => <TextField {...params} />}
                         />

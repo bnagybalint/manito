@@ -45,7 +45,6 @@ export default function CategoryDialog(props: Props) {
 
         clearForm();
 
-        console.log(keepOpenOnSubmit);
         if(!keepOpenOnSubmit)
         {
             props.onClose?.();

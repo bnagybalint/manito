@@ -34,13 +34,17 @@ export function TransactionFilter(props: Props) {
                         <DatePicker
                             label="Start date"
                             value={props.startDate}
-                            onChange={(value: Date | null) => props.onStartDateChanged?.(moment(value))}
+                            onChange={(value: Date | null) => {
+                                props.onStartDateChanged?.(moment(value));
+                            }}
                             renderInput={(params) => <TextField {...params} />}
                         />
                         <DatePicker
                             label="End date"
                             value={props.endDate}
-                            onChange={(value: Date | null) => props.onEndDateChanged?.(moment(value))}
+                            onChange={(value: moment.Moment | null) => {
+                                props.onEndDateChanged?.(moment(value));
+                            }}
                             renderInput={(params) => <TextField {...params} />}
                         />
                     </Stack>

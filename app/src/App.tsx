@@ -1,11 +1,9 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 
 import { ThemeProvider } from '@mui/material/styles';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { LocalizationProvider } from '@mui/x-date-pickers'
 import { Container } from '@mui/material';
-
-import hu from 'date-fns/locale/hu';
 
 import LoginPage from 'page/LoginPage';
 import WalletPage from 'page/WalletPage';
@@ -19,6 +17,8 @@ import { useUserStore, selectCurrentUser } from 'stores/user'
 
 import ThemeFactory from 'Theme';
 
+// Need to import locale in order to be used by LocalizationProvider
+import 'moment/locale/hu';
 
 
 export default function App() {
@@ -58,7 +58,7 @@ export default function App() {
     }
     
     return (
-        <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={hu}>
+        <LocalizationProvider dateAdapter={AdapterMoment} locale={'hu-HU'}>
             <BrowserRouter>
                 <ThemeProvider theme={theme}>
                     <Header />

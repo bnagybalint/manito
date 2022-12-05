@@ -1,4 +1,4 @@
-import { groupBy, ungroup } from "common/arrayUtils";
+import { groupBy, ungroup, comparePrimitive } from "common/arrayUtils";
 
 const isOdd = (x: number) => x % 2;
 const wordLength = (x: string) => x.length;
@@ -63,3 +63,34 @@ describe('groupBy', () => {
         expect(r.join('').includes('789')).toBe(true);
     });
 });
+
+
+describe('comparePrimitive', () => {
+    test('works with numbers', () => {
+        expect(comparePrimitive(1, 3)).toBeLessThan(0);
+        expect(comparePrimitive(3, 3)).toBe(0);
+        expect(comparePrimitive(6, 3)).toBeGreaterThan(0);
+
+        expect(comparePrimitive(-1, -3)).toBeGreaterThan(0);
+        expect(comparePrimitive(-3, -3)).toBe(0);
+        expect(comparePrimitive(-6, -3)).toBeLessThan(0);
+
+        expect(comparePrimitive(0.1, 100)).toBeLessThan(0);
+        expect(comparePrimitive(0.1, 0.1)).toBe(0);
+        expect(comparePrimitive(100, 0.1)).toBeGreaterThan(0);
+
+        expect(comparePrimitive(1e3, 1e4)).toBeLessThan(0);
+        expect(comparePrimitive(1e-3, 1e-4)).toBeGreaterThan(0);
+    });
+    test('works with strings', () => {
+        expect(comparePrimitive("", "")).toBe(0);
+        expect(comparePrimitive("", "aaa")).toBeLessThan(0);
+        expect(comparePrimitive("aaa", "")).toBeGreaterThan(0);
+
+        expect(comparePrimitive("aaaa", "aaaa")).toBe(0);
+        expect(comparePrimitive("aabb", "abc")).toBeLessThan(0);
+        expect(comparePrimitive("abc", "abcd")).toBeLessThan(0);
+        expect(comparePrimitive("a", "abcd")).toBeLessThan(0);
+    });
+});
+

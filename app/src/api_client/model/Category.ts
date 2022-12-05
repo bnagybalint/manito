@@ -48,7 +48,7 @@ export class CategorySerializer implements ModelSerializer<CategoryModel, RawCat
     deserialize(data: RawCategoryModel): CategoryModel {
         return {
             id: data.id,
-            createdAt: data.createdAt ? moment(data.createdAt, moment.ISO_8601) : undefined,
+            createdAt: data.createdAt ? moment.utc(data.createdAt, moment.ISO_8601) : undefined,
             ownerId: data.ownerId,
             name: data.name,
             iconUrl: data.iconUrl,

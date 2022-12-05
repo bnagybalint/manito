@@ -239,6 +239,36 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/BasicError"
+    patch:
+      summary: Updates a transaction
+      operationId: endpoint.update_transaction.update_transaction
+      tags:
+        - transaction
+      parameters:
+        - name: transaction_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Details of the successfully updated transaction.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Transaction"
+        "403":
+          description: The request was rejected due to authorization issues.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BasicError"
+        "404":
+          description: Transaction does not exist
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BasicError"
   /transaction/search:
     post:
       summary: Returns a filtered list of transactions 

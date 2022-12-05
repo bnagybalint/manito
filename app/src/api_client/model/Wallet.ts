@@ -51,8 +51,8 @@ export class WalletSerializer implements ModelSerializer<WalletModel, RawWalletM
             id: data.id,
             name: data.name,
             ownerId: data.ownerId,
-            createdAt: data.createdAt ? moment(data.createdAt, moment.ISO_8601) : undefined,
-            deletedAt: data.deletedAt ? moment(data.deletedAt, moment.ISO_8601) : undefined,
+            createdAt: data.createdAt ? moment.utc(data.createdAt, moment.ISO_8601) : undefined,
+            deletedAt: data.deletedAt ? moment.utc(data.deletedAt, moment.ISO_8601) : undefined,
         }
     }
 }

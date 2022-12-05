@@ -56,14 +56,15 @@ export class TransactionSerializer implements ModelSerializer<TransactionModel, 
     }
 
     deserialize(data: RawTransactionModel): TransactionModel {
-        return {
+        const r =  {
             id: data.id,
-            time: moment(data.time, moment.ISO_8601),
+            time: moment.utc(data.time, moment.ISO_8601),
             categoryId: data.categoryId,
             notes: data.notes,
             amount: data.amount,
             sourceWalletId: data.sourceWalletId,
             destinationWalletId: data.destinationWalletId,
         }
+        return r;
     }
 }

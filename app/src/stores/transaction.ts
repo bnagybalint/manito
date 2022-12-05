@@ -1,5 +1,6 @@
 import create from 'zustand';
 import moment from 'moment';
+import produce from 'immer';
 
 import ApiClient from 'api_client/ApiClient'
 import { TransactionSearchParamsModel } from 'api_client/model/TransactionSearchParams'
@@ -18,7 +19,8 @@ interface State {
 interface Actions {
     fetchTransactions: (walletId: number) => void;
     addTransaction: (transaction: Transaction) => void;
-    deleteTransaction: (transaction: Transaction) => void;
+    deleteTransactionById: (transactionId: number) => void;
+    updateTransaction: (transaction: Transaction) => void;
 }
 
 export type TransactionState = State & Actions;
@@ -49,17 +51,30 @@ export const useTransactionStore = create<TransactionState>((set, get) => ({
         const client = new ApiClient();
         client.createTransaction(transaction)
             .then((t) => new Transaction(t))
-            .then((newTransaction) => set({
-                transactions: [...get().transactions, newTransaction],
-            }))
+            .then((newTransaction) => set(produce((draft: State) => {
+                draft.transactions.push(newTransaction);
+            })))
             .catch((error: Error) => set({error: error.message}));
     },
 
-    deleteTransaction: (transaction: Transaction) => {
+    updateTransaction: (transaction: Transaction) => {
         const client = new ApiClient();
-        client.deleteTransaction(transaction.id!)
+        client.updateTransaction(transaction)
+            .then((t) => new Transaction(t))
+            .then((updatedTransaction) => {
+                set(produce((draft: State) => {
+                    const idx = draft.transactions.findIndex((t: Transaction) => t.id === transaction.id);
+                    draft.transactions.splice(idx, 1, updatedTransaction);
+                }))
+            })
+            .catch((error: Error) => set({error: error.message}));
+    },
+
+    deleteTransactionById: (transactionId: number) => {
+        const client = new ApiClient();
+        client.deleteTransaction(transactionId)
             .then(() => set({
-                transactions: get().transactions.filter((t: Transaction) => t.id !== transaction.id)
+                transactions: get().transactions.filter((t: Transaction) => t.id !== transactionId)
             }))
             .catch((error: Error) => set({error: error.message}));
     },
@@ -78,8 +93,8 @@ export const selectFilteredTransactions = (filters: TransactionFilters) => {
     const impl = (state: TransactionState) => {
         return state.transactions.filter((x) => (
             (!filters.wallet || filters.wallet.id === x.sourceWalletId || filters.wallet.id === x.destinationWalletId)
-            && (!filters.startDate || x.time.isSameOrAfter(filters.startDate, 'day'))
-            && (!filters.endDate || x.time.isSameOrBefore(filters.endDate, 'day'))
+            && (!filters.startDate || moment(x.time).local().isSameOrAfter(filters.startDate, 'day'))
+            && (!filters.endDate || moment(x.time).local().isSameOrBefore(filters.endDate, 'day'))
             && (!filters.searchString || x.notes?.includes(filters.searchString))
         ))
     }

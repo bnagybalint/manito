@@ -62,3 +62,4 @@ export const useCategoryStore = create<CategoryState>((set, get) => ({
 }));
 
 export const selectAllCategories = (state: CategoryState) => state.categories;
+export const selectCategoryById = (state: CategoryState) => (id: number) => state.categories.find((c) => c.id === id);

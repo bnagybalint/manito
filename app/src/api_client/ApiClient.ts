@@ -56,10 +56,20 @@ export default class ApiClient {
 
     async createTransaction(transaction: TransactionModel): Promise<TransactionModel> {
         const url = '/api/transaction/create';
+
         return this.post(url, {json: new TransactionSerializer().serialize(transaction)})
             .then(res => this.checkResponse([200])(res))
             .then(res => res.json())
             .then(res => new TransactionSerializer().deserialize(res));
+    }
+
+    async updateTransaction(transaction: TransactionModel): Promise<TransactionModel> {
+        const url = urlcat('/api/transaction/:id', {id: transaction.id!});
+
+        return this.patch(url, {json: new TransactionSerializer().serialize(transaction)})
+            .then(res => this.checkResponse([200])(res))
+            .then(res => res.json())
+            .then(res => new TransactionSerializer().deserialize(res))
     }
 
     async deleteTransaction(transactionId: number): Promise<void> {
@@ -80,7 +90,11 @@ export default class ApiClient {
         return this.request(url, 'DELETE', req);
     }
 
-    async request(url: string, method: 'GET' | 'POST' | 'DELETE', req?: RequestParams): Promise<Response> {
+    async patch(url: string, req?: RequestParams): Promise<Response> {
+        return this.request(url, 'PATCH', req);
+    }
+
+    async request(url: string, method: 'GET' | 'POST' | 'DELETE' | 'PUT' | 'PATCH', req?: RequestParams): Promise<Response> {
         let headers = req?.headers;
         let body = req?.body;
         if(req?.json !== undefined) {
