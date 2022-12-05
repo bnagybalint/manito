@@ -95,7 +95,7 @@ export const selectFilteredTransactions = (filters: TransactionFilters) => {
             (!filters.wallet || filters.wallet.id === x.sourceWalletId || filters.wallet.id === x.destinationWalletId)
             && (!filters.startDate || moment(x.time).local().isSameOrAfter(filters.startDate, 'day'))
             && (!filters.endDate || moment(x.time).local().isSameOrBefore(filters.endDate, 'day'))
-            && (!filters.searchString || x.notes?.includes(filters.searchString))
+            && (!filters.searchString || x.notes?.toLowerCase()?.includes(filters.searchString.toLocaleLowerCase()))
         ))
     }
 
