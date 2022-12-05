@@ -112,15 +112,17 @@ export default function CategoryCreateEditDialog(props: Props) {
                             onChange={(e) => setCategoryName(e.target.value)}
                             />
                         <Box sx={{display: "inline-flex", justifyContent: "flex-end"}}>
-                            <FormControlLabel
-                                control={
-                                    <Checkbox
-                                        value={keepOpenOnSubmit}
-                                        onChange={(e) => setKeepOpenOnSubmit(e.target.checked)}
-                                    />
-                                }
-                                label="Keep open"
-                            />
+                            {!isEditMode &&
+                                <FormControlLabel
+                                    control={
+                                        <Checkbox
+                                            value={keepOpenOnSubmit}
+                                            onChange={(e) => setKeepOpenOnSubmit(e.target.checked)}
+                                        />
+                                    }
+                                    label="Keep open"
+                                />
+                            }
                             <Button variant="contained"  onClick={handleSubmit}>Save</Button>
                         </Box>
                     </Stack>
