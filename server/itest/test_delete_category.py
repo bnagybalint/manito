@@ -1,6 +1,8 @@
 from typing import Tuple
 
+from core.color import Color
 from db.connection import Connection
+from db.entities import Icon
 from itest.fixtures import db_connection, ensure_db_empty, app_client, AppClient
 from itest.data import create_dummy_users
 from model.category import CategoryApiModel
@@ -11,13 +13,18 @@ def create_dummy_category(
 ) -> Tuple[int, int]:
     with db_connection.create_session() as db:
         user = create_dummy_users(num_users=1)[0]
+        icon = Icon(name="TestIcon", image_url="dummy")
         db.add(user)
+        db.add(icon)
         db.commit()
         user_id = user.id
+        icon_id = icon.id
 
     category = CategoryApiModel(
         name="Dummy",
         owner_id=user_id,
+        icon_id=icon_id,
+        icon_color=Color(255,0,0)
     )
 
     r = app_client.post("/category/create", json=category.to_json())

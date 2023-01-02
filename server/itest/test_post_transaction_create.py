@@ -3,7 +3,12 @@ import datetime as dt
 from typing import Tuple
 
 from core.compare import objects_equal
-from db.entities import Category, User, Wallet
+from db.entities import (
+    Category,
+    Icon,
+    User,
+    Wallet,
+)
 from db.connection import Connection
 from model.transaction import TransactionApiModel
 from itest.fixtures import db_connection, ensure_db_empty, app_client, AppClient
@@ -23,7 +28,8 @@ def setup_db(db_connection: Connection) -> Tuple[int, int]:
         user = User(name="Some Body", email="s{i}@b.com", password_hash="abcdef")
         bank_wallet = Wallet(name="Bank account", creator=user, owner=user)
         savings_wallet = Wallet(name="Savings account", creator=user, owner=user)
-        category = Category(name="Groceries", creator=user, owner=user)
+        icon = Icon(name="TestIcon", image_url="dummy")
+        category = Category(name="Groceries", icon=icon, icon_color="ff0000", creator=user, owner=user)
         db.add_all([user, bank_wallet, savings_wallet, category])
         db.commit()
         return (bank_wallet.id, savings_wallet.id, category.id)

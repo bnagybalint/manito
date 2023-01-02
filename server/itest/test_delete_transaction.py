@@ -1,6 +1,10 @@
 import datetime as dt
 
-from db.entities import Wallet, Category
+from db.entities import (
+    Icon,
+    Wallet,
+    Category,
+)
 from db.connection import Connection
 from itest.fixtures import db_connection, ensure_db_empty, app_client, AppClient
 from itest.data import create_dummy_users
@@ -20,10 +24,13 @@ def create_dummy_transaction(
             creator=user,
             owner=user,
         )
+        icon = Icon(name="TestIcon", image_url="dummy")
         category = Category(
             name="Dummy Category",
             creator=user,
             owner=user,
+            icon=icon,
+            icon_color="ff0000",
         )
         db.add_all([wallet, category])
         db.commit()

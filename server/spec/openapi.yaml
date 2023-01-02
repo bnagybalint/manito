@@ -530,9 +530,10 @@ components:
           type: string
           description: Color of the icon of this category. Described as HTML hex code (#RRGGBB).
           example: "#906090"
-        iconUrl:
-          type: string
-          description: URL of the icon of this category.
+        iconId:
+          allOf:
+            - $ref: "#/components/schemas/DatabaseId"
+            - description: ID of the icon to assign to this category
         ownerId:
           allOf:
             - $ref: "#/components/schemas/DatabaseId"
@@ -541,7 +542,7 @@ components:
         - id
         - name
         - iconColor
-        - iconUrl
+        - iconId
         - ownerId
     Transaction:
       type: object

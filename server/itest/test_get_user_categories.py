@@ -1,4 +1,7 @@
-from db.entities import Category
+from db.entities import (
+    Category,
+    Icon,
+)
 from db.connection import Connection
 from itest.fixtures import db_connection, ensure_db_empty, app_client, AppClient
 from itest.data import create_dummy_users
@@ -20,10 +23,13 @@ def test_single(
         user = create_dummy_users(num_users=1)[0]
         db.add(user)
 
+        icon = Icon(name="TestIcon", image_url="dummy")
         category = Category(
             name="Expendable 2",
             creator=user,
             owner=user,
+            icon=icon,
+            icon_color="ff0000",
         )
         db.add(category)
         db.commit()

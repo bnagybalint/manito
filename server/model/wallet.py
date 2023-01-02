@@ -1,12 +1,14 @@
 from __future__ import annotations
 
 import datetime as dt
+import dateutil.parser
 
 from typing import Dict, Any
 from dataclasses import dataclass
 
 from model.api_model import ApiModel
 from db.entities import Wallet
+from core import read_json
 
 @dataclass
 class WalletApiModel(ApiModel):
@@ -18,16 +20,28 @@ class WalletApiModel(ApiModel):
 
     def to_json(self) -> Dict[str, Any]:
         d = {
-            "id": self.id,
             "name": self.name,
             "ownerId": self.owner_id,
-            "createdAt": self.created_at.isoformat(),
         }
 
+        if self.id is not None:
+            d["id"] = self.id
+        if self.created_at is not None:
+            d["createdAt"] = self.created_at.isoformat()
         if self.deleted_at is not None:
             d["deletedAt"] = self.deleted_at.isoformat()
 
         return d
+
+    def from_json(self, j: Dict[str, Any]) -> WalletApiModel:
+        m = WalletApiModel(
+            id=read_json(j, "id", parser=int, default=None),
+            name=read_json(j, "name", parser=str),
+            owner_id=read_json(j, "ownerId", parser=int),
+            created_at=read_json(j, "createdAt", parser=dateutil.parser.isoparse, default=None),
+            deleted_at=read_json(j, "deletedAt", parser=dateutil.parser.isoparse, default=None),
+        )
+        return m
 
     @staticmethod
     def from_entity(wallet: Wallet) -> WalletApiModel:
