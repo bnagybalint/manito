@@ -44,7 +44,7 @@ export default function WalletPage() {
     const walletError = useWalletStore((state) => state.error);
     const fetchWallets = useWalletStore((state) => state.fetchWallets);
     const setCurrentWallet = useWalletStore((state) => state.setCurrentWallet);
-    
+
     const transactions = useTransactionStore(selectFilteredTransactions({
         wallet: currentWallet ?? undefined,
         startDate: startDate,

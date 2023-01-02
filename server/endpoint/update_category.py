@@ -1,7 +1,6 @@
-import datetime as dt
-
+from core import Color, ColorFormat
 from db.connection import ConnectionManager
-from db.entities import Category
+from db.entities import Category, Icon
 from model.category import CategoryApiModel
 from model.utils import deserialize_body, serialize_response
 from model.api_response import ApiResponse
@@ -19,8 +18,14 @@ def update_category(category_id: int, body: CategoryApiModel) -> ApiResponse:
         if category is None:
             return BasicErrorApiModel(message=f"No category with ID {body.category_id}."), 404
 
+        icon: Icon = db.query(Icon).get(body.icon_id)
+        if icon is None:
+            return BasicErrorApiModel(message=f"No icon with ID {body.icon_id}."), 404
+
         category.name = body.name
         category.owner_id = body.owner_id # FIXME this should come from an authorization token
+        category.icon = icon
+        category.icon_color = body.icon_color.to_string(ColorFormat.HEX)
 
         db.add(category)
         db.commit()

@@ -4,6 +4,7 @@ import { TransactionModel, TransactionSerializer } from 'api_client/model/Transa
 import { TransactionSearchParamsModel, TransactionSearchParamsSerializer } from 'api_client/model/TransactionSearchParams';
 import { WalletModel, WalletSerializer } from 'api_client/model/Wallet';
 import { CategoryModel, CategorySerializer } from 'api_client/model/Category';
+import { IconModel, IconSerializer } from 'api_client/model/Icon';
 
 
 type CheckResponseCallback = (res: Response) => Response;
@@ -84,6 +85,14 @@ export default class ApiClient {
         const url = urlcat('/api/transaction/:id', {id: transactionId});
         this.delete(url)
             .then(res => this.checkResponse([204])(res))
+    }
+
+    async getIcons(): Promise<IconModel[]> {
+        const url = '/api/icons';
+        return this.get(url)
+            .then(res => this.checkResponse([200])(res))
+            .then(res => res.json())
+            .then(res => res.map((p: any) => new IconSerializer().deserialize(p)));
     }
 
     async get(url: string, req?: RequestParams): Promise<Response> {

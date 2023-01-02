@@ -13,9 +13,9 @@ import EditIcon from '@mui/icons-material/Edit';
 import MergeIcon from '@mui/icons-material/Merge';
 
 import Category from 'entity/Category';
-import CategoryList from 'component/CategoryList';
 import { useCategoryStore } from 'stores/category';
 import { useUserStore } from 'stores/user';
+import CategoryList from 'component/CategoryList';
 import ConfirmDialog from 'component/ConfirmDialog';
 import CategoryCreateEditDialog from 'component/CategoryCreateEditDialog';
 
@@ -84,19 +84,19 @@ export default function SettingsPage() {
                                 <AddIcon />
                                 New
                             </Fab>
-                            {categorySelectionModel.size >= 0 &&
+                            {categorySelectionModel.size > 0 &&
                                 <Fab
                                     size="medium"
                                     color="blue"
                                     variant="extended"
                                     onClick={handleEditCategorysClicked}
-                                    disabled={categorySelectionModel.size != 1}
+                                    disabled={categorySelectionModel.size > 1}
                                 >
                                     <EditIcon />
                                     Edit
                                 </Fab>
                             }
-                            {categorySelectionModel.size >= 0 &&
+                            {categorySelectionModel.size > 0 &&
                                 <Fab
                                     size="medium"
                                     color="red"
@@ -108,12 +108,13 @@ export default function SettingsPage() {
                                     Delete{categorySelectionModel.size ? ` (${categorySelectionModel.size})` : ''}
                                 </Fab>
                             }
-                            {categorySelectionModel.size >= 0 &&
+                            {categorySelectionModel.size > 0 &&
                                 <Fab
                                     size="medium"
                                     color="blue"
                                     variant="extended"
-                                    disabled={categorySelectionModel.size < 2}
+                                    onClick={handleMergeCategoriesClicked}
+                                    disabled={categorySelectionModel.size < 1}
                                 >
                                     <MergeIcon />
                                     Merge{categorySelectionModel.size ? ` (${categorySelectionModel.size})` : ''}

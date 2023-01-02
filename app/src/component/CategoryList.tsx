@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import {
     useTheme,
     Checkbox,
@@ -5,10 +6,11 @@ import {
     TableBody,
     TableCell,
     TableRow,
-    Typography,
 } from '@mui/material';
 
 import Category from 'entity/Category';
+import { selectIconById, useIconStore } from 'stores/icon';
+import CategoryIcon from 'component/CategoryIcon';
 
 
 export type CategoryListSelectionModel = Set<number>;
@@ -24,6 +26,13 @@ function CategoryRow(props: RowProps) {
     const theme = useTheme();
     const rowColor = props.selected ? theme.palette.primary.light : undefined;
 
+    const icon = useIconStore(selectIconById(props.category.iconId));
+    const fetchIcons = useIconStore((state) => state.fetchIcons);
+
+    useEffect(() => {
+        fetchIcons();
+    }, [fetchIcons]);
+
     const handleSelectedChanged = (e: any, selected: boolean) => {
         props.onSelectedChange?.(selected);
     }
@@ -35,14 +44,18 @@ function CategoryRow(props: RowProps) {
                 "& td": { border: 0},
             }}
         >
-            <TableCell align="center" width={24}>
+            <TableCell align="center">
                 <Checkbox
                     checked={props.selected}
                     onChange={handleSelectedChanged}
                 />
             </TableCell>
-            <TableCell>
-                <Typography>{props.category.name}</Typography>
+            <TableCell sx={{ pr: 1 }} width={36}>
+                <CategoryIcon
+                    color={props.category.iconColor}
+                    text={props.category.name}
+                    imageUrl={icon?.imageUrl}
+                />
             </TableCell>
         </TableRow>
     );
@@ -70,6 +83,7 @@ export default function CategoryList(props: Props) {
         <Table
             size="small"
             padding="none"
+            style={{ width: "auto" }}
         >
             <TableBody>
                 {props.categories.map((category) => (

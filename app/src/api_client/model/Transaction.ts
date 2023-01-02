@@ -6,7 +6,7 @@ export interface ITransaction {
     id?: number;
     time: moment.Moment;
     amount: number;
-    categoryId?: number;
+    categoryId: number;
     notes?: string;
     sourceWalletId?: number;
     destinationWalletId?: number;
@@ -16,7 +16,7 @@ export class TransactionModel {
     id?: number;
     time: moment.Moment;
     amount: number;
-    categoryId?: number;
+    categoryId: number;
     notes?: string;
     sourceWalletId?: number;
     destinationWalletId?: number;
@@ -36,7 +36,7 @@ type RawTransactionModel = {
     id?: number;
     time: string;
     amount: number;
-    categoryId?: number;
+    categoryId: number;
     notes?: string;
     sourceWalletId?: number;
     destinationWalletId?: number;

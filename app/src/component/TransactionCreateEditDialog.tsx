@@ -19,11 +19,14 @@ import {
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers'
 
+import CategoryIcon from 'component/CategoryIcon';
+
 import Transaction, { TransactionType } from 'entity/Transaction';
 import Category from 'entity/Category';
-import { selectCategoryById, useCategoryStore } from 'stores/category';
+import { selectFindCategoryById, useCategoryStore } from 'stores/category';
 import { useUserStore } from 'stores/user';
 import { useWalletStore } from 'stores/wallet';
+import { useIconStore, selectAllIconsById } from 'stores/icon';
 
 
 type ValidationErrors = {
@@ -54,19 +57,23 @@ export default function TransactionCreateEditDialog(props: Props) {
     const currentUser = useUserStore((state) => state.loginUser)!;
     const currentWallet = useWalletStore((state) => state.currentWallet)!;
     const categories = useCategoryStore((state) => state.categories);
-    const getCategoryById = useCategoryStore(selectCategoryById);
+    const findCategoryById = useCategoryStore(selectFindCategoryById);
     const fetchCategories = useCategoryStore((state) => state.fetchCategories);
+    
+    const categoryIconsById = useIconStore(selectAllIconsById);
+    const fetchIcons = useIconStore((state) => state.fetchIcons);
     
     const isEditMode = props.transaction && props.transaction.id !== undefined;
 
     useEffect(() => {
         fetchCategories(currentUser.id);
+        fetchIcons();
 
         if(isEditMode) {
             setTransactionTime(props.transaction!.time);
             setAmount(props.transaction!.amount);
             setNotes(props.transaction!.notes ?? null);
-            setTransactionCategory(getCategoryById(props.transaction?.categoryId!) ?? null);
+            setTransactionCategory(findCategoryById(props.transaction!.categoryId) ?? null);
             setTransactionType(props.transaction!.getTransactionType(currentWallet.id));
         } else {
             setTransactionTime(moment());
@@ -75,7 +82,7 @@ export default function TransactionCreateEditDialog(props: Props) {
             setTransactionCategory(null);
             setTransactionType('expense');
         }
-    }, [props.transaction, currentUser, currentWallet, isEditMode, fetchCategories, getCategoryById]);
+    }, [props.transaction, currentUser, currentWallet, isEditMode, fetchCategories, findCategoryById, fetchIcons]);
 
     const validateForm = () => {
         let result: ValidationErrors = {}
@@ -115,7 +122,7 @@ export default function TransactionCreateEditDialog(props: Props) {
             time: transactionTime.utc(),
             amount: amount!,
             notes: notes ?? undefined,
-            categoryId: transactionCategory?.id,
+            categoryId: transactionCategory!.id!,
             sourceWalletId: transactionType === 'income' ? undefined : currentWallet.id,
             destinationWalletId: transactionType === 'income' ? currentWallet.id : undefined,
         });
@@ -189,19 +196,30 @@ export default function TransactionCreateEditDialog(props: Props) {
                             label="Category"
                             variant="outlined"
                             select
+                            required
                             value={transactionCategory?.id ?? ''}
                             error={validationErrors.category !== undefined}
                             helperText={validationErrors.category}
                             onChange={(e) => handleTransactionCategoryChanged(e.target.value as any as number)}
                         >
-                            {categories.map((category, idx) => (
-                                <MenuItem key={idx} value={category.id}>{category.name}</MenuItem>
-                            ))}
+                            {categories.map((category, idx) => {
+                                // <MenuItem key={idx} value={category.id}>{category.name}</MenuItem>
+                                const icon = categoryIconsById.get(category.iconId)!;
+                                return (
+                                    <MenuItem key={idx} value={category.id}>
+                                        <CategoryIcon
+                                            color={category.iconColor}
+                                            text={category.name}
+                                            imageUrl={icon?.imageUrl}/>
+                                    </MenuItem>
+                                )}
+                            )}
                         </TextField>
                         <TextField
                             label="Amount"
                             variant="outlined"
                             placeholder="0"
+                            required
                             value={amount ?? ""}
                             type="number"
                             error={validationErrors.amount !== undefined}

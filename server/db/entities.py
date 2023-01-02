@@ -13,6 +13,9 @@ from sqlalchemy import (
     String,
 )
 
+from core import ColorFormat
+from db.column_types import ColorColumn
+
 EntityBase = declarative_base()
 
 
@@ -97,9 +100,22 @@ class Category(EntityBase):
     deleted_at = Column(DateTime)
     deleter_id = Column(Integer, ForeignKey("user.id"))
 
+    icon_id = Column(Integer, ForeignKey("icon.id"))
+    icon_color = Column(String)
+
     owner = relationship("User", foreign_keys=[owner_id], back_populates="categories")
     creator = relationship("User", foreign_keys=[creator_id])
     deleter = relationship("User", foreign_keys=[deleter_id])
+    icon = relationship("Icon")
 
     def __repr__(self) -> str:
         return f"Category(id={self.id!r}, amount={self.name!r})"
+
+class Icon(EntityBase):
+    __tablename__ = "icon"
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String)
+    image_url = Column(String)
+    created_at = Column(DateTime, nullable=False, default=dt.datetime.now)
+    deleted_at = Column(DateTime)

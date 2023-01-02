@@ -408,7 +408,48 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/BasicError"
-
+  /category/merge:
+    post:
+      summary: Merges two or more categories into one.
+      description: |
+        This operation replaces any reference to one of the source categories
+        to a reference to the target category. After this operation, all of the
+        source categories are deleted.
+      operationId: endpoint.post_merge_categories.post_merge_categories
+      tags:
+        - category
+      requestBody:
+        description: Recipe for the category merging.
+        required: true
+        content: 
+          'application/json':
+            schema:
+              $ref: "#/components/schemas/CategoryMergeParams"
+      responses:
+        "204":
+          description: Successfully merged categories.
+        "403":
+          description: The request was rejected due to authorization issues.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BasicError"
+  /icons:
+    get:
+      summary: Lists all icons
+      operationId: endpoint.get_icons.get_icons
+      tags:
+        - icon
+        - category
+      responses:
+        "200":
+          description: List of icons
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Icon"
   
 components:
   schemas:
@@ -485,6 +526,13 @@ components:
           type: string
           description: Name of the category
           example: Bills
+        iconColor:
+          type: string
+          description: Color of the icon of this category. Described as HTML hex code (#RRGGBB).
+          example: "#906090"
+        iconUrl:
+          type: string
+          description: URL of the icon of this category.
         ownerId:
           allOf:
             - $ref: "#/components/schemas/DatabaseId"
@@ -492,6 +540,8 @@ components:
       required:
         - id
         - name
+        - iconColor
+        - iconUrl
         - ownerId
     Transaction:
       type: object
@@ -586,3 +636,30 @@ components:
           type: string
       required:
         - message
+    CategoryMergeParams:
+      type: object
+      properties:
+        sourceCategoryIds:
+          type: array
+          description: List of categories to merge
+          items:
+            $ref: "#/components/schemas/DatabaseId"
+          minItems: 1
+        targetCategoryId:
+          allOf:
+            - $ref: "#/components/schemas/DatabaseId"
+            - description: ID of the target category to merge source categories into
+    Icon:
+      type: object
+      properties:
+        id:
+          allOf:
+            - $ref: "#/components/schemas/DatabaseId"
+            - description: ID of this wallet
+          readOnly: true
+        name:
+          type: string
+          description: Name of the icon.
+        imageUrl:
+          type: string
+          description: URL of the icon image

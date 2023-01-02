@@ -1,0 +1,1 @@
+ALTER TABLE "transaction" ALTER COLUMNT "category_id" SET NOT NULL

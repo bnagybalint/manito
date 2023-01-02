@@ -3,7 +3,7 @@ import datetime as dt
 
 from typing import Any
 
-from core.json import read_json
+from core import read_json
 
 
 def test_access() -> None:

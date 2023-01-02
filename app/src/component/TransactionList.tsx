@@ -1,3 +1,4 @@
+    import { useEffect } from 'react';
 import {
     useTheme,
     Checkbox,
@@ -6,11 +7,18 @@ import {
     TableCell,
     TableRow,
     Typography,
+    Alert,
+    AlertTitle,
+    Skeleton,
 } from '@mui/material';
 
+import CategoryIcon from 'component/CategoryIcon';
 import { sortBy } from 'common/arrayUtils';
 import Localization from 'util/Localization';
 import Transaction from 'entity/Transaction';
+import { selectCategoryById, useCategoryStore } from 'stores/category';
+import { selectIconById, useIconStore } from 'stores/icon';
+import { useUserStore } from 'stores/user';
 
 
 export type TransactionListSelectionModel = Set<number>;
@@ -24,6 +32,10 @@ type RowProps = {
 }
 
 function TransactionRow(props: RowProps) {
+    const category = useCategoryStore(selectCategoryById(props.transaction.categoryId))!;
+
+    const icon = useIconStore(selectIconById(category!.iconId));
+
     const amount = props.transaction.getSignedAmount(props.walletId);
     const amountString = Localization.formatMoneyAmount(amount);
     
@@ -36,18 +48,30 @@ function TransactionRow(props: RowProps) {
     }
 
     return (
-        <TableRow sx={{backgroundColor: rowColor}}>
+        <TableRow
+            sx={{
+                backgroundColor: rowColor,
+                "&:last-child td": { border: 0},
+            }}
+        >
             <TableCell align="center" width={24}>
                 <Checkbox
                     checked={props.selected}
                     onChange={handleSelectedChanged}
                 />
             </TableCell>
+            <TableCell align="center" width={250}>
+                <CategoryIcon
+                    color={category.iconColor}
+                    text={category.name}
+                    imageUrl={icon?.imageUrl}
+                />
+            </TableCell>
             <TableCell>
-                <Typography>{props.transaction.notes ?? '-'}</Typography>
+                <Typography noWrap padding={1}>{props.transaction.notes ?? '-'}</Typography>
             </TableCell>
             <TableCell align="right">
-                <Typography color={amountColor}>{amountString} Ft</Typography>
+                <Typography noWrap padding={1} color={amountColor}>{amountString} Ft</Typography>
             </TableCell>
         </TableRow>
     );
@@ -64,6 +88,15 @@ type Props = {
 export default function TransactionList(props: Props) {
     const transactions = sortBy(props.transactions, (t) => t.id);
 
+    const currentUser = useUserStore((state) => state.loginUser)!;
+    const fetchCategories = useCategoryStore((state) => state.fetchCategories);
+    const categoriesLoaded = useCategoryStore((state) => state.loaded);
+    const categoriesError = useCategoryStore((state) => state.error);
+    
+    useEffect(() => {
+        fetchCategories(currentUser!.id!);
+    }, [currentUser, fetchCategories]);
+    
     const handleTransactionSelected = (transaction: Transaction, selected: boolean) => {
         const newModel = new Set(props.selectionModel);
         if(selected) {
@@ -74,11 +107,32 @@ export default function TransactionList(props: Props) {
         props.onSelectionModelChange?.(newModel);
     }
 
+    const error = categoriesError;
+    if(error != null) {
+        return (
+            <Alert severity="error" >
+                <AlertTitle><b>Error</b></AlertTitle>
+                {error}
+            </Alert>
+        );
+    }
+
+    if(!categoriesLoaded) {
+        return (
+            <div>
+                <Skeleton variant="text" sx={{ fontSize: '2rem' }} />
+                <Skeleton variant="text" sx={{ fontSize: '2rem' }} />
+                <Skeleton variant="text" sx={{ fontSize: '2rem' }} />
+            </div>
+        );
+    }
+
     return (
         <div style={{ width: '100%' }}>
             <Table
                 size="small"
                 padding="none"
+                style={{ width: "100%" }}
             >
                 <TableBody>
                     {transactions.map((transaction) => (
