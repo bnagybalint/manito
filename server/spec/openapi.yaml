@@ -134,6 +134,32 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/BasicError"
+  /wallet/create:
+    post:
+      summary: Creates a new wallet
+      operationId: endpoint.post_wallet_create.post_wallet_create
+      tags:
+        - wallet
+      requestBody:
+        description: Wallet data
+        required: true
+        content: 
+          'application/json':
+            schema:
+              $ref: "#/components/schemas/Wallet"
+      responses:
+        "200":
+          description: Details of the newly created wallet.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Wallet"
+        "403":
+          description: The request was rejected due to authorization issues.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BasicError"
   /wallet/{wallet_id}:
     get:
       summary: Returns detailed information about a wallet
@@ -540,6 +566,7 @@ components:
           allOf:
             - $ref: "#/components/schemas/DatabaseId"
             - description: ID of this wallet
+          readOnly: true
         name:
           type: string
           description: Name of the wallet
@@ -554,7 +581,6 @@ components:
           readOnly: true
           description: UTC time when the wallet was created.
       required:
-        - id
         - name
         - ownerId
     Category:
