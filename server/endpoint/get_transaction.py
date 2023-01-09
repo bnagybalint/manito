@@ -1,9 +1,11 @@
 from db.connection import ConnectionManager
 from db.entities import Transaction
-from model.transaction import TransactionApiModel
-from model.basic_error import BasicErrorApiModel
 from api_utils import serialize_response
-from model.api_response import ApiResponse
+from model import (
+    ApiResponse,
+    BasicErrorApiModel,
+    TransactionApiModel,
+)
 
 
 @serialize_response()

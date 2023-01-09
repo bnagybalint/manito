@@ -1,8 +1,10 @@
 from db.connection import ConnectionManager
 from db.entities import User
-from model.user import UserApiModel
 from api_utils import serialize_response
-from model.api_response import ApiResponse
+from model import (
+    ApiResponse,
+    UserApiModel,
+)
 
 
 @serialize_response()

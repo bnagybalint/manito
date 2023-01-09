@@ -1,10 +1,12 @@
 from core import Color, ColorFormat
 from db.connection import ConnectionManager
 from db.entities import Category, Icon
-from model.category import CategoryApiModel
 from api_utils import deserialize_body, serialize_response
-from model.api_response import ApiResponse
-from model.basic_error import BasicErrorApiModel
+from model import (
+    ApiResponse,
+    BasicErrorApiModel,
+    CategoryApiModel,
+)
 
 
 @deserialize_body(CategoryApiModel)

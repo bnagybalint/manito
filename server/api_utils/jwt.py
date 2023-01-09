@@ -4,7 +4,7 @@ import flask
 
 from functools import wraps
 
-from model.basic_error import BasicErrorApiModel
+from model import BasicErrorApiModel
 
 
 def jwt_authenticate(param_name="jwt"):

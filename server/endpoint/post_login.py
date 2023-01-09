@@ -4,15 +4,16 @@ import datetime as dt
 
 from db.connection import ConnectionManager
 from db.entities import User
-
-from model.api_response import ApiResponse
-from model.basic_error import BasicErrorApiModel
-from model.login_request_params import LoginRequestParamsApiModel
-from model.login_response import LoginResponseApiModel
 from api_utils import deserialize_body, serialize_response
 from security import (
     verify_password,
     PasswordToken,
+)
+from model import (
+    ApiResponse,
+    BasicErrorApiModel,
+    LoginRequestParamsApiModel,
+    LoginResponseApiModel,
 )
 
 def handle_auth_error():

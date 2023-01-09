@@ -2,8 +2,10 @@ import flask
 
 from typing import Any, List, Type, Union
 
-from model.api_model import ApiModel
-from model.basic_error import BasicErrorApiModel
+from model import (
+    ApiModel,
+    BasicErrorApiModel,
+)
 
 
 def deserialize_body(model_type: Type[ApiModel], param_name="body", validate: bool = True):

@@ -1,8 +1,10 @@
 from db.connection import ConnectionManager
 from db.entities import Icon
-from model.icon import IconApiModel
 from api_utils import serialize_response
-from model.api_response import ApiResponse
+from model import (
+    ApiResponse,
+    IconApiModel,
+)
 
 
 @serialize_response()

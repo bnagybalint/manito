@@ -8,8 +8,10 @@ from db.entities import (
 from db.connection import Connection
 from itest.fixtures import db_connection, ensure_db_empty, app_client, AppClient
 from itest.data import create_dummy_users
-from model.transaction import TransactionApiModel
-from model.transaction_search_params import TransactionSearchParamsApiModel
+from model import (
+    TransactionApiModel,
+    TransactionSearchParamsApiModel,
+)
 
 def create_dummy_transaction(
     db_connection: Connection,

@@ -2,8 +2,10 @@ import datetime as dt
 
 from db.connection import ConnectionManager
 from db.entities import Category
-from model.basic_error import BasicErrorApiModel
-from model.api_response import ApiResponse
+from model import (
+    BasicErrorApiModel,
+    ApiResponse,
+)
 from api_utils import serialize_response
 
 

@@ -10,7 +10,7 @@ from db.entities import (
     Wallet,
 )
 from db.connection import Connection
-from model.transaction import TransactionApiModel
+from model import TransactionApiModel
 from itest.fixtures import db_connection, ensure_db_empty, app_client, AppClient
 
 
