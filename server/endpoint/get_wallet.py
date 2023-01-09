@@ -2,7 +2,7 @@ from db.connection import ConnectionManager
 from db.entities import Wallet
 from model.wallet import WalletApiModel
 from model.basic_error import BasicErrorApiModel
-from model.utils import serialize_response
+from api_utils import serialize_response
 from model.api_response import ApiResponse
 
 

@@ -6,8 +6,8 @@ from db.entities import (
     Category,
     Icon,
 )
+from api_utils import deserialize_body, serialize_response
 from model.category import CategoryApiModel
-from model.utils import deserialize_body, serialize_response
 from model.api_response import ApiResponse
 from model.basic_error import BasicErrorApiModel
 

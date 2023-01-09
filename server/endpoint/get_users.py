@@ -1,7 +1,7 @@
 from db.connection import ConnectionManager
 from db.entities import User
 from model.user import UserApiModel
-from model.utils import serialize_response
+from api_utils import serialize_response
 from model.api_response import ApiResponse
 
 

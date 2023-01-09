@@ -3,3 +3,5 @@ db:
   port: 5432
   database_name: manito
   secrets: ./secrets.yaml
+jwt:
+  secrets: ./secrets.yaml

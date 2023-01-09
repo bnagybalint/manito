@@ -5,8 +5,8 @@ from model.transaction import TransactionApiModel
 from model.user import UserApiModel
 from model.wallet import WalletApiModel
 
-from model.utils import deserialize_body
-from model.utils import serialize_response
+from api_utils import deserialize_body
+from api_utils import serialize_response
 
 
 __all__ = [
