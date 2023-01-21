@@ -5,7 +5,7 @@ from db.entities import (
     Icon,
 )
 from db.connection import Connection
-from model.category import CategoryApiModel
+from model import CategoryApiModel
 from itest.fixtures import db_connection, ensure_db_empty, app_client, AppClient
 
 

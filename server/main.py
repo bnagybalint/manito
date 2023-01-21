@@ -27,12 +27,17 @@ def setup_db(app_config: Config, db_secrets: Config) -> None:
     conn_mgr = ConnectionManager()
     conn_mgr.init(connection_params=conn_params)
 
+def setup_auth(app_config: Config, jwt_secrets: Config) -> None:
+    os.environ["JWT_SIGNING_KEY"] = jwt_secrets["jwt"]["key"]
+    os.environ["JWT_EXPIRY_MINUTES"] = str(int(jwt_secrets["jwt"]["expiryMinutes"]))
 
 def setup_app(app, config_file_path: Path) -> None:
     app_config: Config = ConfigLoader.load(config_file_path)
     db_secrets: Config = ConfigLoader.load(Path(config_file_path).parent / Path(app_config["db"]["secrets"]))
+    jwt_secrets: Config = ConfigLoader.load(Path(config_file_path).parent / Path(app_config["jwt"]["secrets"]))
 
     setup_db(app_config=app_config, db_secrets=db_secrets)
+    setup_auth(app_config=app_config, jwt_secrets=jwt_secrets)
 
 
 if __name__ == "__main__":

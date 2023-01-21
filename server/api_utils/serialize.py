@@ -2,11 +2,13 @@ import flask
 
 from typing import Any, List, Type, Union
 
-from model.api_model import ApiModel
-from model.basic_error import BasicErrorApiModel
+from model import (
+    ApiModel,
+    BasicErrorApiModel,
+)
 
 
-def deserialize_body(model_type: Type[ApiModel], validate: bool = True):
+def deserialize_body(model_type: Type[ApiModel], param_name="body", validate: bool = True):
     """Decorator that converts the request handler's "body" argument (received from Flask/Connexion)
     into an ApiModel object.
 
@@ -25,6 +27,9 @@ def deserialize_body(model_type: Type[ApiModel], validate: bool = True):
     ----------
     model_type : Type[ApiModel]
         Class with ApiModel-compatible interface.
+    param_name : str, optional
+        The parsed ApiModel object will be passed to the decorated function in a keyword
+        parameter with this name. Defaults to "body".
     validate : bool, optional
         If true, the resulting API model object is validated with its `validate()` method before
         passing it on.
@@ -44,7 +49,7 @@ def deserialize_body(model_type: Type[ApiModel], validate: bool = True):
                     # serialize by hand to ensure proper serializaton with any decorator ordering
                     return error.to_json(), 400
 
-                kwargs_copy["body"] = model_object
+                kwargs_copy[param_name] = model_object
 
                 if validate:
                     try:

@@ -5,7 +5,7 @@ from db.connection import Connection
 from db.entities import Icon
 from itest.fixtures import db_connection, ensure_db_empty, app_client, AppClient
 from itest.data import create_dummy_users
-from model.category import CategoryApiModel
+from model import CategoryApiModel
 
 def create_dummy_category(
     db_connection: Connection,

@@ -5,10 +5,12 @@ from typing import List
 
 from db.connection import ConnectionManager
 from db.entities import Wallet, Transaction
-from model.transaction import TransactionApiModel
-from model.basic_error import BasicErrorApiModel
-from model.utils import serialize_response
-from model.api_response import ApiResponse
+from api_utils import serialize_response
+from model import (
+    ApiResponse,
+    BasicErrorApiModel,
+    TransactionApiModel,
+)
 
 
 @serialize_response()

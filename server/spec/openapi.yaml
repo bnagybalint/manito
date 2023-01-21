@@ -9,10 +9,30 @@ info:
   contact:
     email: b.nagy.balint@gmail.com
 paths:
+  /login:
+    post:
+      summary: Authenticates a user to use the API.
+      operationId: endpoint.post_login.post_login
+      security: [] # override (disable) global security definition
+      requestBody:
+        description: Login request parameters
+        required: true
+        content: 
+          'application/json':
+            schema:
+              $ref: "#/components/schemas/LoginRequestParams"
+      responses:
+        "200":
+          description: Successful login.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoginResponse"
   /version:
     get:
       summary: Returns version information about the service
       operationId: endpoint.get_version.get_version
+      security: [] # override (disable) global security definition
       responses:
         "200":
           description: Version information
@@ -453,6 +473,29 @@ paths:
   
 components:
   schemas:
+    LoginRequestParams:
+      type: object
+      description: Parameters of a login request.
+      properties:
+        username:
+          type: string
+          description: Username of the user to authenticate.
+        password:
+          type: string
+          description: password to authenticate the user with.
+      required:
+        - username
+        - password
+    LoginResponse:
+      type: object
+      description: Authentication response
+      properties:
+        jwt:
+          type: string
+          description: JWT token to use in API requests.
+      required:
+        - jwt
+      additionalProperties: false
     VersionInfo:
       type: object
       description: Version information about the service

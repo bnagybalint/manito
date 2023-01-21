@@ -4,7 +4,7 @@ from typing import Tuple
 
 from db.entities import User, Wallet, Transaction
 from db.connection import Connection
-from model.transaction_search_params import TransactionSearchParamsApiModel
+from model import TransactionSearchParamsApiModel
 from itest.fixtures import db_connection, ensure_db_empty, app_client, AppClient
 
 

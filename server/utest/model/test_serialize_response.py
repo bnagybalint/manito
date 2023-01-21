@@ -4,7 +4,7 @@ from typing import Any, Dict
 from dataclasses import dataclass
 
 from model import ApiModel
-from model.utils import serialize_response
+from api_utils import serialize_response
 
 @dataclass
 class MyApiModel(ApiModel):

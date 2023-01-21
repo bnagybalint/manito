@@ -1,5 +1,5 @@
 from pathlib import Path
-from model.api_response import ApiResponse
+from model import ApiResponse
 
 
 def _read_version() -> str:
