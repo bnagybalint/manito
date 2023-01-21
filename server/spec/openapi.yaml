@@ -28,6 +28,25 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/LoginResponse"
+  /signup:
+    post:
+      summary: Creates a new login user to the system.
+      operationId: endpoint.post_signup.post_signup
+      security: [] # override (disable) global security definition
+      requestBody:
+        description: Signup request parameters
+        required: true
+        content: 
+          'application/json':
+            schema:
+              $ref: "#/components/schemas/SignupRequestParams"
+      responses:
+        "200":
+          description: Successful signup.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SignupResponse"
   /version:
     get:
       summary: Returns version information about the service
@@ -496,6 +515,21 @@ components:
       required:
         - jwt
       additionalProperties: false
+    SignupRequestParams:
+      type: object
+      description: Parameters of a sign-up request.
+      properties:
+        username:
+          type: string
+          description: Username of the user.
+        password:
+          type: string
+          description: password to authenticate the user with.
+      required:
+        - username
+        - password
+    SignupResponse:
+      type: object
     VersionInfo:
       type: object
       description: Version information about the service
