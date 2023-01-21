@@ -46,7 +46,9 @@ class Wallet(EntityBase):
 
     id = Column(Integer, primary_key=True)
     created_at = Column(DateTime, nullable=False, default=dt.datetime.now)
-    creator_id = Column(Integer, ForeignKey("user.id"), nullable=False)
+    # FIXME nullable=False removed because API has no authorization yet, no way of knowing the creator user
+    # creator_id = Column(Integer, ForeignKey("user.id"), nullable=False)
+    creator_id = Column(Integer, ForeignKey("user.id"))
     deleted_at = Column(DateTime)
     deleter_id = Column(Integer, ForeignKey("user.id"))
     owner_id = Column(Integer, ForeignKey("user.id"), nullable=False)

@@ -8,15 +8,18 @@ from dataclasses import dataclass
 
 from model.api_model import ApiModel
 from db.entities import Wallet
-from core import read_json
+from core import (
+    read_json,
+    ValidationError,
+)
 
 @dataclass
 class WalletApiModel(ApiModel):
-    id: int
     name: str
     owner_id: int
-    created_at: dt.datetime
-    deleted_at: dt.datetime
+    id: int = None
+    created_at: dt.datetime = None
+    deleted_at: dt.datetime = None
 
     def to_json(self) -> Dict[str, Any]:
         d = {
@@ -33,7 +36,8 @@ class WalletApiModel(ApiModel):
 
         return d
 
-    def from_json(self, j: Dict[str, Any]) -> WalletApiModel:
+    @staticmethod
+    def from_json(j: Dict[str, Any]) -> WalletApiModel:
         m = WalletApiModel(
             id=read_json(j, "id", parser=int, default=None),
             name=read_json(j, "name", parser=str),
@@ -53,4 +57,10 @@ class WalletApiModel(ApiModel):
             deleted_at=wallet.deleted_at,
         )
         return m
+
+    def validate(self) -> None:
+        if self.name is None or self.name == "":
+            raise ValidationError(error="Name cannot be empty")
+        if self.owner_id is None:
+            raise ValidationError(error="Owner cannot be empty")
 
