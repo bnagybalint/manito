@@ -1,4 +1,3 @@
-import logging
 import os
 import pytest
 import sqlalchemy
@@ -9,6 +8,9 @@ from flask.testing import FlaskClient, FlaskCliRunner
 
 from app.app import create_app
 from db.connection import ConnectionManager, ConnectionParams, Connection
+
+from itest.factory import DummyFactory, UserData
+
 
 App = Flask
 AppClient = FlaskClient
@@ -75,3 +77,17 @@ def ensure_db_empty(db_connection: Connection) -> None:
         session.execute(sql)
 
     yield
+
+@pytest.fixture(scope="function")
+def dummy_factory(db_connection: Connection) -> DummyFactory:
+    factory = DummyFactory(db_connection=db_connection)
+
+    yield factory
+
+@pytest.fixture(scope="function")
+def dummy_user(dummy_factory: DummyFactory) -> UserData:
+    yield dummy_factory.createUser(
+        name="Rick Sanchez",
+        password="pickle",
+    )
+

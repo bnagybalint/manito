@@ -11,11 +11,11 @@ info:
 paths:
   /login:
     post:
-      summary: Returns version information about the service
+      summary: Authenticates a user to use the API.
       operationId: endpoint.post_login.post_login
       security: [] # override (disable) global security definition
       requestBody:
-        description: Filter criteria
+        description: Login request parameters
         required: true
         content: 
           'application/json':
@@ -32,6 +32,7 @@ paths:
     get:
       summary: Returns version information about the service
       operationId: endpoint.get_version.get_version
+      security: [] # override (disable) global security definition
       responses:
         "200":
           description: Version information

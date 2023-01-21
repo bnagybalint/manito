@@ -2,10 +2,11 @@ import os
 import jwt
 import flask
 
-from functools import wraps
+from typing import Any, Dict
 
 from model import BasicErrorApiModel
 
+JWT = Dict[str, Any]
 
 def jwt_authenticate(param_name="jwt"):
     """Decorator to verify JWT authentication token.
