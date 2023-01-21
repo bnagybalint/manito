@@ -13,10 +13,10 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        python -m pip install -r server/requirements.txt
+        python -m pip install -r requirements.txt
     - name: Run Python unit tests
       run: |
-        python -m pytest server/utest
+        python -m pytest tests/utest
       env:
         PYTHONPATH: server/
   unit_tests_js:
@@ -30,7 +30,7 @@ jobs:
         node-version: "16.x"
     - name: Install dependencies
       run: |
-        npm install --prefix app/
+        npm install --prefix src/web/app/
     - name: Run Javascript unit tests
       run: |
-        npm test --prefix app/
+        npm test --prefix src/web/app/
