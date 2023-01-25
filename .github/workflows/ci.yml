@@ -30,7 +30,7 @@ jobs:
         node-version: "16.x"
     - name: Install dependencies
       run: |
-        npm install --prefix src/web/app/
+        npm install --workspaces
     - name: Run Javascript unit tests
       run: |
-        npm test --prefix src/web/app/
+        npm test --workspaces -- --passWithNoTests --watchAll=false
