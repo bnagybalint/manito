@@ -1,4 +1,4 @@
-import { removeTimeZoneOffset } from "./dateUtils";
+import { removeTimeZoneOffset } from "@manito/common/dateUtils";
 
 
 export function dateToISOString(date: Date): string {

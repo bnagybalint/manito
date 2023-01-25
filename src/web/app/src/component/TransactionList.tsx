@@ -13,7 +13,7 @@ import {
 } from '@mui/material';
 
 import CategoryIcon from 'component/CategoryIcon';
-import { sortBy } from 'common/arrayUtils';
+import { sortBy } from '@manito/common';
 import Localization from 'util/Localization';
 import Transaction from 'entity/Transaction';
 import { selectCategoryById, useCategoryStore } from 'stores/category';

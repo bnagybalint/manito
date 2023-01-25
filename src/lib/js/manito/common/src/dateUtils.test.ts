@@ -1,4 +1,4 @@
-import { createDate } from "common/dateUtils";
+import { createDate } from "./dateUtils";
 
 describe('createDate', () => {
     test('fully specified', () => {

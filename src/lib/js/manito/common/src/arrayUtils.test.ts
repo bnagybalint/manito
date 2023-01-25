@@ -1,4 +1,4 @@
-import { groupBy, ungroup, comparePrimitive } from "common/arrayUtils";
+import { groupBy, ungroup, comparePrimitive } from "./arrayUtils";
 
 const isOdd = (x: number) => x % 2;
 const wordLength = (x: string) => x.length;

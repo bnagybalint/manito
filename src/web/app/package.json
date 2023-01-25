@@ -1,11 +1,12 @@
 {
-  "name": "manito",
-  "version": "0.1.0",
+  "name": "@manito/app",
+  "version": "1.0.0",
   "private": true,
   "dependencies": {
     "@date-io/moment": "^2.16.1",
     "@emotion/react": "^11.10.0",
     "@emotion/styled": "^11.10.0",
+    "@manito/common": "^1.0.0",
     "@mui/icons-material": "^5.10.9",
     "@mui/material": "^5.10.1",
     "@mui/x-data-grid": "^5.15.3",

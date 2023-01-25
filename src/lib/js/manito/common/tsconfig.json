@@ -1,0 +1,10 @@
+{
+  "extends": "../../../../../configs/ts/base",
+  "compilerOptions": {
+    "outDir": "./dist/",
+    "sourceMap": true
+  },
+  "include": [
+    "src/"
+  ],
+}
