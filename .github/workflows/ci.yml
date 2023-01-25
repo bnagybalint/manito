@@ -18,7 +18,7 @@ jobs:
       run: |
         python -m pytest tests/utest
       env:
-        PYTHONPATH: src/lib/python:src/lib/service
+        PYTHONPATH: src/lib/python:src/service
   unit_tests_js:
     runs-on: ubuntu-latest
     steps:
