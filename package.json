@@ -4,7 +4,7 @@
   "private": true,
   "scripts":
   {
-    "test": "jest"
+    "test": "npm test --workspaces -- --passWithNoTests --watchAll=false"
   },
   "workspaces": [
     "src/lib/js/manito/common",

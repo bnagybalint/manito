@@ -33,4 +33,4 @@ jobs:
         npm install --workspaces
     - name: Run Javascript unit tests
       run: |
-        npm test --workspaces -- --passWithNoTests --watchAll=false
+        npm test
