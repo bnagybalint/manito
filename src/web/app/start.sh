@@ -7,4 +7,4 @@ APP_ROOT_DIR="${SCRIPT_DIR}"
 # don't open the app by default
 export BROWSER="none"
 
-cd "${APP_ROOT_DIR}" && npm start
+cd "${APP_ROOT_DIR}" && npm run start
