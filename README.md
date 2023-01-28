@@ -1,4 +1,4 @@
-![assets/logo/logo_color_icon_black_text_transp.png]() 
+![](assets/logo/logo_color_icon_black_text_transp.png) 
 
 # manito
 
