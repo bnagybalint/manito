@@ -1,1 +1,1 @@
-ALTER TABLE "transaction" ALTER COLUMNT "category_id" SET NOT NULL
+ALTER TABLE "transaction" ALTER COLUMN "category_id" SET NOT NULL;

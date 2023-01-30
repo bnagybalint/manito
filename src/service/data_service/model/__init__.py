@@ -3,6 +3,7 @@ from data_service.model.api_response import ApiResponse
 from data_service.model.api_model import ApiModel
 from data_service.model.basic_error import BasicErrorApiModel
 from data_service.model.category import CategoryApiModel
+from data_service.model.google_login_request_params import GoogleLoginRequestParamsApiModel
 from data_service.model.icon import IconApiModel
 from data_service.model.login_request_params import LoginRequestParamsApiModel
 from data_service.model.login_response import LoginResponseApiModel
@@ -17,6 +18,7 @@ __all__ = [
     "ApiModel",
     "BasicErrorApiModel",
     "CategoryApiModel",
+    "GoogleLoginRequestParamsApiModel",
     "IconApiModel",
     "LoginRequestParamsApiModel",
     "LoginResponseApiModel",

@@ -28,6 +28,25 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/LoginResponse"
+  /login/google:
+    post:
+      summary: Authenticates a user with an auth token received from Google.
+      operationId: endpoint.post_login_google.post_login_google
+      security: [] # override (disable) global security definition
+      requestBody:
+        description: Login request parameters
+        required: true
+        content: 
+          'application/json':
+            schema:
+              $ref: "#/components/schemas/GoogleLoginRequestParams"
+      responses:
+        "200":
+          description: Successful login.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoginResponse"
   /version:
     get:
       summary: Returns version information about the service
@@ -512,6 +531,15 @@ components:
       required:
         - username
         - password
+    GoogleLoginRequestParams:
+      type: object
+      description: Parameters of a Google auth login request.
+      properties:
+        jwt:
+          type: string
+          description: JWT received from Google.
+      required:
+        - jwt
     LoginResponse:
       type: object
       description: Authentication response
@@ -519,7 +547,12 @@ components:
         jwt:
           type: string
           description: JWT token to use in API requests.
+        user:
+          allOf:
+            - $ref: "#/components/schemas/User"
+            - description: User details about the logged in user
       required:
+        - user
         - jwt
       additionalProperties: false
     VersionInfo:

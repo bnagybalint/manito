@@ -28,6 +28,7 @@ def setup_db(app_config: Config, db_secrets: Config) -> None:
     conn_mgr.init(connection_params=conn_params)
 
 def setup_auth(app_config: Config, jwt_secrets: Config) -> None:
+    os.environ["GOOGLE_CLIENT_ID"] = app_config["google"]["client_id"]
     os.environ["JWT_SIGNING_KEY"] = jwt_secrets["jwt"]["key"]
     os.environ["JWT_EXPIRY_MINUTES"] = str(int(jwt_secrets["jwt"]["expiryMinutes"]))
 
