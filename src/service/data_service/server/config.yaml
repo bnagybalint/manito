@@ -5,3 +5,5 @@ db:
   secrets: ./secrets.yaml
 jwt:
   secrets: ./secrets.yaml
+google:
+  client_id: 187100379091-10furpa8nj9qpf16j9lbqr82eelpq39l.apps.googleusercontent.com

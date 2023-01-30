@@ -1,5 +1,6 @@
 import urlcat from 'urlcat';
 
+import { LoginResponseModel, LoginResponseSerializer } from 'api_client/model/LoginResponse';
 import { TransactionModel, TransactionSerializer } from 'api_client/model/Transaction';
 import { TransactionSearchParamsModel, TransactionSearchParamsSerializer } from 'api_client/model/TransactionSearchParams';
 import { WalletModel, WalletSerializer } from 'api_client/model/Wallet';
@@ -17,6 +18,13 @@ type RequestParams = {
 };
 
 export default class ApiClient {
+    async loginWithGoogle(jwt: string): Promise<LoginResponseModel> {
+        const url = '/api/login/google';
+        return this.post(url, {json: {'jwt': jwt}})
+            .then(res => this.checkResponse([200])(res))
+            .then(res => res.json())
+            .then(res => new LoginResponseSerializer().deserialize(res));
+    }
     async getWallets(userId: number): Promise<WalletModel[]> {
         const url = urlcat('/api/user/:id/wallets', {id: userId});
         return this.get(url)

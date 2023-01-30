@@ -1,4 +1,7 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
+import { useEffect } from 'react';
+import { GoogleOAuthProvider } from '@react-oauth/google';
+import { gapi } from 'gapi-script';
 
 import { ThemeProvider } from '@mui/material/styles';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
@@ -24,6 +27,17 @@ import 'moment/locale/hu';
 export default function App() {
     const currentUser = useUserStore(selectCurrentUser);
     const theme = ThemeFactory.createLightTheme();
+    const google_client_id = '187100379091-10furpa8nj9qpf16j9lbqr82eelpq39l.apps.googleusercontent.com';
+
+    useEffect(() => {
+        const initClient = () => {
+              gapi.client.init({
+              clientId: google_client_id,
+              scope: ''
+            });
+         };
+         gapi.load('client:auth2', initClient);
+     });
 
     const renderContent = () => {
         return (
@@ -57,15 +71,18 @@ export default function App() {
         );
     }
     
-    return (
-        <LocalizationProvider dateAdapter={AdapterMoment} locale={'hu-HU'}>
-            <BrowserRouter>
-                <ThemeProvider theme={theme}>
-                    <Header />
-                    { renderPage() }
-                    <Footer />
-                </ThemeProvider>
-            </BrowserRouter>
-        </LocalizationProvider>
+    let page = (
+        <>
+            <Header />
+            {renderPage()}
+            <Footer />
+        </>
     );
+
+    page = (<ThemeProvider theme={theme}>{page}</ThemeProvider>);
+    page = (<BrowserRouter>{page}</BrowserRouter>);
+    page = (<LocalizationProvider dateAdapter={AdapterMoment} locale={'hu-HU'}>{page}</LocalizationProvider>);
+    page = (<GoogleOAuthProvider clientId={google_client_id}>{page}</GoogleOAuthProvider>);
+
+    return page;
 }
