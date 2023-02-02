@@ -1,7 +1,7 @@
 import datetime as dt
 
 from manito.db import ConnectionManager
-from manito.db.entities import Category
+from manito.db.entities import Category, User
 from data_service.model import (
     BasicErrorApiModel,
     ApiResponse,
@@ -18,12 +18,10 @@ from data_service.decorators import (
 def delete_category(jwt: JWT, category_id: int) -> ApiResponse:
     with ConnectionManager().create_connection().create_session() as db:
         category = db.query(Category).get(category_id)
+        deleter = db.query(User).get(int(jwt["userId"]))
 
         if category is None:
             return BasicErrorApiModel(message=f"No category with ID {category_id}."), 404
-
-        deleter_id = int(jwt["userId"])
-        deleter = db.query(Category).get(deleter_id)
 
         category.deleted_at = dt.datetime.utcnow()
         category.deleter = deleter

@@ -1,7 +1,7 @@
 import datetime as dt
 
 from manito.db import ConnectionManager
-from manito.db.entities import Category, Transaction
+from manito.db.entities import Category, Transaction, User
 from data_service.decorators import (
     jwt_authenticate,
     JWT,
@@ -21,6 +21,7 @@ from data_service.model import (
 def post_transaction_create(jwt: JWT, body: TransactionApiModel) -> ApiResponse:
     with ConnectionManager().create_connection().create_session() as db:
         category = db.query(Category).get(body.category_id)
+        user = db.query(User).get(int(jwt["userId"]))
 
         if category is None:
             return BasicErrorApiModel(message=f"No category with ID {body.category_id}."), 400
@@ -31,7 +32,7 @@ def post_transaction_create(jwt: JWT, body: TransactionApiModel) -> ApiResponse:
             time=body.time,
             category=category,
             created_at=dt.datetime.utcnow(),
-            creator=None, # FIXME this should come from an authorization token
+            creator=user,
             deleted_at=None,
             deleter=None,
             src_wallet_id=body.src_wallet_id,

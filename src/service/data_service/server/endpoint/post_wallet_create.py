@@ -19,6 +19,8 @@ from data_service.model.basic_error import BasicErrorApiModel
 def post_wallet_create(jwt: JWT, body: WalletApiModel) -> ApiResponse:
     with ConnectionManager().create_connection().create_session() as db:
         owner = db.query(User).get(body.owner_id)
+        user = db.query(User).get(int(jwt["userId"]))
+
         if owner is None or owner.deleted_at is not None:
             return BasicErrorApiModel(message=f"No user with ID {body.owner_id}."), 404
 
@@ -26,7 +28,7 @@ def post_wallet_create(jwt: JWT, body: WalletApiModel) -> ApiResponse:
             name=body.name,
             owner=owner,
             created_at=dt.datetime.utcnow(),
-            creator=None, # FIXME this should come from an authorization token
+            creator=user,
             deleted_at=None,
             deleter=None,
         )

@@ -20,8 +20,21 @@ from manito.security import (
 class DummyFactory:
     def __init__(self, db_connection: Connection) -> None:
         self.db_connection = db_connection
+        self.current_user_id: int = None
+
+    def set_current_user(self, user_id: int) -> None:
+        """ Set current identity that will be used as creator user for entities
+
+        Parameters
+        ----------
+        user_id : int
+            User ID to use as creator for subsequent factory operations.
+        """
+        self.current_user_id = user_id
 
     def create_user(self, name: str = "dummy", email: str = "dummy@dummy.com", password: str = "dummy", **kwargs) -> int:
+        """ Creates a user in the database. To simplify tests, it also sets this user as current identity (see DummyFactory.set_current_user)
+        """
         with self.db_connection.create_session() as db:
             salt = generate_password_salt()
             hash = generate_salted_password_hash(password, salt)
@@ -36,6 +49,9 @@ class DummyFactory:
 
             db.add(user)
             db.commit()
+
+            if self.current_user_id is None:
+                self.current_user_id = user.id
 
             return user.id
 
@@ -74,6 +90,7 @@ class DummyFactory:
                 owner_id=owner_id,
                 icon_id=icon_id,
                 icon_color=icon_color,
+                creator_id=self.current_user_id,
                 **kwargs,
             )
             db.add(category)
@@ -85,6 +102,7 @@ class DummyFactory:
             wallet = Wallet(
                 name=name,
                 owner_id=owner_id,
+                creator_id=self.current_user_id,
                 **kwargs,
             )
             db.add(wallet)
@@ -99,6 +117,7 @@ class DummyFactory:
                 category_id=category_id,
                 src_wallet_id=src_wallet_id,
                 dst_wallet_id=dst_wallet_id,
+                creator_id=self.current_user_id,
                 **kwargs,
             )
             db.add(transaction)

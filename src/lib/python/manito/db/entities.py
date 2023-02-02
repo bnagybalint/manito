@@ -43,9 +43,7 @@ class Wallet(EntityBase):
 
     id = Column(Integer, primary_key=True)
     created_at = Column(DateTime, nullable=False, default=dt.datetime.now)
-    # FIXME nullable=False removed because API has no authorization yet, no way of knowing the creator user
-    # creator_id = Column(Integer, ForeignKey("user.id"), nullable=False)
-    creator_id = Column(Integer, ForeignKey("user.id"))
+    creator_id = Column(Integer, ForeignKey("user.id"), nullable=False)
     deleted_at = Column(DateTime)
     deleter_id = Column(Integer, ForeignKey("user.id"))
     owner_id = Column(Integer, ForeignKey("user.id"), nullable=False)
@@ -68,9 +66,7 @@ class Transaction(EntityBase):
     time = Column(DateTime, nullable=False)
     category_id = Column(Integer, ForeignKey("category.id"))
     created_at = Column(DateTime, nullable=False, default=dt.datetime.now)
-    # FIXME nullable=False removed because API has no authorization yet, no way of knowing the creator user
-    # creator_id = Column(Integer, ForeignKey("user.id"), nullable=False)
-    creator_id = Column(Integer, ForeignKey("user.id"))
+    creator_id = Column(Integer, ForeignKey("user.id"), nullable=False)
     deleted_at = Column(DateTime)
     deleter_id = Column(Integer, ForeignKey("user.id"))
     src_wallet_id = Column(Integer, ForeignKey("wallet.id"))
@@ -93,9 +89,7 @@ class Category(EntityBase):
     name = Column(String)
     owner_id = Column(Integer, ForeignKey("user.id"))
     created_at = Column(DateTime, nullable=False, default=dt.datetime.now)
-    # FIXME nullable=False removed because API has no authorization yet, no way of knowing the creator user
-    # creator_id = Column(Integer, ForeignKey("user.id"), nullable=False)
-    creator_id = Column(Integer, ForeignKey("user.id"))
+    creator_id = Column(Integer, ForeignKey("user.id"), nullable=False)
     deleted_at = Column(DateTime)
     deleter_id = Column(Integer, ForeignKey("user.id"))
 

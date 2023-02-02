@@ -31,7 +31,7 @@ def update_category(jwt: JWT, category_id: int, body: CategoryApiModel) -> ApiRe
             return BasicErrorApiModel(message=f"No icon with ID {body.icon_id}."), 404
 
         category.name = body.name
-        category.owner_id = body.owner_id # FIXME this should come from an authorization token
+        category.owner_id = body.owner_id
         category.icon = icon
         category.icon_color = body.icon_color.to_string(ColorFormat.HEX)
 
