@@ -5,6 +5,7 @@ from manito.db import ConnectionManager
 from manito.db.entities import (
     Category,
     Icon,
+    User,
 )
 from data_service.decorators import (
     jwt_authenticate,
@@ -25,17 +26,18 @@ from data_service.model import (
 def post_category_create(jwt: JWT, body: CategoryApiModel) -> ApiResponse:
     with ConnectionManager().create_connection().create_session() as db:
         icon = db.query(Icon).get(body.icon_id)
+        user = db.query(User).get(int(jwt["userId"]))
 
         if icon is None:
             return BasicErrorApiModel(message=f"No icon with ID {body.icon_id}."), 400
 
         category = Category(
             name=body.name,
-            owner_id=body.owner_id, # FIXME this should come from an authorization token
+            owner_id=body.owner_id,
             icon_id=body.icon_id,
             icon_color=body.icon_color.to_string(ColorFormat.HEX),
             created_at=dt.datetime.utcnow(),
-            creator=None, # FIXME this should come from an authorization token
+            creator=user,
             deleted_at=None,
             deleter=None,
         )

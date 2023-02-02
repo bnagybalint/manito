@@ -16,11 +16,11 @@ class TestCategory:
     @classmethod
     def setup_class(cls):
         cls.db_connection = create_db_connection()
-        cls.dummy_factory = DummyFactory(cls.db_connection)
         cls.original_app_client = create_app_client()
 
     def setup_method(self, method: str):
         purge_database(self.db_connection)
+        self.dummy_factory = DummyFactory(self.db_connection)
         self.user_id = self.dummy_factory.create_user()
         self.jwt = self.dummy_factory.get_user_jwt(self.user_id)
         self.app_client = create_auto_auth_client(self.original_app_client, jwt=self.jwt)
