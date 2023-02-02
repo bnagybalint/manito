@@ -6,7 +6,12 @@ from manito.db.entities import (
     Category,
     Icon,
 )
-from data_service.api_utils import deserialize_body, serialize_response
+from data_service.decorators import (
+    jwt_authenticate,
+    JWT,
+    deserialize_body,
+    serialize_response,
+)
 from data_service.model import (
     ApiResponse,
     BasicErrorApiModel,
@@ -14,9 +19,10 @@ from data_service.model import (
 )
 
 
+@jwt_authenticate()
 @deserialize_body(CategoryApiModel)
 @serialize_response()
-def post_category_create(body: CategoryApiModel) -> ApiResponse:
+def post_category_create(jwt: JWT, body: CategoryApiModel) -> ApiResponse:
     with ConnectionManager().create_connection().create_session() as db:
         icon = db.query(Icon).get(body.icon_id)
 

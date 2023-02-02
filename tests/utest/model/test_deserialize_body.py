@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from data_service.model import ApiModel
-from data_service.api_utils import deserialize_body
+from data_service.decorators import deserialize_body
 
 @dataclass
 class MyApiModel(ApiModel):

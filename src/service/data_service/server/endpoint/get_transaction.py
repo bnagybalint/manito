@@ -1,6 +1,10 @@
 from manito.db import ConnectionManager
 from manito.db.entities import Transaction
-from data_service.api_utils import serialize_response
+from data_service.decorators import (
+    jwt_authenticate,
+    JWT,
+    serialize_response,
+)
 from data_service.model import (
     ApiResponse,
     BasicErrorApiModel,
@@ -8,8 +12,9 @@ from data_service.model import (
 )
 
 
+@jwt_authenticate()
 @serialize_response()
-def get_transaction(transaction_id: int) -> ApiResponse:
+def get_transaction(jwt: JWT, transaction_id: int) -> ApiResponse:
     with ConnectionManager().create_connection().create_session() as db:
         transaction: Transaction = db.query(Transaction).get(transaction_id)
 

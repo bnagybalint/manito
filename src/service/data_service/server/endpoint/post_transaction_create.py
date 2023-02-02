@@ -2,7 +2,12 @@ import datetime as dt
 
 from manito.db import ConnectionManager
 from manito.db.entities import Category, Transaction
-from data_service.api_utils import deserialize_body, serialize_response
+from data_service.decorators import (
+    jwt_authenticate,
+    JWT,
+    deserialize_body,
+    serialize_response,
+)
 from data_service.model import (
     ApiResponse,
     BasicErrorApiModel,
@@ -10,9 +15,10 @@ from data_service.model import (
 )
 
 
+@jwt_authenticate()
 @deserialize_body(TransactionApiModel)
 @serialize_response()
-def post_transaction_create(body: TransactionApiModel) -> ApiResponse:
+def post_transaction_create(jwt: JWT, body: TransactionApiModel) -> ApiResponse:
     with ConnectionManager().create_connection().create_session() as db:
         category = db.query(Category).get(body.category_id)
 

@@ -4,7 +4,7 @@ from typing import Any, Dict
 from dataclasses import dataclass
 
 from data_service.model import ApiModel
-from data_service.api_utils import serialize_response
+from data_service.decorators import jwt_authenticate, serialize_response
 
 @dataclass
 class MyApiModel(ApiModel):

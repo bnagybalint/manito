@@ -3,14 +3,20 @@ import datetime as dt
 from manito.db import ConnectionManager
 from manito.db.entities import User, Wallet
 from data_service.model.wallet import WalletApiModel
-from data_service.api_utils import deserialize_body, serialize_response
+from data_service.decorators import (
+    jwt_authenticate,
+    JWT,
+    deserialize_body,
+    serialize_response,
+)
 from data_service.model.api_response import ApiResponse
 from data_service.model.basic_error import BasicErrorApiModel
 
 
+@jwt_authenticate()
 @deserialize_body(WalletApiModel)
 @serialize_response()
-def post_wallet_create(body: WalletApiModel) -> ApiResponse:
+def post_wallet_create(jwt: JWT, body: WalletApiModel) -> ApiResponse:
     with ConnectionManager().create_connection().create_session() as db:
         owner = db.query(User).get(body.owner_id)
         if owner is None or owner.deleted_at is not None:
