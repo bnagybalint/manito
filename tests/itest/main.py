@@ -2,8 +2,6 @@ import sys
 import os
 import pytest
 
-print("\n".join(sys.path))
-
 from argparse import ArgumentParser
 from pathlib import Path
 
