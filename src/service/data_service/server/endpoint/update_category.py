@@ -1,7 +1,12 @@
 from manito.core import Color, ColorFormat
 from manito.db import ConnectionManager
 from manito.db.entities import Category, Icon
-from data_service.api_utils import deserialize_body, serialize_response
+from data_service.decorators import (
+    jwt_authenticate,
+    JWT,
+    deserialize_body,
+    serialize_response,
+)
 from data_service.model import (
     ApiResponse,
     BasicErrorApiModel,
@@ -9,9 +14,10 @@ from data_service.model import (
 )
 
 
+@jwt_authenticate()
 @deserialize_body(CategoryApiModel)
 @serialize_response()
-def update_category(category_id: int, body: CategoryApiModel) -> ApiResponse:
+def update_category(jwt: JWT, category_id: int, body: CategoryApiModel) -> ApiResponse:
     with ConnectionManager().create_connection().create_session() as db:
         if body.id is not None and category_id != body.id:
             return BasicErrorApiModel(message=f"ID in body ({body.id}) and in path ({category_id}) does not match."), 400

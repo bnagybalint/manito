@@ -8,6 +8,10 @@ info:
   title: Manito API
   contact:
     email: b.nagy.balint@gmail.com
+# # OpenAPI defiend security is not enabled at the moment as enabling it would cause Connexion to bloat the endpoints with a lot of extra arguments.
+# # TODO Check if this option is needed at all (would be nice). Endpoint security is solved with 'jwt_authenticate' for the moment.
+# security:
+#   - jwtAuth: []
 paths:
   /login:
     post:
@@ -766,3 +770,9 @@ components:
         imageUrl:
           type: string
           description: URL of the icon image
+  securitySchemes:
+    jwtAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      x-bearerInfoFunc: data_service.decorators.jwt.verify_token

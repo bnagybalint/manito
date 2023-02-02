@@ -8,6 +8,12 @@ from data_service.model import BasicErrorApiModel
 
 JWT = Dict[str, Any]
 
+def verify_token(jwt_token: str) -> JWT:
+    # TODO this should not come from env vars
+    jwt_signing_key = os.environ["JWT_SIGNING_KEY"]
+    return jwt.decode(jwt_token, jwt_signing_key, algorithms=['HS256'])
+
+
 def jwt_authenticate(param_name="jwt"):
     """Decorator to verify JWT authentication token.
 
@@ -20,19 +26,18 @@ def jwt_authenticate(param_name="jwt"):
     def inner(func):
         def decorated(*args, **kwargs) -> flask.Response:
 
-            if "x-access-token" not in flask.request.headers:
+            if "Authorization" not in flask.request.headers:
                 return flask.make_response(
                     BasicErrorApiModel(message="Authentication token missing from request").to_json(),
                     401,
                 )
             
-            jwt_token = flask.request.headers["x-access-token"]
-
-            # TODO this should not come from env vars
-            jwt_signing_key = os.environ["JWT_SIGNING_KEY"]
+            jwt_token = flask.request.headers["Authorization"]
+            if jwt_token.startswith("Bearer "):
+                jwt_token = jwt_token[len("Bearer "):]
 
             try:
-                jwt_data = jwt.decode(jwt_token, jwt_signing_key, algorithms=['HS256'])
+                jwt_data = verify_token(jwt_token)
             except:
                 return flask.make_response(
                     BasicErrorApiModel(message="Authentication token invalid").to_json(),

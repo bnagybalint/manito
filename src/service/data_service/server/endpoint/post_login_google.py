@@ -8,7 +8,10 @@ from google.auth.transport import requests
 
 from manito.db import ConnectionManager
 from manito.db.entities import User
-from data_service.api_utils import deserialize_body, serialize_response
+from data_service.decorators import (
+    deserialize_body,
+    serialize_response,
+)
 from manito.security import (
     verify_password,
     PasswordToken,
