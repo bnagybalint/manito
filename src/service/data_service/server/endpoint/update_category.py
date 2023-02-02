@@ -1,4 +1,4 @@
-from manito.core import Color, ColorFormat
+from manito.core import ColorFormat
 from manito.db import ConnectionManager
 from manito.db.entities import Category, Icon
 from data_service.decorators import (

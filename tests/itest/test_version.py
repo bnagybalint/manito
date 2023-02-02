@@ -1,5 +1,6 @@
 from itest.utils import create_app_client
 
+
 class TestVersion:
     @classmethod
     def setup_class(cls):

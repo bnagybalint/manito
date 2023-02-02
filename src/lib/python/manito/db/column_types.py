@@ -1,7 +1,5 @@
 from typing import Any
-from sqlalchemy import (
-    TypeDecorator,
-)
+from sqlalchemy import TypeDecorator
 from sqlalchemy.types import String
 
 from manito.core import Color, ColorFormat

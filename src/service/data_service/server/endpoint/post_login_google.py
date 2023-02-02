@@ -12,10 +12,6 @@ from data_service.decorators import (
     deserialize_body,
     serialize_response,
 )
-from manito.security import (
-    verify_password,
-    PasswordToken,
-)
 from data_service.model import (
     ApiResponse,
     BasicErrorApiModel,

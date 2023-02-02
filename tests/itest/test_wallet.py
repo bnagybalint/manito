@@ -1,5 +1,4 @@
 from manito.core import objects_equal
-
 from data_service.model import WalletApiModel
 
 from itest.factory import DummyFactory

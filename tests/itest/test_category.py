@@ -1,8 +1,4 @@
-from manito.core import (
-    Color,
-    objects_equal,
-)
-
+from manito.core import Color, objects_equal
 from data_service.model.category import CategoryApiModel
 
 from itest.factory import DummyFactory
@@ -13,8 +9,8 @@ from itest.utils import (
     purge_database,
 )
 
-SERVER_ASSIGNED_FIELDS = ["id", "creator", "created_at"]
 
+SERVER_ASSIGNED_FIELDS = ["id", "creator", "created_at"]
 
 class TestCategory:
     @classmethod

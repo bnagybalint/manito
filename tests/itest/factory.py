@@ -2,8 +2,6 @@ import os
 import datetime as dt
 import jwt
 
-from collections import namedtuple
-
 from manito.db import Connection
 from manito.db.entities import (
     Category,
