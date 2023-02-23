@@ -24,4 +24,6 @@ def get_user_wallets(user_id: int) -> ApiResponse:
     if user is None:
         return BasicErrorApiModel(message=f"No user with ID {user_id}."), 404
 
-    return [WalletApiModel.from_entity(w) for w in user.wallets], 200
+    wallets = [w for w in user.wallets if w.deleted_at is None]
+
+    return [WalletApiModel.from_entity(w) for w in wallets], 200

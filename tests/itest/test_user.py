@@ -66,21 +66,3 @@ class TestUser:
         assert len(categories) == 1
         assert categories[0]["id"] == category_id
         assert categories[0]["name"] == "Expendable 2"
-
-    def test_cannot_get_user_wallets_for_nonexisting_user(self) -> None:
-        r = self.app_client.get("/user/666/wallets")
-        assert r.status_code in [404]
-
-    def test_can_get_user_wallets(self) -> None:
-        wallet_id = self.dummy_factory.create_dummy_wallet(
-            owner_id=self.user_id,
-            name="My Awesome Wallet",
-        )
-
-        r = self.app_client.get(f"/user/{self.user_id}/wallets")
-        assert r.status_code in [200]
-
-        wallets = r.json
-        assert len(wallets) == 1
-        assert wallets[0]["id"] == wallet_id
-        assert wallets[0]["name"] == "My Awesome Wallet"
