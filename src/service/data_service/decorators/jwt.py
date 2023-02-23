@@ -10,7 +10,7 @@ JWT = Dict[str, Any]
 
 def verify_token(jwt_token: str) -> JWT:
     # TODO this should not come from env vars
-    jwt_signing_key = os.environ["JWT_SIGNING_KEY"]
+    jwt_signing_key = os.environ["MANITO_JWT_SIGNING_KEY"]
     return jwt.decode(jwt_token, jwt_signing_key, algorithms=['HS256'])
 
 

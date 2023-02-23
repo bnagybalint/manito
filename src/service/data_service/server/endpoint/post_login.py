@@ -39,8 +39,8 @@ def post_login(body: LoginRequestParamsApiModel) -> ApiResponse:
             return handle_auth_error()
 
         # TODO these should not come from env vars
-        jwt_signing_key = os.environ["JWT_SIGNING_KEY"]
-        jwt_expiry_minutes = int(os.environ["JWT_EXPIRY_MINUTES"])
+        jwt_signing_key = os.environ["MANITO_JWT_SIGNING_KEY"]
+        jwt_expiry_minutes = int(os.environ["MANITO_JWT_EXPIRY_MINUTES"])
 
         token = jwt.encode(
             payload={
