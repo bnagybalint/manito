@@ -45,8 +45,8 @@ def post_login_google(body: GoogleLoginRequestParamsApiModel) -> ApiResponse:
             return handle_auth_error("Unregistered user tried to log in")
 
         # TODO these should not come from env vars
-        jwt_signing_key = os.environ["JWT_SIGNING_KEY"]
-        jwt_expiry_minutes = int(os.environ["JWT_EXPIRY_MINUTES"])
+        jwt_signing_key = os.environ["MANITO_JWT_SIGNING_KEY"]
+        jwt_expiry_minutes = int(os.environ["MANITO_JWT_EXPIRY_MINUTES"])
 
         token = jwt.encode(
             payload={

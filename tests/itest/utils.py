@@ -57,11 +57,11 @@ def create_auto_auth_client(app_client: AppClient, jwt: str) -> AppClient:
 @memoize
 def _db_connection_params() -> ConnectionParams:
     try:
-        db_host = os.environ["DB_HOST"]
-        db_port = int(os.environ["DB_PORT"])
-        db_database_name = os.environ["DB_DATABASE_NAME"]
-        db_username = os.environ["DB_USERNAME"]
-        db_password = os.environ["DB_PASSWORD"]
+        db_host = os.environ["MANITO_DB_HOST"]
+        db_port = int(os.environ["MANITO_DB_PORT"])
+        db_database_name = os.environ["MANITO_DB_DATABASE_NAME"]
+        db_username = os.environ["MANITO_DB_USERNAME"]
+        db_password = os.environ["MANITO_DB_PASSWORD"]
     except KeyError as e:
         raise RuntimeError(f"Required env var missing: {e}")
     except Exception as e:

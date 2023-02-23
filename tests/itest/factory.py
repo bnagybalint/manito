@@ -59,7 +59,7 @@ class DummyFactory:
         with self.db_connection.create_session() as db:
             user = db.query(User).get(id)
 
-            jwt_signing_key = os.environ["JWT_SIGNING_KEY"]
+            jwt_signing_key = os.environ["MANITO_JWT_SIGNING_KEY"]
 
             jwt_token =  jwt.encode(
                 payload={

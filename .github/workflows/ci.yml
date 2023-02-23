@@ -1,25 +1,29 @@
 name: CI
-on: [push, pull_request, workflow_dispatch]
+on: [pull_request, workflow_dispatch]
+
+env:
+  PYTHONPATH: src/lib/python:src/service
+
 jobs:
   unit_tests_python:
+    name: Unit tests (Python)
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
       uses: actions/checkout@v1
     - name: Setup Python
-      uses: actions/setup-python@v1
+      uses: actions/setup-python@v2
       with:
         python-version: "3.8"
     - name: Install dependencies
       run: |
-        python -m pip install --upgrade pip
         python -m pip install -r requirements.txt
     - name: Run Python unit tests
       run: |
         python -m pytest tests/utest
-      env:
-        PYTHONPATH: src/lib/python:src/service
+
   unit_tests_js:
+    name: Unit tests (Javascript)
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
@@ -34,3 +38,48 @@ jobs:
     - name: Run Javascript unit tests
       run: |
         npm test
+
+  integration_tests_server:
+    name: Integration tests (API)
+    runs-on: ubuntu-latest
+    needs:
+      - unit_tests_python
+      - unit_tests_js
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+    - name: Setup Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: "3.8"
+    - name: Create Postgres DB
+      run: |
+        docker create \
+          --name manito-db-itest \
+          -e POSTGRES_USER=testuser \
+          -e POSTGRES_PASSWORD=testuser \
+          -e POSTGRES_DB=manito-itest \
+          -v "${{ github.workspace }}/db/sql:/docker-entrypoint-initdb.d:ro" \
+          -p 5433:5432 \
+          --health-cmd pg_isready \
+          --health-interval 10s \
+          --health-timeout 5s \
+          --health-retries 5 \
+          postgres:14.4
+    - name: Start DB
+      run: |
+        docker start manito-db-itest
+    - name: Install dependencies
+      run: |
+        python -m pip install -r requirements.txt
+    - name: Run Server integration tests
+      run: |
+        export PYTHONPATH="${PYTHONPATH}:tests"
+        python tests/itest/main.py tests/itest/config/config.yaml
+      env:
+        MANITO_DB_HOST: localhost
+        MANITO_DB_PORT: 5433
+        MANITO_DB_DATABASE_NAME: manito-itest
+        MANITO_DB_USERNAME: testuser
+        MANITO_DB_PASSWORD: testuser
+        MANITO_JWT_SIGNING_KEY: very_secret_jwt_key
