@@ -2,7 +2,6 @@ from manito.db import ConnectionManager
 from manito.db.entities import Icon
 from data_service.decorators import (
     jwt_authenticate,
-    JWT,
     serialize_response,
 )
 from data_service.model import (
@@ -13,7 +12,7 @@ from data_service.model import (
 
 @jwt_authenticate()
 @serialize_response()
-def get_icons(jwt: JWT) -> ApiResponse:
+def get_icons() -> ApiResponse:
     with ConnectionManager().create_connection().create_session() as db:
         icons = db.query(Icon).filter(Icon.deleted_at == None).all()
 

@@ -9,7 +9,7 @@ from manito.db.entities import (
 )
 from data_service.decorators import (
     jwt_authenticate,
-    JWT,
+    get_current_user_id,
     deserialize_body,
     serialize_response,
 )
@@ -23,10 +23,10 @@ from data_service.model import (
 @jwt_authenticate()
 @deserialize_body(CategoryApiModel)
 @serialize_response()
-def post_category_create(jwt: JWT, body: CategoryApiModel) -> ApiResponse:
+def post_category_create(body: CategoryApiModel) -> ApiResponse:
     with ConnectionManager().create_connection().create_session() as db:
         icon = db.query(Icon).get(body.icon_id)
-        user = db.query(User).get(int(jwt["userId"]))
+        user = db.query(User).get(get_current_user_id())
 
         if icon is None:
             return BasicErrorApiModel(message=f"No icon with ID {body.icon_id}."), 400

@@ -11,7 +11,7 @@ interface State {
 }
 
 interface Actions {
-    loginWithUserAndPassword: (username: string, cred: string) => void;
+    loginWithUserAndPassword: (username: string, cred: string) => Promise<void>;
     loginWithGoogle: (jwt: string) => Promise<void>;
 }
 
@@ -21,15 +21,16 @@ export const useUserStore = create<UserState>((set) => ({
     loginUser: null,
     jwt: null,
     
-    loginWithUserAndPassword: (username: string, cred: string) => {
-        // faking login
-        // TODO add proper logon with authentication
-        const fake: User = {
-            id: 159,
-            name: 'Jakab',
-        };
-
-        set((state: State) => ({loginUser: fake}));
+    loginWithUserAndPassword: (username: string, password: string) => {
+        const client = new ApiClient();
+        const p = client.loginWithPassword(username, password)
+            .then((loginResponse: LoginResponseModel) => {
+                set((state: State) => ({
+                    loginUser: loginResponse.user,
+                    jwt: loginResponse.jwt,
+                }));
+            });
+        return p;
     },
 
     loginWithGoogle: (jwt: string) => {

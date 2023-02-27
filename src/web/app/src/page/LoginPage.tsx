@@ -18,15 +18,25 @@ import { useUserStore } from 'stores/user';
 
 export default function LoginPage() {
 
+    const loginWithUserAndPassword = useUserStore((state) => state.loginWithUserAndPassword);
     const loginWithGoogle = useUserStore((state) => state.loginWithGoogle);
 
+    const [username, setUsername] = useState<string>("");
+    const [password, setPassword] = useState<string>("");
     const [loginError, setLoginError] = useState<string | null>(null);
 
     const handleGoogleLogin = (jwt: string) => {
         loginWithGoogle(jwt)
             .catch((error: Error) => {
                 setLoginError("Login failed!");
-            })
+            });
+    };
+
+    const handlePasswordLogin = () => {
+        loginWithUserAndPassword(username, password)
+            .catch((error: Error) => {
+                setLoginError("Login failed!");
+            });
     };
 
     const handleLoginError = () => {
@@ -64,6 +74,8 @@ export default function LoginPage() {
                                 label="E-mail"
                                 required
                                 variant="standard"
+                                value={username}
+                                onChange={(e) => {setUsername(e.target.value)}}
                                 />
                             <TextField
                                 id="password"
@@ -72,6 +84,8 @@ export default function LoginPage() {
                                 type="password"
                                 autoComplete="current-password"
                                 variant="standard"
+                                value={password}
+                                onChange={(e) => {setPassword(e.target.value)}}
                             />
 
                             <Button
@@ -79,6 +93,7 @@ export default function LoginPage() {
                                 type="button"
                                 color="primary"
                                 sx={{width: "100%"}}
+                                onClick={(e) => handlePasswordLogin()}
                             >
                                 Log in
                             </Button>

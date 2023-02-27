@@ -8,7 +8,6 @@ from manito.db import ConnectionManager
 from manito.db.entities import Transaction
 from data_service.decorators import (
     jwt_authenticate,
-    JWT,
     deserialize_body,
     serialize_response,
 )
@@ -22,5 +21,5 @@ from data_service.model import (
 @jwt_authenticate()
 # @deserialize_body(TransactionSearchParamsApiModel)
 @serialize_response()
-def post_merge_categories(jwt: JWT, body) -> ApiResponse:
+def post_merge_categories(body) -> ApiResponse:
     pass

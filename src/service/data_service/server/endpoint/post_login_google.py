@@ -1,16 +1,19 @@
 import os
-import jwt
 import datetime as dt
+import flask
 
 from google.oauth2 import id_token
 from google.auth.exceptions import GoogleAuthError
 from google.auth.transport import requests
+from flask_jwt_extended import (
+    create_access_token,
+    set_access_cookies,
+)
 
 from manito.db import ConnectionManager
 from manito.db.entities import User
 from data_service.decorators import (
     deserialize_body,
-    serialize_response,
 )
 from data_service.model import (
     ApiResponse,
@@ -25,11 +28,10 @@ def handle_auth_error(reason: str):
     return BasicErrorApiModel(message=f"Authentication failed"), 400
 
 @deserialize_body(GoogleLoginRequestParamsApiModel)
-@serialize_response()
 def post_login_google(body: GoogleLoginRequestParamsApiModel) -> ApiResponse:
 
     try:
-        google_client_id = str(os.environ["GOOGLE_CLIENT_ID"])
+        google_client_id = str(os.environ["MANITO_GOOGLE_CLIENT_ID"])
         user_token = id_token.verify_oauth2_token(body.jwt, requests.Request(), google_client_id)
 
         user_email = user_token["email"]
@@ -44,22 +46,18 @@ def post_login_google(body: GoogleLoginRequestParamsApiModel) -> ApiResponse:
         if user is None:
             return handle_auth_error("Unregistered user tried to log in")
 
-        # TODO these should not come from env vars
-        jwt_signing_key = os.environ["MANITO_JWT_SIGNING_KEY"]
-        jwt_expiry_minutes = int(os.environ["MANITO_JWT_EXPIRY_MINUTES"])
-
-        token = jwt.encode(
-            payload={
-                "userId": user.id,
-                "exp": dt.datetime.utcnow() + dt.timedelta(minutes=jwt_expiry_minutes)
-            },
-            key=jwt_signing_key,
-            algorithm="HS256",
+        access_token_expiry_minutes = int(os.environ["MANITO_JWT_EXPIRY_MINUTES"])
+        access_token = create_access_token(
+            identity=user.id,
+            expires_delta=dt.timedelta(minutes=access_token_expiry_minutes),
         )
 
-        data = LoginResponseApiModel(
-            user=UserApiModel.from_entity(user),
-            jwt=token,
+        resp = flask.jsonify(
+            LoginResponseApiModel(
+                user=UserApiModel.from_entity(user),
+                jwt="", # reserved for refresh token, maybe
+            ).to_json()
         )
-        
-        return data, 200
+        set_access_cookies(resp, access_token)
+
+        return resp
