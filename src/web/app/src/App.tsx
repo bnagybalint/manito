@@ -37,7 +37,7 @@ export default function App() {
             });
          };
          gapi.load('client:auth2', initClient);
-     });
+    }, []);
 
     const renderContent = () => {
         return (

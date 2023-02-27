@@ -7,7 +7,6 @@ from manito.db import ConnectionManager
 from manito.db.entities import Transaction
 from data_service.decorators import (
     jwt_authenticate,
-    JWT,
     deserialize_body,
     serialize_response,
 )
@@ -21,7 +20,7 @@ from data_service.model import (
 @jwt_authenticate()
 @deserialize_body(TransactionSearchParamsApiModel)
 @serialize_response()
-def post_transaction_search(jwt: JWT, body: TransactionSearchParamsApiModel) -> ApiResponse:
+def post_transaction_search(body: TransactionSearchParamsApiModel) -> ApiResponse:
     with ConnectionManager().create_connection().create_session() as db:
         q = db.query(Transaction)
 

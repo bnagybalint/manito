@@ -1,5 +1,7 @@
 import urlcat from 'urlcat';
 
+import Cookie from 'util/Cookie';
+
 import { LoginResponseModel, LoginResponseSerializer } from 'api_client/model/LoginResponse';
 import { TransactionModel, TransactionSerializer } from 'api_client/model/Transaction';
 import { TransactionSearchParamsModel, TransactionSearchParamsSerializer } from 'api_client/model/TransactionSearchParams';
@@ -21,6 +23,13 @@ export default class ApiClient {
     async loginWithGoogle(jwt: string): Promise<LoginResponseModel> {
         const url = '/api/login/google';
         return this.post(url, {json: {'jwt': jwt}})
+            .then(res => this.checkResponse([200])(res))
+            .then(res => res.json())
+            .then(res => new LoginResponseSerializer().deserialize(res));
+    }
+    async loginWithPassword(username: string, password: string): Promise<LoginResponseModel> {
+        const url = '/api/login';
+        return this.post(url, {json: {username, password}})
             .then(res => this.checkResponse([200])(res))
             .then(res => res.json())
             .then(res => new LoginResponseSerializer().deserialize(res));
@@ -125,6 +134,12 @@ export default class ApiClient {
         if(req?.json !== undefined) {
             headers = {...headers, 'Content-Type': 'application/json'};
             body = JSON.stringify(req.json);
+        }
+
+        // send CSRF double submit token in header
+        const csrfToken = Cookie.get('csrf_access_token')
+        if(csrfToken) {
+            headers = {...headers, 'X-CSRF-TOKEN': csrfToken }
         }
 
         return fetch(url, {

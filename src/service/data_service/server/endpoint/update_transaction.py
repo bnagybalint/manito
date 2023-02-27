@@ -4,7 +4,6 @@ from manito.db import ConnectionManager
 from manito.db.entities import Category, Transaction, Wallet
 from data_service.decorators import (
     jwt_authenticate,
-    JWT,
     deserialize_body,
     serialize_response,
 )
@@ -18,7 +17,7 @@ from data_service.model import (
 @jwt_authenticate()
 @deserialize_body(TransactionApiModel)
 @serialize_response()
-def update_transaction(jwt: JWT, transaction_id: int, body: TransactionApiModel) -> ApiResponse:
+def update_transaction(transaction_id: int, body: TransactionApiModel) -> ApiResponse:
     with ConnectionManager().create_connection().create_session() as db:
         if body.id is not None and transaction_id != body.id:
             return BasicErrorApiModel(message=f"ID in body ({body.id}) and in path ({transaction_id}) does not match."), 400

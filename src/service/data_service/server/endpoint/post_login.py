@@ -1,6 +1,11 @@
 import os
-import jwt
 import datetime as dt
+import flask
+
+from flask_jwt_extended import (
+    create_access_token,
+    set_access_cookies,
+)
 
 from manito.db import ConnectionManager
 from manito.db.entities import User
@@ -38,22 +43,18 @@ def post_login(body: LoginRequestParamsApiModel) -> ApiResponse:
         if not verify_password(body.password, pw_token.salt, pw_token.hash):
             return handle_auth_error()
 
-        # TODO these should not come from env vars
-        jwt_signing_key = os.environ["MANITO_JWT_SIGNING_KEY"]
-        jwt_expiry_minutes = int(os.environ["MANITO_JWT_EXPIRY_MINUTES"])
-
-        token = jwt.encode(
-            payload={
-                "userId": user.id,
-                "exp": dt.datetime.utcnow() + dt.timedelta(minutes=jwt_expiry_minutes)
-            },
-            key=jwt_signing_key,
-            algorithm="HS256",
+        access_token_expiry_minutes = int(os.environ["MANITO_JWT_EXPIRY_MINUTES"])
+        access_token = create_access_token(
+            identity=user.id,
+            expires_delta=dt.timedelta(minutes=access_token_expiry_minutes),
         )
 
-        data = LoginResponseApiModel(
-            user=UserApiModel.from_entity(user),
-            jwt=token,
+        resp = flask.jsonify(
+            LoginResponseApiModel(
+                user=UserApiModel.from_entity(user),
+                jwt="", # reserved for refresh token, maybe
+            ).to_json()
         )
-        
-        return data, 200
+        set_access_cookies(resp, access_token)
+
+        return resp

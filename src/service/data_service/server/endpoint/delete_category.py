@@ -8,17 +8,17 @@ from data_service.model import (
 )
 from data_service.decorators import (
     jwt_authenticate,
-    JWT,
+    get_current_user_id,
     serialize_response,
 )
 
 
 @jwt_authenticate()
 @serialize_response()
-def delete_category(jwt: JWT, category_id: int) -> ApiResponse:
+def delete_category(category_id: int) -> ApiResponse:
     with ConnectionManager().create_connection().create_session() as db:
         category = db.query(Category).get(category_id)
-        deleter = db.query(User).get(int(jwt["userId"]))
+        deleter = db.query(User).get(get_current_user_id())
 
         if category is None:
             return BasicErrorApiModel(message=f"No category with ID {category_id}."), 404
