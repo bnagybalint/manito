@@ -3,10 +3,11 @@ import sqlalchemy
 
 from flask import Flask
 from flask.testing import FlaskClient, FlaskCliRunner
+from flask_jwt_extended import create_access_token, get_csrf_token
 
 from manito.core import memoize
 from manito.db import Connection, ConnectionManager, ConnectionParams
-from data_service.server.app.app import create_app
+from data_service.server.app.app import create_app, configure_auth
 
 
 App = Flask
@@ -20,38 +21,48 @@ def create_app_instance() -> App:
         "TESTING": True,
     })
 
+    configure_auth(app, jwt_signing_key=os.environ["MANITO_JWT_SIGNING_KEY"])
+
     return app
 
 @memoize
 def create_app_client() -> AppClient:
     return create_app_instance().test_client()
 
-def create_auto_auth_client(app_client: AppClient, jwt: str) -> AppClient:
+def create_auto_auth_client(app_client: AppClient, user_id: int) -> AppClient:
     class Wrapper(AppClient):
-        def __init__(self, app_client: AppClient, jwt: str) -> None:
-            self.app_client = app_client
-            self.jwt = jwt
-            self.extra_headers = {
-                # "x-access-token": jwt,
-                # "Authorization": f"Bearer {jwt}"
-                "Authorization": f"Bearer {jwt}",
-            }
+        def __init__(self, app_client: AppClient, user_id: int) -> None:
+            with app_client.application.app_context():
+                self.app_client = app_client
+                self.user_id = user_id
+                self.access_token = create_access_token(self.user_id)
 
-        def _augment_kwargs(self, **kwargs):
+                self.extra_headers = {
+                    "X-CSRF-Token": get_csrf_token(self.access_token),
+                }
+
+                # faking httpOnly cookie
+                self.app_client.set_cookie(
+                    server_name="localhost",
+                    key="access_token_cookie",
+                    value=self.access_token,
+                )
+
+        def _augment_kwargs(self, kwargs):
             kwc = {**kwargs}
             kwc["headers"] = { **kwc.get("headers", {}), **self.extra_headers }
             return kwc
 
         def get(self, *args, **kwargs):
-            return self.app_client.get(*args, **self._augment_kwargs(**kwargs))
+            return self.app_client.get(*args, **self._augment_kwargs(kwargs))
         def delete(self, *args, **kwargs):
-            return self.app_client.delete(*args, **self._augment_kwargs(**kwargs))
+            return self.app_client.delete(*args, **self._augment_kwargs(kwargs))
         def post(self, *args, **kwargs):
-            return self.app_client.post(*args, **self._augment_kwargs(**kwargs))
+            return self.app_client.post(*args, **self._augment_kwargs(kwargs))
         def patch(self, *args, **kwargs):
-            return self.app_client.patch(*args, **self._augment_kwargs(**kwargs))
+            return self.app_client.patch(*args, **self._augment_kwargs(kwargs))
 
-    return Wrapper(app_client, jwt)
+    return Wrapper(app_client, user_id)
 
 
 @memoize
