@@ -1,0 +1,12 @@
+{
+  "extends": "../../../../../configs/ts/base",
+  "compilerOptions": {
+    "baseUrl": "src",
+    "outDir": "./dist/",
+    "jsx": "react-jsx",
+    "sourceMap": true
+  },
+  "include": [
+    "src/"
+  ],
+}

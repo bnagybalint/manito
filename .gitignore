@@ -7,5 +7,7 @@ __pycache__
 *.pyc
 
 # Node.js generated folders
-node_modules
-dist
+**/node_modules
+**/dist
+# Storybook output folder
+**/storybook-static
