@@ -2,9 +2,9 @@ module.exports = {
     moduleDirectories: ['node_modules', 'src'],
     moduleFileExtensions: ['ts', 'tsx', 'js'],
     transform: {
-        // '^.+\\.(ts|tsx)$': 'ts-jest',
-        '^.+\\.[t|j]sx?$': 'babel-jest',
+        '^.+\\.(ts|tsx)$': 'ts-jest',
+        '^.+\\.(js|jsx)$': 'babel-jest',
     },
-    testEnvironment: 'node',
+    testEnvironment: 'jsdom',
     testRegex: '.*\\.(test|spec)?\\.(ts|tsx)$',
 };

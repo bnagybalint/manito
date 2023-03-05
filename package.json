@@ -2,16 +2,12 @@
   "name": "manito",
   "version": "1.0.0",
   "private": true,
-  "scripts":
-  {
+  "scripts": {
     "test": "npm test --workspaces -- --passWithNoTests --watchAll=false"
   },
   "workspaces": [
+    "src/lib/js/manito/core-ui-components",
     "src/lib/js/manito/common",
     "src/web/app"
-  ],
-  "devDependencies":
-  {
-    "jest": "^29.4.0"
-  }
+  ]
 }
