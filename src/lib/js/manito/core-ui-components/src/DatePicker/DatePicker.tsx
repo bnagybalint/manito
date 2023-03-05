@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { TextField } from '@mui/material';
+import { TextField as MuiTextField } from '@mui/material';
 import { DatePicker as MuiDatePicker } from '@mui/x-date-pickers'
 
 import moment from 'moment';
@@ -24,12 +24,18 @@ export default function DatePicker({ value, label, onChange }: Props) {
                 onChange?.(moment(value));
             }}
             renderInput={(params) => (
-                <TextField
+                <MuiTextField
                     onClick={(e) => setOpen(true)}
                     size="small"
+                    sx={{
+                        "& input": {
+                            textAlign: 'center',
+                        }
+                    }}
                     {...params}
                 />
             )}
+            disableOpenPicker
         />
     );
 }

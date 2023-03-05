@@ -23,9 +23,3 @@ Default.args = {
     startDate: moment("2023-02-12"),
     endDate: moment("2023-02-15"),
 };
-
-export const CurrentMonth = Template.bind({});
-CurrentMonth.args = {
-    startDate: moment().startOf('month'),
-    endDate: moment().endOf('month'),
-};
