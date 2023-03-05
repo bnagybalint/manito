@@ -1,7 +1,7 @@
 import { StoryFn, Meta } from '@storybook/react';
 import moment from 'moment';
 
-import DateRangeFilter from './DateRangeFilter';
+import { DateRangeFilter } from './DateRangeFilter';
 
 
 export default {

@@ -1,8 +1,12 @@
 {
-  "name": "@manito/base-ui-components",
+  "name": "@manito/core-ui-components",
   "version": "1.0.0",
   "main": "./dist/index.js",
   "typings": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "scripts": {
     "test": "jest",
     "build": "rm -rf dist/* && tsc -p tsconfig.json",

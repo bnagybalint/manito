@@ -9,7 +9,7 @@ import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
 
 import moment from 'moment';
 
-import DatePicker from '../DatePicker';
+import { DatePicker } from '../DatePicker';
 
 
 type Props = {
@@ -21,7 +21,7 @@ type Props = {
     onNextClick?: () => void,
 }
 
-export default function DateRangeFilter(props: Props) {
+export function DateRangeFilter(props: Props) {
 
     const setRange = (period: 'week' | 'month' | 'year') => {
         const start = moment().startOf(period);
@@ -51,6 +51,7 @@ export default function DateRangeFilter(props: Props) {
                     onChange={(value) => {
                         props.onDateRangeChange?.(value, props.endDate);
                     }}
+                    hideOpenIcon
                 />
                 <Typography>to</Typography>
                 <DatePicker
@@ -58,6 +59,7 @@ export default function DateRangeFilter(props: Props) {
                     onChange={(value) => {
                         props.onDateRangeChange?.(props.startDate, value);
                     }}
+                    hideOpenIcon
                 />
                 <Button
                     variant="contained"
@@ -73,7 +75,7 @@ export default function DateRangeFilter(props: Props) {
                 columnGap={1}
                 display="flex"
                 justifyContent="center"
-                margin={1}
+                marginTop={1}
             >
                 <Button variant="text" onClick={(e) => setRange('week')}>this week</Button>
                 <Divider orientation="vertical" variant="middle" flexItem />

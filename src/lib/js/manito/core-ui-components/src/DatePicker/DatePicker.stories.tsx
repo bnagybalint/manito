@@ -1,7 +1,7 @@
 import { StoryFn, Meta } from '@storybook/react';
 import moment from 'moment';
 
-import DatePicker from './DatePicker';
+import { DatePicker } from './DatePicker';
 
 
 export default {
@@ -25,4 +25,10 @@ export const WithLabel = Template.bind({});
 WithLabel.args = {
     value: moment(),
     label: "Start date",
+};
+
+export const NoIcon = Template.bind({});
+NoIcon.args = {
+    value: moment(),
+    hideOpenIcon: true,
 };

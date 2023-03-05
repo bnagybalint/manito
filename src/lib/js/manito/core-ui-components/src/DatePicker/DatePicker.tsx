@@ -8,11 +8,12 @@ import moment from 'moment';
 type Props = {
     value: moment.Moment,
     label?: string,
+    hideOpenIcon?: boolean,
 
     onChange?: (value: moment.Moment) => void,
 }
 
-export default function DatePicker({ value, label, onChange }: Props) {
+export function DatePicker({ value, label, hideOpenIcon, onChange }: Props) {
     const [open, setOpen] = useState(false);
     return (
         <MuiDatePicker
@@ -35,7 +36,7 @@ export default function DatePicker({ value, label, onChange }: Props) {
                     {...params}
                 />
             )}
-            disableOpenPicker
+            disableOpenPicker={hideOpenIcon}
         />
     );
 }

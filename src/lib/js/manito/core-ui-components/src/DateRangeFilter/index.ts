@@ -1,3 +1,1 @@
-import DateRangeFilter from "./DateRangeFilter";
-
-export default DateRangeFilter;
+export { DateRangeFilter } from "./DateRangeFilter";
