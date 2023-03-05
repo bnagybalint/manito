@@ -16,6 +16,8 @@ import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 
+import { DateRangeFilter } from '@manito/core-ui-components';
+
 import TransactionHistory, { TransactionHistorySelectionModel } from 'component/TransactionHistory';
 import TransactionFilter from 'component/TransactionFilter';
 import TransactionCreateEditDialog from 'component/TransactionCreateEditDialog';
@@ -26,6 +28,7 @@ import Transaction from 'entity/Transaction';
 import { selectCurrentUser, useUserStore } from 'stores/user';
 import { useWalletStore } from 'stores/wallet';
 import { selectFilteredTransactions, useTransactionStore } from 'stores/transaction';
+import DateRange from 'util/DateRange';
 
 
 export default function WalletPage() {
@@ -97,6 +100,40 @@ export default function WalletPage() {
         setTransactionSelectionModel(new Set());
     }
 
+    const handleDateRangeStep = (up: boolean) => {
+        const range = new DateRange(startDate, endDate);
+        const offset = up ? 1 : -1;
+
+        if(range.isFullMonth()) {
+            const year = startDate.year();
+            const month = startDate.month();
+            let newYear = year;
+            let newMonth = month + offset;
+            if(month + offset < 0) {
+                newYear = year - 1;
+                newMonth = 11;
+            } else if(month + offset > 11) {
+                newYear = year + 1;
+                newMonth = 0;
+            }
+
+            setStartDate((d) => moment(d).set({ year: newYear, month: newMonth }).startOf('month'));
+            setEndDate((d) => moment(d).set({ year: newYear, month: newMonth }).endOf('month'));
+
+        } else if (range.isFullYear()) {
+            const newYear = startDate.year() + offset;
+
+            setStartDate((d) => moment(d).set({ year: newYear }).startOf('year'));
+            setEndDate((d) => moment(d).set({ year: newYear }).endOf('year'));
+
+        } else {
+            const newRange = range.addInterval(offset);
+
+            setStartDate((d) => moment(newRange.startDate));
+            setEndDate((d) => moment(newRange.endDate));
+        }
+    }
+
     const renderContent = () => {
         const error = walletError ?? transactionsError;
         if(error != null) {
@@ -137,15 +174,25 @@ export default function WalletPage() {
                     </Select>
                 </Card>
                 <Card>
+                    <Stack margin={1}>
+                        <DateRangeFilter
+                            startDate={startDate}
+                            endDate={endDate}
+                            onDateRangeChange={(start, end) => {
+                                setStartDate(start!);
+                                setEndDate(end!);
+                            }}
+                            onPreviousClick={() => handleDateRangeStep(false)}
+                            onNextClick={() => handleDateRangeStep(true)}
+                        />
+                    </Stack>
+                </Card>
+                <Card>
                     <CardContent>
                         <Typography fontWeight="bold">Filters</Typography>
                         <TransactionFilter
                             searchString={searchString}
-                            startDate={startDate}
-                            endDate={endDate}
                             onSearchStringChanged={(value: string | null) => { setSearchString(value!); }}
-                            onStartDateChanged={(value: moment.Moment | null) => { setStartDate(value!); }}
-                            onEndDateChanged={(value: moment.Moment | null) => { setEndDate(value!); }}
                         />
                     </CardContent>
                 </Card>
