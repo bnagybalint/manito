@@ -208,6 +208,62 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/BasicError"
+    delete:
+      summary: Delete a wallet
+      operationId: endpoint.delete_wallet.delete_wallet
+      tags:
+        - wallet
+      parameters:
+        - name: wallet_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Successfully deleted
+        "403":
+          description: The request was rejected due to authorization issues.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BasicError"
+        "404":
+          description: Wallet does not exist
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BasicError"
+    patch:
+      summary: Updates a wallet
+      operationId: endpoint.update_wallet.update_wallet
+      tags:
+        - wallet
+      parameters:
+        - name: wallet_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Details of the successfully updated wallet.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Wallet"
+        "403":
+          description: The request was rejected due to authorization issues.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BasicError"
+        "404":
+          description: Wallet does not exist
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BasicError"
   /wallet/{wallet_id}/transactions:
     get:
       summary: Lists transactions for a wallet
