@@ -33,8 +33,9 @@ export const globalTypes: GlobalTypes = {
         toolbar: {
             icon: 'globe',
             items: [
-                { value: 'hu-hu', left: '🇭🇺', right: 'HU', title: 'Hungarian' },
+                { value: 'hu-hu', left: '🇭🇺', right: 'HU', title: 'Magyar' },
                 { value: 'en-us', left: '🇺🇸', right: 'US', title: 'English' },
+                { value: 'es', left: '🇪🇸', right: 'ES', title: 'Español' },
             ],
             showName: true,
             // dynamicTitle: true,
