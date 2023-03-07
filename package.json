@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "test": "npm test --workspaces -- --passWithNoTests --watchAll=false"
+    "test": "npm test --workspaces --if-present -- --passWithNoTests --watchAll=false"
   },
   "workspaces": [
     "src/lib/js/manito/core-ui-components",
