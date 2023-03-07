@@ -9,5 +9,8 @@
     "src/lib/js/manito/core-ui-components",
     "src/lib/js/manito/common",
     "src/web/app"
-  ]
+  ],
+  "devDependencies": {
+    "check-dependency-version-consistency": "^3.0.3"
+  }
 }
