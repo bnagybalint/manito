@@ -60,7 +60,7 @@ export default function ImportTransactionDialog({open, onSubmit, onClose}: Props
         setIsCloseConfirmDialogOpen(false);
     }
 
-    const parseSampleRows = (fileContent: string) => {
+    const parseSampleRows = (fileContent: string, csvDelimiter: string) => {
         const csvOptions: CsvOptions = {
             delimiter: csvDelimiter,
             hasHeader: csvHasHeader,
@@ -80,9 +80,16 @@ export default function ImportTransactionDialog({open, onSubmit, onClose}: Props
         })
     }
     
+    const handleCsvDelimiterChanged = (delim: string) => {
+        setCsvDelimiter(delim);
+        if(fileContent) {
+            parseSampleRows(fileContent, delim);
+        }
+    }
+
     const handleFileUploaded = (fileContent: string) => {
         setFileContent(fileContent);
-        parseSampleRows(fileContent);
+        parseSampleRows(fileContent, csvDelimiter);
         setError('')
     }
 
@@ -166,7 +173,7 @@ export default function ImportTransactionDialog({open, onSubmit, onClose}: Props
                                         label="Delimiter"
                                         required
                                         value={csvDelimiter}
-                                        onChange={setCsvDelimiter}
+                                        onChange={handleCsvDelimiterChanged}
                                     >
                                         <MenuItem value=",">
                                             <Typography>Comma (,)</Typography>
