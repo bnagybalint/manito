@@ -15,6 +15,7 @@ import {
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import FileUploadIcon from '@mui/icons-material/FileUpload';
 
 import { DateRangeFilter } from '@manito/core-ui-components';
 
@@ -22,6 +23,7 @@ import TransactionHistory, { TransactionHistorySelectionModel } from 'component/
 import TransactionFilter from 'component/TransactionFilter';
 import TransactionCreateEditDialog from 'component/TransactionCreateEditDialog';
 import ConfirmDialog from 'component/ConfirmDialog';
+import ImportTransactionDialog from 'component/ImportTransactionDialog';
 
 import Transaction from 'entity/Transaction';
 
@@ -38,6 +40,7 @@ export default function WalletPage() {
     const [searchString, setSearchString] = useState("");
     const [isTransactionDialogOpen, setIsTransactionDialogOpen] = useState(false);
     const [isDeleteConfirmDialogOpen, setIsDeleteConfirmDialogOpen] = useState(false);
+    const [isTransactionImportDialogOpen, setIsTransactionImportDialogOpen] = useState(false);
     const [transactionSelectionModel, setTransactionSelectionModel] = useState<TransactionHistorySelectionModel>(new Set());
     const [editedTransaction, setEditedTransaction] = useState<Transaction | null>(null);
 
@@ -98,6 +101,16 @@ export default function WalletPage() {
             deleteTransactionById(t);
         })
         setTransactionSelectionModel(new Set());
+    }
+
+    const handleTransactionImportClicked = () => {
+        setIsTransactionImportDialogOpen(true);
+    }
+
+    const handleTransactionImportSubmitted = (transactions: Transaction[]) => {
+        // TODO make this a batch import
+        transactions.forEach((t) => addTransaction(t));
+        setIsTransactionImportDialogOpen(false);
     }
 
     const handleDateRangeStep = (up: boolean) => {
@@ -197,38 +210,51 @@ export default function WalletPage() {
                     </CardContent>
                 </Card>
                 <Stack direction="row" gap={1}>
-                    <Fab
-                        size="medium"
-                        color="primary"
-                        variant="extended"
-                        onClick={() => handleCreateTransactionClicked()}
-                    >
-                        <AddIcon />
-                        New
-                    </Fab>
-                    {transactionSelectionModel.size > 0 &&
+                    <Stack direction="row" gap={1} flexGrow={1}>
                         <Fab
                             size="medium"
-                            color="blue"
+                            color="primary"
                             variant="extended"
-                            onClick={() => handleEditTransactionsClicked()}
-                            disabled={transactionSelectionModel.size > 1}
+                            onClick={handleCreateTransactionClicked}
                         >
-                            <EditIcon />
-                            Edit
+                            <AddIcon />
+                            New
                         </Fab>
-                    }
-                    {transactionSelectionModel.size > 0 &&
+                        {transactionSelectionModel.size > 0 &&
+                            <Fab
+                                size="medium"
+                                color="blue"
+                                variant="extended"
+                                onClick={handleEditTransactionsClicked}
+                                disabled={transactionSelectionModel.size > 1}
+                            >
+                                <EditIcon />
+                                Edit
+                            </Fab>
+                        }
+                        {transactionSelectionModel.size > 0 &&
+                            <Fab
+                                size="medium"
+                                color="red"
+                                variant="extended"
+                                onClick={handleDeleteTransactionsClicked}
+                            >
+                                <DeleteIcon />
+                                Delete ({transactionSelectionModel.size})
+                            </Fab>
+                        }
+                    </Stack>
+                    <Stack direction="row" gap={1} justifyContent="end" flexGrow={1}>
                         <Fab
                             size="medium"
-                            color="red"
+                            color="primary"
                             variant="extended"
-                            onClick={() => handleDeleteTransactionsClicked()}
+                            onClick={handleTransactionImportClicked}
                         >
-                            <DeleteIcon />
-                            Delete ({transactionSelectionModel.size})
+                            <FileUploadIcon/>
+                            Import
                         </Fab>
-                    }
+                    </Stack>
                 </Stack>
                 <TransactionHistory
                     transactions={transactions}
@@ -250,6 +276,11 @@ export default function WalletPage() {
                     color="red"
                     onClose={() => handleDeleteTransactionsCancelled()}
                     onConfirm={() => handleDeleteTransactionsConfirmed()}
+                />
+                <ImportTransactionDialog
+                    open={isTransactionImportDialogOpen}
+                    onSubmit={handleTransactionImportSubmitted}
+                    onClose={() => setIsTransactionImportDialogOpen(false)}
                 />
             </Stack>
         );

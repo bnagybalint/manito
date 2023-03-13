@@ -1,15 +1,16 @@
 import moment from 'moment';
-import { parseCsv, Options } from 'util/CsvReader';
+import { groupBy } from '@manito/common';
+import { parseCsv, Options as CsvOptions } from 'util/CsvReader';
 
 import Transaction from 'entity/Transaction';
 import Category from 'entity/Category';
 
 export enum ColumnSemantics {
-    TIME,
-    AMOUNT,
-    CATEGORY,
-    NOTES,
-    IGNORE,
+    TIME = 'TIME',
+    WALLET = 'WALLET',
+    CATEGORY = 'CATEGORY',
+    NOTES = 'NOTES',
+    IGNORE = 'IGNORE',
 }
 
 export interface ColumnDefinition {
@@ -17,13 +18,14 @@ export interface ColumnDefinition {
     name: string;
     // Semantics of the column, what is stored in it
     semantics: ColumnSemantics,
-    // In case of AMOUNT column, the ID of the associated wallet
+    // In case of WALLET column, the ID of the associated wallet
     walletId?: number;
 }
 
-interface LoadOptions {
+export interface Options {
     delimiter?: string;
     hasHeader?: boolean;
+    verifyColumnDefinitions?: boolean;
 }
 
 export class CsvTransactionImporter {
@@ -32,52 +34,78 @@ export class CsvTransactionImporter {
     categories: Category[];
     categoriesByName: Map<string, Category>;
 
+    options: Options;
+
     timeColumnIndex: number;
     notesColumnIndex: number | undefined;
     categoryColumnIndex: number;
     amountColumnIndices: number[];
 
-    public constructor(columns: ColumnDefinition[], categories: Category[]) {
+    public constructor(columns: ColumnDefinition[], categories: Category[], options?: Options) {
         this.columns = columns;
         this.columnsByName = new Map(columns.map((x) => [x.name, x]));
         this.categories = categories;
         this.categoriesByName = new Map(categories.map((x) => [x.name, x]));
 
-        this.verifyColumns();
+        this.options = {
+            delimiter: options?.delimiter ?? ';',
+            hasHeader: options?.hasHeader ?? true,
+            verifyColumnDefinitions: options?.verifyColumnDefinitions ?? true,
+        };
+
+        if (this.options.verifyColumnDefinitions) {
+            this.verifyColumns();
+        }
 
         this.timeColumnIndex = this.getColumnIndex(ColumnSemantics.TIME)!;
         this.notesColumnIndex = this.getColumnIndex(ColumnSemantics.NOTES);
         this.categoryColumnIndex = this.getColumnIndex(ColumnSemantics.CATEGORY)!;
-        this.amountColumnIndices = this.getColumnIndices(ColumnSemantics.AMOUNT);
+        this.amountColumnIndices = this.getColumnIndices(ColumnSemantics.WALLET);
     }
 
-    public loadFromString(csv: string, options?: LoadOptions): Transaction[] {
-        const csvOptions: Options = {
-            delimiter: options?.delimiter ?? ';',
-            hasHeader: options?.hasHeader ?? true,
-            omitHeader: options?.hasHeader ?? true,
+    public loadRecords(csv: string): any[][] {
+
+        const csvOptions: CsvOptions = {
+            delimiter: this.options.delimiter,
+            hasHeader: this.options.hasHeader,
+            omitHeader: this.options.hasHeader,
             ltrim: true,
             rtrim: true,
         };
 
-        const records = parseCsv(csv, csvOptions);
-        
-        const transactions: Transaction[] = records.map((recordRaw: string[], recordIndex: number) => {
+        const rawRecords = parseCsv(csv, csvOptions);
+
+        return rawRecords.map((recordRaw: string[], recordIndex: number) => {
             try {
                 if (recordRaw.length != this.columns.length) {
                     throw new Error(`Length of record (${recordRaw.length}) does not match that of column definitions (${this.columns.length}).`);
                 }
-        
-                const record = this.parseRecord(recordRaw);
+
+                return this.parseRecord(recordRaw);
+
+            } catch(error) {
+                const errorMessage = (error instanceof Error) ? error.message : String(error);
+                throw new Error(`Failed to parse record #${recordIndex + 1}: ${errorMessage}`);
+            }
+        });
+    }
+
+    public convertToTransactions(records: any[][]): Transaction[] {
+        return records.map((record: any[], recordIndex: number) => {
+            try {
                 const transaction = this.parseTransactionFromRecord(record);
                 return new Transaction(transaction);
                 
             } catch(error) {
                 const errorMessage = (error instanceof Error) ? error.message : String(error);
-                throw new Error(`Failed to parse record #${recordIndex}: ${errorMessage}`);
+                throw new Error(`Failed to parse record #${recordIndex + 1}: ${errorMessage}`);
             }
         });
+    }
 
+    public loadFromString(csv: string): Transaction[] {
+        const records = this.loadRecords(csv);
+        const transactions = this.convertToTransactions(records);
         return transactions;
     }
 
@@ -89,14 +117,20 @@ export class CsvTransactionImporter {
             throw new Error('Invalid column definitions: no/multiple CATEGORY columns defined');
         }
 
-        const amountColumns = this.columns.filter((x) => x.semantics == ColumnSemantics.AMOUNT);
-        if (amountColumns.length < 1) {
-            throw new Error('Invalid column definitions: no AMOUNT columns defined');
+        const walletColumns = this.columns.filter((x) => x.semantics == ColumnSemantics.WALLET);
+        if (walletColumns.length < 1) {
+            throw new Error('Invalid column definitions: no WALLET columns defined');
         }
 
-        amountColumns.forEach((cd) => {
+        groupBy(walletColumns, (cd) => cd.walletId).forEach((cds) => {
+            if(cds.length > 1) {
+                throw new Error(`Invalid column definitions: wallet column '${cds[0].name}' is defined multiple times`);
+            }
+        })
+
+        walletColumns.forEach((cd) => {
             if (cd.walletId === undefined) {
-                throw new Error(`Invalid column definitions: column '${cd.name}' is of type AMOUNT, but has no wallet ID defined.`);
+                throw new Error(`Invalid column definitions: column '${cd.name}' is of type WALLET, but has no wallet ID defined.`);
             }
         })
     }
@@ -133,7 +167,7 @@ export class CsvTransactionImporter {
                     throw new Error(`Failed to parse time`);
                 }
                 return time;
-            case ColumnSemantics.AMOUNT:
+            case ColumnSemantics.WALLET:
                 if(valueStr === '') {
                     return 0;
                 }
@@ -173,7 +207,7 @@ export class CsvTransactionImporter {
             transaction.notes = record[this.notesColumnIndex];
         }
 
-        // Process AMOUNT column(s)
+        // Process WALLET column(s)
         const usedWalletColumnIndices = this.amountColumnIndices.filter((idx) => record[idx] !== 0);
         if (usedWalletColumnIndices.length < 1) {
             throw new Error(`Transaction is not associated with any wallets.`);

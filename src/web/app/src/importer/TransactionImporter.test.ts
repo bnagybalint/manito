@@ -17,13 +17,13 @@ const parse = (data: string): Transaction[] => {
     const columns: Array<ColumnDefinition> = [
         { name: 'time', semantics: ColumnSemantics.TIME },
         { name: 'category', semantics: ColumnSemantics.CATEGORY },
-        { name: 'amount1', semantics: ColumnSemantics.AMOUNT, walletId: 1001 },
-        { name: 'amount2', semantics: ColumnSemantics.AMOUNT, walletId: 1002 },
-        { name: 'amount3', semantics: ColumnSemantics.AMOUNT, walletId: 1003 },
+        { name: 'amount1', semantics: ColumnSemantics.WALLET, walletId: 1001 },
+        { name: 'amount2', semantics: ColumnSemantics.WALLET, walletId: 1002 },
+        { name: 'amount3', semantics: ColumnSemantics.WALLET, walletId: 1003 },
     ];
 
-    const importer = new CsvTransactionImporter(columns, CATEGORIES);
-    const transactions = importer.loadFromString(data, { hasHeader: false });
+    const importer = new CsvTransactionImporter(columns, CATEGORIES, { hasHeader: false });
+    const transactions = importer.loadFromString(data);
 
     return transactions;
 }
@@ -34,10 +34,10 @@ describe('CsvTransactionImporter', () => {
         const time: ColumnDefinition = { name: 'a', semantics: ColumnSemantics.TIME };
         const cat: ColumnDefinition = { name: 'b', semantics: ColumnSemantics.CATEGORY };
         const notes: ColumnDefinition = { name: 'c', semantics: ColumnSemantics.NOTES };
-        const amount: ColumnDefinition = { name: 'w1', semantics: ColumnSemantics.AMOUNT, walletId: 1001 };
-        const amount2: ColumnDefinition = { name: 'w2', semantics: ColumnSemantics.AMOUNT, walletId: 1002 };
-        const amount3: ColumnDefinition = { name: 'w2', semantics: ColumnSemantics.AMOUNT, walletId: 1003 };
-        const amount_no_wallet: ColumnDefinition = { name: 'w3', semantics: ColumnSemantics.AMOUNT };
+        const amount: ColumnDefinition = { name: 'w1', semantics: ColumnSemantics.WALLET, walletId: 1001 };
+        const amount2: ColumnDefinition = { name: 'w2', semantics: ColumnSemantics.WALLET, walletId: 1002 };
+        const amount3: ColumnDefinition = { name: 'w2', semantics: ColumnSemantics.WALLET, walletId: 1003 };
+        const amount_no_wallet: ColumnDefinition = { name: 'w3', semantics: ColumnSemantics.WALLET };
         const ignore: ColumnDefinition = { name: 'f', semantics: ColumnSemantics.IGNORE };
         const ignore2: ColumnDefinition = { name: 'g', semantics: ColumnSemantics.IGNORE };
         const ignore3: ColumnDefinition = { name: 'h', semantics: ColumnSemantics.IGNORE };
@@ -71,11 +71,11 @@ describe('CsvTransactionImporter', () => {
         const columns: Array<ColumnDefinition> = [
             { name: 'time', semantics: ColumnSemantics.TIME },
             { name: 'category', semantics: ColumnSemantics.CATEGORY },
-            { name: 'amount', semantics: ColumnSemantics.AMOUNT, walletId: 123 },
+            { name: 'amount', semantics: ColumnSemantics.WALLET, walletId: 123 },
         ];
 
-        const importer = new CsvTransactionImporter(columns, CATEGORIES);
-        const transactions = importer.loadFromString(data, { hasHeader: false });
+        const importer = new CsvTransactionImporter(columns, CATEGORIES, { hasHeader: false });
+        const transactions = importer.loadFromString(data);
 
         expect(transactions).toEqual([]);
     });
@@ -89,12 +89,12 @@ describe('CsvTransactionImporter', () => {
             { name: 'a', semantics: ColumnSemantics.TIME },
             { name: 'bbbb', semantics: ColumnSemantics.CATEGORY },
             { name: 'c', semantics: ColumnSemantics.NOTES },
-            { name: 'dd', semantics: ColumnSemantics.AMOUNT, walletId: 123 },
+            { name: 'dd', semantics: ColumnSemantics.WALLET, walletId: 123 },
         ];
 
-        const importer = new CsvTransactionImporter(columns, CATEGORIES);
+        const importer = new CsvTransactionImporter(columns, CATEGORIES, { hasHeader: true });
         
-        const transactions = importer.loadFromString(data, { hasHeader: true });
+        const transactions = importer.loadFromString(data);
         expect(transactions).toEqual([]);
     });
 
