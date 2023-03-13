@@ -33,14 +33,14 @@ export default function ConfirmDialog(props: Props) {
         >
             <DialogTitle align="center" fontWeight="bold">{props.title ?? 'Confirm?'}</DialogTitle>
             <DialogContent>
-                <Stack gap={1}>
+                <Stack direction="column" gap={1}>
                     <Typography textAlign="center">{props.message ?? ''}</Typography>
                         <Box 
                             display="flex"
                             justifyContent="center"
                             alignItems="center"
                         >
-                            <Stack gap={1} direction="row">
+                            <Stack direction="row" gap={1}>
                                 {!props.hideCancelButton &&
                                     <Button
                                         variant="contained"

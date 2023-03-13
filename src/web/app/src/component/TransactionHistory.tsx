@@ -68,7 +68,7 @@ export default function TransactionHistory(props: Props) {
         props.onSelectionModelChange?.(new Set(newSelectedTransactions));
     }
     return (
-        <Stack gap={1}>
+        <Stack direction="column" gap={1}>
             {sortedDays.map((dayData) => {
                 return (
                     <Card>

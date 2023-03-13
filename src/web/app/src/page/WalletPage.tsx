@@ -169,7 +169,7 @@ export default function WalletPage() {
         }
 
         return (
-            <Stack gap={1} paddingTop={1}>
+            <Stack direction="column" gap={1} paddingTop={1}>
                 <Card>
                     <Select
                         value={currentWallet.id!}
@@ -187,7 +187,7 @@ export default function WalletPage() {
                     </Select>
                 </Card>
                 <Card>
-                    <Stack margin={1}>
+                    <Stack direction="column" margin={1}>
                         <DateRangeFilter
                             startDate={startDate}
                             endDate={endDate}

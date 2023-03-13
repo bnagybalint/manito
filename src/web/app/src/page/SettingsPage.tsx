@@ -69,10 +69,10 @@ export default function SettingsPage() {
     }
 
     return (
-        <Stack gap={1} paddingTop={1}>
+        <Stack direction="column" gap={1} paddingTop={1}>
             <Card>
                 <CardContent>
-                    <Stack gap={1}>
+                    <Stack direction="column" gap={1}>
                         <Typography fontWeight="bold">Categories</Typography>
                         <Stack direction="row" gap={1}>
                             <Fab
