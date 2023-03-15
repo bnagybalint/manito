@@ -35,6 +35,9 @@ jobs:
     - name: Install dependencies
       run: |
         npm install --workspaces
+    - name: Build all packages
+      run: |
+        npm run build
     - name: Run Javascript unit tests
       run: |
         npm test

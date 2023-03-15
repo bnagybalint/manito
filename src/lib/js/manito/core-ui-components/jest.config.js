@@ -1,10 +1,9 @@
 module.exports = {
-    moduleDirectories: ['node_modules', 'src'],
-    moduleFileExtensions: ['ts', 'tsx', 'js'],
-    transform: {
-        '^.+\\.(ts|tsx)$': 'ts-jest',
-        '^.+\\.(js|jsx)$': 'babel-jest',
-    },
+    displayName: 'core-ui-components',
+    moduleDirectories: [
+        'node_modules',
+        'src',
+    ],
     testEnvironment: 'jsdom',
-    testRegex: '.*\\.(test|spec)?\\.(ts|tsx)$',
+    testRegex: '.*\\.test\\.(ts|tsx)$',
 };
