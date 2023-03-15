@@ -3,11 +3,15 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "test": "npm test --workspaces -- --passWithNoTests --watchAll=false"
+    "test": "jest --debug",
+    "build": "npm run build --workspaces --if-present"
   },
   "workspaces": [
-    "src/lib/js/manito/core-ui-components",
     "src/lib/js/manito/common",
+    "src/lib/js/manito/core-ui-components",
     "src/web/app"
-  ]
+  ],
+  "devDependencies": {
+    "check-dependency-version-consistency": "^3.0.3"
+  }
 }

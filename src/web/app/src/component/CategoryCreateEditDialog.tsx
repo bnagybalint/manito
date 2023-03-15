@@ -138,7 +138,7 @@ export default function CategoryCreateEditDialog(props: Props) {
             <DialogTitle>{isEditMode ? 'Edit' : 'New'} category</DialogTitle>
             <DialogContent>
                 <FormControl fullWidth>
-                    <Stack sx={{p: 1}} gap={1}>
+                    <Stack direction="column" sx={{p: 1}} gap={1}>
                         <TextField
                             label="Name"
                             variant="outlined"

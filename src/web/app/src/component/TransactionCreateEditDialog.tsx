@@ -176,7 +176,7 @@ export default function TransactionCreateEditDialog(props: Props) {
             <DialogTitle>{isEditMode ? 'Edit' : 'New'} transaction</DialogTitle>
             <DialogContent>
                 <FormControl fullWidth>
-                    <Stack sx={{p: 1}} gap={1}>
+                    <Stack direction="column" sx={{p: 1}} gap={1}>
                         <ToggleButtonGroup
                             exclusive
                             value={transactionType}

@@ -20,7 +20,13 @@
     "module": "commonjs",
     "moduleResolution": "node",
     "resolveJsonModule": true,
-    "isolatedModules": true
+    "isolatedModules": true,
+    "sourceMap": true,
+    // "paths": {
+    //   "@manito/common/*": [ "./src/lib/js/manito/common/src/*" ],
+    //   "@manito/core-ui-components/*": [ "./src/lib/js/manito/core-ui-components/src/*" ],
+    //   "@manito/app/*": [ "./src/web/app/src/*" ],
+    // }
   },
   "exclude": [
     "dist",

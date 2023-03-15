@@ -1,4 +1,4 @@
-import { groupBy, ungroup, comparePrimitive } from "./arrayUtils";
+import { groupBy, ungroup, comparePrimitive, zip } from "./arrayUtils";
 
 const isOdd = (x: number) => x % 2;
 const wordLength = (x: string) => x.length;
@@ -94,3 +94,16 @@ describe('comparePrimitive', () => {
     });
 });
 
+describe('zip', () => {
+    test('equal ranges', () => {
+        expect(zip([], [])).toEqual([]);
+        expect(zip([1], ["a"])).toEqual([[1, "a"]]);
+        expect(zip([1, 2, 3], ["a", "b", "c"])).toEqual([[1, "a"], [2, "b"], [3, "c"]]);
+    });
+    test('unequal ranges', () => {
+        expect(zip([1,2,3], [])).toEqual([]);
+        expect(zip([], ["a", "b", "c"])).toEqual([]);
+        expect(zip([1, 2], ["a", "b", "c"])).toEqual([[1, "a"], [2, "b"]]);
+        expect(zip([1, 2, 3, 4], ["a", "b", "c"])).toEqual([[1, "a"], [2, "b"], [3, "c"]]);
+    });
+});

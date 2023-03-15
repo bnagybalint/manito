@@ -52,7 +52,7 @@ export default function LoginPage() {
 
     return (
         <Container maxWidth="sm">
-            <Stack gap={1} paddingTop={1}>
+            <Stack direction="row" gap={1} paddingTop={1}>
                 <Card>
                     <CardContent>
                         <Typography align="center" variant="h4">Login</Typography>

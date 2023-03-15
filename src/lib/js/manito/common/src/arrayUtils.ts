@@ -75,3 +75,19 @@ export function sortBy<K, T>(arr: T[], keyFn: (item: T) => K, compareFn: (a: K, 
         return compareFn(ka, kb)
     });
 }
+
+export function zip<T1, T2>(arr1: T1[], arr2: T2[]): Array<Array<T1 | T2>> {
+    /**
+     * Zips arrays, i.e. builds pairs from items at corresponding indices in the input arrays. Pairs are returned as arrays.
+     * 
+     * Example:
+     * ```
+     *    zip([1, 2],["a", "b"]) == [[1, "a"], [2, "b"]]
+     * ```
+     * 
+     * @param arr1 The array
+     * @param arr2 The other array
+     * @returns The zipped array
+     */
+    return arr1.slice(0, Math.min(arr1.length, arr2.length)).map((val, i) => [val, arr2[i]]);
+}
