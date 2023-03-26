@@ -1,7 +1,7 @@
 import datetime as dt
 
 from manito.db import ConnectionManager
-from manito.db.entities import Category, Transaction, User
+from manito.db.entities import Category, Transaction, User, Wallet
 from data_service.decorators import (
     jwt_authenticate,
     get_current_user_id,
@@ -20,9 +20,17 @@ from data_service.model import (
 @serialize_response()
 def post_transaction_create(body: TransactionApiModel) -> ApiResponse:
     with ConnectionManager().create_connection().create_session() as db:
-        category = db.query(Category).get(body.category_id)
         user = db.query(User).get(get_current_user_id())
 
+        src_wallet = db.query(Wallet).get(body.src_wallet_id) if body.src_wallet_id is not None else None
+        if body.src_wallet_id is not None and src_wallet is None:
+            return BasicErrorApiModel(message=f"No wallet with ID {body.src_wallet_id}."), 400
+
+        dst_wallet = db.query(Wallet).get(body.dst_wallet_id) if body.dst_wallet_id is not None else None
+        if body.dst_wallet_id is not None and dst_wallet is None:
+            return BasicErrorApiModel(message=f"No wallet with ID {body.dst_wallet_id}."), 400
+
+        category = db.query(Category).get(body.category_id)
         if category is None:
             return BasicErrorApiModel(message=f"No category with ID {body.category_id}."), 400
 
@@ -35,8 +43,8 @@ def post_transaction_create(body: TransactionApiModel) -> ApiResponse:
             creator=user,
             deleted_at=None,
             deleter=None,
-            src_wallet_id=body.src_wallet_id,
-            dst_wallet_id=body.dst_wallet_id,
+            src_wallet=src_wallet,
+            dst_wallet=dst_wallet,
         )
 
         db.add(transaction)

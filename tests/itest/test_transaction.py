@@ -143,6 +143,32 @@ class TestTransaction:
 
         assert r.status_code in [400], "Request should be rejected if not wallet was defined"
 
+    def test_create_transaction_should_fail_when_source_wallet_is_missing(self) -> None:
+        data = TransactionApiModel(
+            amount=1000,
+            time=dt.datetime.now(),
+            src_wallet_id=666,
+            dst_wallet_id=self.bank_wallet_id,
+            category_id=self.category_id,
+        )
+        payload = data.to_json()
+        r = self.app_client.post("/transaction/create", json=payload)
+
+        assert r.status_code in [400], "Request should be rejected if source wallet does not exist"
+
+    def test_create_transaction_should_fail_when_destination_wallet_is_missing(self) -> None:
+        data = TransactionApiModel(
+            amount=1000,
+            time=dt.datetime.now(),
+            src_wallet_id=self.bank_wallet_id,
+            dst_wallet_id=666,
+            category_id=self.category_id,
+        )
+        payload = data.to_json()
+        r = self.app_client.post("/transaction/create", json=payload)
+
+        assert r.status_code in [400], "Request should be rejected if destination wallet does not exist"
+
     def test_create_transaction_should_fail_when_transferring_to_the_same_wallet(self) -> None:
         data = TransactionApiModel(
             amount=1000,
