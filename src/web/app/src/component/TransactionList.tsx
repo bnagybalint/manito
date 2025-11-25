@@ -85,7 +85,7 @@ type Props = {
     onSelectionModelChange: (model: TransactionListSelectionModel) => void,
 };
 
-export default function TransactionList(props: Props) {
+export function TransactionList(props: Props) {
     const transactions = sortBy(props.transactions, (t) => t.id);
 
     const currentUser = useUserStore((state) => state.loginUser)!;

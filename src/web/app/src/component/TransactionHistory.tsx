@@ -8,7 +8,7 @@ import {
 
 import Localization from 'util/Localization';
 import Transaction from 'entity/Transaction';
-import TransactionList, {TransactionListSelectionModel} from 'component/TransactionList';
+import { TransactionList, TransactionListSelectionModel } from 'component/TransactionList';
 import { groupBy, sortBy } from '@manito/common';
 import { useWalletStore } from 'stores/wallet';
 

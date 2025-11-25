@@ -17,15 +17,18 @@ import {
     ToggleButtonGroup,
     MenuItem,
 } from '@mui/material';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+
 import { DatePicker } from '@mui/x-date-pickers'
 
+import { DropDown } from '@manito/core-ui-components';
 import CategoryIcon from 'component/CategoryIcon';
 
 import Transaction, { TransactionType } from 'entity/Transaction';
 import Category from 'entity/Category';
 import { selectFindCategoryById, useCategoryStore } from 'stores/category';
 import { useUserStore } from 'stores/user';
-import { useWalletStore } from 'stores/wallet';
+import { useWalletStore, selectAllWallets } from 'stores/wallet';
 import { useIconStore, selectAllIconsById } from 'stores/icon';
 
 
@@ -53,16 +56,19 @@ export default function TransactionCreateEditDialog(props: Props) {
     const [transactionType, setTransactionType] = useState('expense');
     const [keepOpenOnSubmit, setKeepOpenOnSubmit] = useState(false);
     const [validationErrors, setValidationErrors] = useState<ValidationErrors>({});
-    
+    const [sourceWalletId, setSourceWalletId] = useState<number | undefined>(undefined);
+    const [destinationWalletId, setDestinationWalletId] = useState<number | undefined>(undefined);
+
     const currentUser = useUserStore((state) => state.loginUser)!;
     const currentWallet = useWalletStore((state) => state.currentWallet)!;
+    const allWallets = useWalletStore(selectAllWallets);
     const categories = useCategoryStore((state) => state.categories);
     const findCategoryById = useCategoryStore(selectFindCategoryById);
     const fetchCategories = useCategoryStore((state) => state.fetchCategories);
-    
+
     const categoryIconsById = useIconStore(selectAllIconsById);
     const fetchIcons = useIconStore((state) => state.fetchIcons);
-    
+
     const isEditMode = props.transaction && props.transaction.id !== undefined;
 
     useEffect(() => {
@@ -75,12 +81,16 @@ export default function TransactionCreateEditDialog(props: Props) {
             setNotes(props.transaction!.notes ?? null);
             setTransactionCategory(findCategoryById(props.transaction!.categoryId) ?? null);
             setTransactionType(props.transaction!.getTransactionType(currentWallet.id));
+            setSourceWalletId(props.transaction!.sourceWalletId);
+            setDestinationWalletId(props.transaction!.destinationWalletId);
         } else {
             setTransactionTime(moment());
             setAmount(null);
             setNotes(null);
             setTransactionCategory(null);
             setTransactionType('expense');
+            setSourceWalletId(currentWallet.id!);
+            setDestinationWalletId(undefined);
         }
     }, [props.transaction, currentUser, currentWallet, isEditMode, fetchCategories, findCategoryById, fetchIcons]);
 
@@ -112,7 +122,7 @@ export default function TransactionCreateEditDialog(props: Props) {
     const handleSubmit = () => {
         const validationErrors = validateForm();
         setValidationErrors(validationErrors);
-        
+
         if(Object.keys(validationErrors).length !== 0) {
             return;
         }
@@ -123,8 +133,8 @@ export default function TransactionCreateEditDialog(props: Props) {
             amount: amount!,
             notes: notes ?? undefined,
             categoryId: transactionCategory!.id!,
-            sourceWalletId: transactionType === 'income' ? undefined : currentWallet.id,
-            destinationWalletId: transactionType === 'income' ? currentWallet.id : undefined,
+            sourceWalletId: sourceWalletId,
+            destinationWalletId: destinationWalletId,
         });
 
         if(isEditMode) {
@@ -167,11 +177,13 @@ export default function TransactionCreateEditDialog(props: Props) {
             }
         }
     }
-    
+
     return (
         <Dialog
             open={props.open}
             onClose={handleClose}
+            maxWidth="xs"
+            fullWidth
         >
             <DialogTitle>{isEditMode ? 'Edit' : 'New'} transaction</DialogTitle>
             <DialogContent>
@@ -181,11 +193,44 @@ export default function TransactionCreateEditDialog(props: Props) {
                             exclusive
                             value={transactionType}
                             onChange={(e, newValue) => handleTransactionTypeChange(newValue)}
+                            fullWidth
                         >
                             <ToggleButton color="red" value="expense">Expense</ToggleButton>
                             <ToggleButton color="green" value="income">Income</ToggleButton>
-                            <ToggleButton disabled value="transfer">Transfer</ToggleButton>
+                            <ToggleButton color="blue" value="transfer">Transfer</ToggleButton>
                         </ToggleButtonGroup>
+                        { transactionType === 'transfer' &&
+                            <Stack direction="row" gap={1}>
+                                <DropDown
+                                    label="From wallet"
+                                    value={sourceWalletId?.toString()}
+                                    margin="none"
+                                    fullWidth
+                                >
+                                    { allWallets.map((w) =>
+                                        <MenuItem key={w.id} value={w.id.toString()}>{w.name}</MenuItem>
+                                    )}
+                                </DropDown>
+                                <Button
+                                    variant="outlined"
+                                    type="button"
+                                    // sx={{ padding: 1 }}
+                                    size="small"
+                                >
+                                    <ArrowForwardIcon />
+                                </Button>
+                                <DropDown
+                                    label="To wallet"
+                                    value={destinationWalletId?.toString()}
+                                    fullWidth
+                                    margin="none"
+                                >
+                                    { allWallets.map((w) =>
+                                        <MenuItem key={w.id} value={w.id.toString()}>{w.name}</MenuItem>
+                                    )}
+                                </DropDown>
+                            </Stack>
+                        }
                         <DatePicker
                             label="Date"
                             value={moment(transactionTime).local()}
