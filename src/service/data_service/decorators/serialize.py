@@ -94,6 +94,9 @@ def serialize_response():
 
                 return (data_json,) + ret[1:]
             
+            if isinstance(ret, flask.Response):
+                return ret
+
             raise NotImplementedError()
 
         return wrapper

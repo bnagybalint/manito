@@ -7,4 +7,4 @@ APP_ROOT_DIR="${SCRIPT_DIR}"
 # don't open the app by default
 export BROWSER="none"
 
-npm run start --workspace "${APP_ROOT_DIR}"
+npm run build --workspace "${APP_ROOT_DIR}" && npm run start --workspace "${APP_ROOT_DIR}"
