@@ -19,7 +19,7 @@ sqlalchemy = "==1.4.40"
 [dev-packages]
 
 [requires]
-python_version = "3.10"
+python_version = "3.8"
 
 [scripts]
 backend = "./src/service/data_service/start_local.sh"
