@@ -4,7 +4,7 @@ from pathlib import Path
 from argparse import ArgumentParser
 from flask_jwt_extended import JWTManager
 
-from app.app import create_app, configure_auth
+from data_service.server.app.app import create_app, configure_auth
 from manito.db import ConnectionManager, ConnectionParams
 from manito.core import Config, ConfigLoader
 

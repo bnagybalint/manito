@@ -17,10 +17,11 @@ jobs:
         python-version: "3.8"
     - name: Install dependencies
       run: |
-        python -m pip install -r requirements.txt
+        python -m pip install pipenv
+        pipenv install --dev
     - name: Run Python unit tests
       run: |
-        python -m pytest tests/utest
+        pipenv run pytest tests/utest
 
   unit_tests_js:
     name: Unit tests (Javascript)
@@ -58,12 +59,12 @@ jobs:
     - name: Create Postgres DB
       run: |
         docker create \
-          --name manito-db-itest \
+          --name manito-db-itest-ci \
           -e POSTGRES_USER=testuser \
           -e POSTGRES_PASSWORD=testuser \
           -e POSTGRES_DB=manito-itest \
           -v "${{ github.workspace }}/db/sql:/docker-entrypoint-initdb.d:ro" \
-          -p 5433:5432 \
+          -p 5434:5432 \
           --health-cmd pg_isready \
           --health-interval 10s \
           --health-timeout 5s \
@@ -71,17 +72,18 @@ jobs:
           postgres:14.4
     - name: Start DB
       run: |
-        docker start manito-db-itest
+        docker start manito-db-itest-ci
     - name: Install dependencies
       run: |
-        python -m pip install -r requirements.txt
+        python -m pip install pipenv
+        pipenv install --dev
     - name: Run Server integration tests
       run: |
         export PYTHONPATH="${PYTHONPATH}:tests"
-        python tests/itest/main.py tests/itest/config/config.yaml
+        pipenv run python tests/itest/main.py tests/itest/config/config.yaml
       env:
         MANITO_DB_HOST: localhost
-        MANITO_DB_PORT: 5433
+        MANITO_DB_PORT: 5434
         MANITO_DB_DATABASE_NAME: manito-itest
         MANITO_DB_USERNAME: testuser
         MANITO_DB_PASSWORD: testuser

@@ -43,7 +43,6 @@ def create_auto_auth_client(app_client: AppClient, user_id: int) -> AppClient:
 
                 # faking httpOnly cookie
                 self.app_client.set_cookie(
-                    server_name="localhost",
                     key="access_token_cookie",
                     value=self.access_token,
                 )
