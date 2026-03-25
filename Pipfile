@@ -23,3 +23,4 @@ python_version = "3.8"
 
 [scripts]
 backend = "./src/service/data_service/start_local.sh"
+
